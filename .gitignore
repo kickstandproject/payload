@@ -1,0 +1,10 @@
+*.egg
+*.egg-info
+*.pyc
+.testrepository/*
+.tox
+AUTHORS
+ChangeLog
+dist/*
+doc/build/*
+stripe/versioninfo
