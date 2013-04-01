@@ -16,7 +16,7 @@ def main():
     modules = sys.argv[1:]
 
     if not modules:
-        modules = ['semaphore']
+        modules = ['stripe']
 
     p = subprocess.Popen(['pyflakes'] + modules,
                          stderr=subprocess.PIPE,
