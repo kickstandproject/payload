@@ -1,6 +1,8 @@
-#!/usr/bin/env python
+# vim: tabstop=4 shiftwidth=4 softtabstop=4
 
 # Copyright (C) 2013 PolyBeacon, Inc.
+#
+# Author: Paul Belanger <paul.belanger@polybeacon.com>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -35,5 +37,10 @@ setuptools.setup(
     install_requires=requires,
     setup_requires=['setuptools_git>=0.4'],
     dependency_links=depend_links,
-    zip_safe=False
+    zip_safe=False,
+    entry_points={
+        'console_scripts': [
+            'stripe-api=stripe.cmd.api:main',
+        ],
+    }
 )

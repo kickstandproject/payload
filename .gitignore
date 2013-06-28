@@ -4,6 +4,7 @@
 .testrepository/*
 .tox
 AUTHORS
+build/*
 ChangeLog
 dist/*
 doc/build/*
