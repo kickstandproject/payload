@@ -1,10 +1,14 @@
 Stripe
 ======
 
+Automatic call distributor (ACD) using Python and Redis.
+
+* `Official Stripe documentation <http://stripe.readthedocs.org>`
+
 License
 =======
 
-Copyright 2012-2013 PolyBeacon, Inc.
+Copyright 2013 PolyBeacon, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
