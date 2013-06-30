@@ -1,5 +1,6 @@
 # vim: tabstop=4 shiftwidth=4 softtabstop=4
 
+# Copyright 2013 Hewlett-Packard Development Company, L.P.
 # Copyright (C) 2013 PolyBeacon, Inc.
 #
 # Author: Paul Belanger <paul.belanger@polybeacon.com>
@@ -16,37 +17,36 @@
 # implied.
 
 """
-Stripe API Server
+Stripe Service API
 """
 
-from pecan import make_app
-from stripe.common import config
-from stripe.common import log
+import logging
+
+from oslo.config import cfg
 from wsgiref import simple_server
 
+from stripe.api import app
+from stripe.common import config
+from stripe.openstack.common import log
 
-def setup_app():
-    app = make_app(
-        'stripe.api.root.RootController',
-        static_root='%(confdir)s/public',
-        template_path='%(confdir)s/stripe/api/templates',
-        debug=False,
-        force_canonical=True,
-    )
-    return app
-
-
-class Application(object):
-    def __init__(self):
-        self.v1 = setup_app()
-
-    def __call__(self, environ, start_response):
-        return self.v1(environ, start_response)
+CONF = cfg.CONF
 
 
 def main():
     config.parse_args()
     log.setup('stripe')
-    application = Application()
-    server = simple_server.make_server('0.0.0.0', 8080, application)
-    server.serve_forever()
+    host = CONF.bind_host
+    port = CONF.bind_port
+    wsgi = simple_server.make_server(
+        host, port, app.VersionSelectorApplication()
+    )
+
+    LOG = log.getLogger(__name__)
+    LOG.info('Serving on http://%s:%s' % (host, port))
+    LOG.info('Configuration:')
+    CONF.log_opt_values(LOG, logging.INFO)
+
+    try:
+        wsgi.serve_forever()
+    except KeyboardInterrupt:
+        pass

@@ -1,5 +1,6 @@
 # vim: tabstop=4 shiftwidth=4 softtabstop=4
 
+# Copyright © 2012 New Dream Network, LLC (DreamHost)
 # Copyright (C) 2013 PolyBeacon, Inc.
 #
 # Author: Paul Belanger <paul.belanger@polybeacon.com>
@@ -15,15 +16,25 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
 # implied.
 
-"""
-Routines for logging Stripe
-"""
+from oslo.config import cfg
+from pecan import make_app
 
-from stripe.openstack.common import log
+CONF = cfg.CONF
 
 
-def setup(name):
-    """
-    A simple wrapper for Oslo's logging
-    """
-    log.setup(name)
+def setup_app():
+    app = make_app(
+        'stripe.api.root.RootController',
+        static_root=None,
+        debug=CONF.debug,
+        force_canonical=True,
+    )
+    return app
+
+
+class VersionSelectorApplication(object):
+    def __init__(self):
+        self.v1 = setup_app()
+
+    def __call__(self, environ, start_response):
+        return self.v1(environ, start_response)

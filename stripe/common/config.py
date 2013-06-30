@@ -23,11 +23,7 @@ Routines for configuring Stripe
 from oslo.config import cfg
 from stripe.version import VERSION_INFO as version
 
-common_opts = [
-]
-
 CONF = cfg.CONF
-CONF.register_opts(common_opts)
 
 
 def parse_args(args=None, usage=None, default_config_files=None):

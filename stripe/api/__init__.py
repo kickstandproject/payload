@@ -14,3 +14,15 @@
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
 # implied.
+
+from oslo.config import cfg
+
+API_SERVICE_OPTS = [
+    cfg.StrOpt(
+        'bind_host', default='0.0.0.0', help='The host IP to bind to'
+    ),
+    cfg.IntOpt('bind_port', default=9859, help='The port to bind to'),
+]
+
+CONF = cfg.CONF
+CONF.register_opts(API_SERVICE_OPTS)
