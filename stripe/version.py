@@ -15,6 +15,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
 # implied.
 
-from stripe.openstack.common import version as common_version
+import pbr.version
 
-VERSION_INFO = common_version.VersionInfo('stripe')
+
+VERSION_INFO = pbr.version.VersionInfo('stripe')

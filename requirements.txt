@@ -1,4 +1,5 @@
 oslo.config>=1.1.0
+pbr
 pecan
 
 # Required by openstack.common libraries
