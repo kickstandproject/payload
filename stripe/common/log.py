@@ -15,6 +15,15 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
 # implied.
 
-from stripe.openstack.common import version as common_version
+"""
+Routines for logging Stripe
+"""
 
-VERSION_INFO = common_version.VersionInfo('stripe')
+from stripe.openstack.common import log
+
+
+def setup(name):
+    """
+    A simple wrapper for Oslo's logging
+    """
+    log.setup(name)

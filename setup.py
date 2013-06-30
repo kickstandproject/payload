@@ -18,7 +18,7 @@
 import setuptools
 
 from stripe.openstack.common import setup
-from stripe.version import STRIPE_VERSION as version
+from stripe.version import VERSION_INFO as version
 
 
 requires = setup.parse_requirements()

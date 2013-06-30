@@ -1,5 +1,6 @@
 # vim: tabstop=4 shiftwidth=4 softtabstop=4
 
+# Copyright 2011 OpenStack LLC.
 # Copyright (C) 2013 PolyBeacon, Inc.
 #
 # Author: Paul Belanger <paul.belanger@polybeacon.com>
@@ -15,6 +16,25 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
 # implied.
 
-from stripe.openstack.common import version as common_version
+"""
+Routines for configuring Stripe
+"""
 
-VERSION_INFO = common_version.VersionInfo('stripe')
+from oslo.config import cfg
+from stripe.version import VERSION_INFO as version
+
+common_opts = [
+]
+
+CONF = cfg.CONF
+CONF.register_opts(common_opts)
+
+
+def parse_args(args=None, usage=None, default_config_files=None):
+    CONF(
+        args=args,
+        project='stripe',
+        version=version,
+        usage=usage,
+        default_config_files=default_config_files
+    )

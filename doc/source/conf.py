@@ -18,7 +18,7 @@
 import os
 import sys
 
-from stripe.version import STRIPE_VERSION as stripe_version
+from stripe.version import VERSION_INFO as version_info
 
 
 extensions = ['sphinx.ext.autodoc']
@@ -27,8 +27,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 project = u'Stripe'
 copyright = u'2013, Paul Belanger'
-release = stripe_version.version_string_with_vcs()
-version = stripe_version.canonical_version_string()
+release = version_info.version_string_with_vcs()
+version = version_info.canonical_version_string()
 exclude_patterns = []
 pygments_style = 'sphinx'
 html_theme = 'default'

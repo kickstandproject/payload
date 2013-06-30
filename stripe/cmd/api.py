@@ -15,7 +15,13 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
 # implied.
 
+"""
+Stripe API Server
+"""
+
 from pecan import make_app
+from stripe.common import config
+from stripe.common import log
 from wsgiref import simple_server
 
 
@@ -39,6 +45,8 @@ class Application(object):
 
 
 def main():
+    config.parse_args()
+    log.setup('stripe')
     application = Application()
     server = simple_server.make_server('0.0.0.0', 8080, application)
     server.serve_forever()
