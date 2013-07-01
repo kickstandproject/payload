@@ -3,6 +3,7 @@
 *.pyc
 .testrepository/*
 .tox
+.venv
 AUTHORS
 build/*
 ChangeLog

@@ -11,6 +11,14 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
+Developers Docs
+===============
+
+.. toctree::
+   :maxdepth: 1
+
+   devref/index
+
 Indices and tables
 ==================
 
