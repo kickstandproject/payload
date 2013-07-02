@@ -6,3 +6,4 @@ include tox.ini
 include stripe/versioninfo
 recursive-include doc *
 recursive-include tools *
+recursive-include stripe *.cfg

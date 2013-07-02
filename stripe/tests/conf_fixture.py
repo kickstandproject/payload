@@ -1,6 +1,5 @@
 # vim: tabstop=4 shiftwidth=4 softtabstop=4
 
-# Copyright 2011 OpenStack LLC.
 # Copyright (C) 2013 PolyBeacon, Inc.
 #
 # Author: Paul Belanger <paul.belanger@polybeacon.com>
@@ -16,29 +15,26 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
 # implied.
 
-"""
-Routines for configuring Stripe
-"""
+import fixtures
 
 from oslo.config import cfg
 
-
-from stripe.common import paths
-from stripe.openstack.common.db.sqlalchemy import session as db_session
-from stripe import version
+from stripe.common import config
 
 CONF = cfg.CONF
-_DEFAULT_SQL_CONNECTION = 'sqlite:///' + paths.state_path_def('$sqlite_db')
 
 
-def parse_args(args=None, usage=None, default_config_files=None):
-    db_session.set_defaults(
-        sql_connection=_DEFAULT_SQL_CONNECTION, sqlite_db='stripe.sqlite'
-    )
-    CONF(
-        args=args,
-        project='stripe',
-        version=version.VERSION_INFO,
-        usage=usage,
-        default_config_files=default_config_files
-    )
+class ConfFixture(fixtures.Fixture):
+    """Fixture to manage global conf settings."""
+
+    def __init__(self, conf):
+        self.conf = conf
+
+    def setUp(self):
+        super(ConfFixture, self).setUp()
+
+        self.conf.set_default('connection', "sqlite://", group='database')
+        self.conf.set_default('sqlite_synchronous', False)
+        self.conf.set_default('verbose', True)
+        config.parse_args([], default_config_files=[])
+        self.addCleanup(self.conf.reset)
