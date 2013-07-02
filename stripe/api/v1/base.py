@@ -15,8 +15,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
 # implied.
 
-from stripe.api.v1.queues import QueuesController
+from stripe.api.v1 import queues
 
 
 class BaseController(object):
-    queues = QueuesController()
+    queues = queues.QueuesController()

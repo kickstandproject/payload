@@ -21,7 +21,8 @@ Routines for configuring Stripe
 """
 
 from oslo.config import cfg
-from stripe.version import VERSION_INFO as version
+
+from stripe import version
 
 CONF = cfg.CONF
 
@@ -30,7 +31,7 @@ def parse_args(args=None, usage=None, default_config_files=None):
     CONF(
         args=args,
         project='stripe',
-        version=version,
+        version=version.VERSION_INFO,
         usage=usage,
         default_config_files=default_config_files
     )

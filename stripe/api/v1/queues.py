@@ -15,13 +15,13 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
 # implied.
 
-from pecan import expose
-from pecan.rest import RestController
+import pecan
+from pecan import rest
 
 
-class QueuesController(RestController):
+class QueuesController(rest.RestController):
 
-    @expose('json')
+    @pecan.expose('json')
     def get_one(self, id):
         model = {
             'id': id,

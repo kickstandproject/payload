@@ -15,10 +15,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
 # implied.
 
-import os
-import sys
-
-from stripe.version import VERSION_INFO as version_info
+from stripe import version
 
 
 extensions = ['sphinx.ext.autodoc']
@@ -27,8 +24,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 project = u'Stripe'
 copyright = u'2013, Paul Belanger'
-release = version_info.version_string_with_vcs()
-version = version_info.canonical_version_string()
+release = version.VERSION_INFO.version_string_with_vcs()
+version = version.VERSION_INFO.canonical_version_string()
 exclude_patterns = []
 pygments_style = 'sphinx'
 html_theme = 'default'
@@ -38,8 +35,8 @@ latex_elements = {
 }
 
 latex_documents = [
-  ('index', 'Stripe.tex', u'Stripe Documentation',
-   u'Paul Belanger', 'manual'),
+    ('index', 'Stripe.tex', u'Stripe Documentation',
+     u'Paul Belanger', 'manual'),
 ]
 
 man_pages = [
@@ -48,7 +45,7 @@ man_pages = [
 ]
 
 texinfo_documents = [
-  ('index', 'Stripe', u'Stripe Documentation',
-   u'Paul Belanger', 'Stripe', 'One line description of project.',
-   'Miscellaneous'),
+    ('index', 'Stripe', u'Stripe Documentation',
+     u'Paul Belanger', 'Stripe', 'One line description of project.',
+     'Miscellaneous'),
 ]

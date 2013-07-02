@@ -15,10 +15,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
 # implied.
 
-from setuptools import setup
+import setuptools
 
 
-setup(
+setuptools.setup(
     setup_requires=['d2to1', 'pbr'],
     d2to1=True,
 )

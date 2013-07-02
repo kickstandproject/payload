@@ -17,13 +17,13 @@
 # implied.
 
 from oslo.config import cfg
-from pecan import make_app
+import pecan
 
 CONF = cfg.CONF
 
 
 def setup_app():
-    app = make_app(
+    app = pecan.make_app(
         'stripe.api.root.RootController',
         static_root=None,
         debug=CONF.debug,
