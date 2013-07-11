@@ -14,29 +14,3 @@
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
 # implied.
-
-import pecan
-import wsmeext.pecan as wsme_pecan
-
-from pecan import rest
-
-from stripe.common import exception
-from stripe.openstack.common import log as logging
-
-LOG = logging.getLogger(__name__)
-
-
-class QueuesController(rest.RestController):
-
-    @wsme_pecan.wsexpose([unicode])
-    def get_all(self):
-        return pecan.request.db_api.get_queue_list()
-
-    @pecan.expose()
-    def get_one(self, id):
-        try:
-            result = pecan.request.db_api.get_queue(id)
-        except exception.QueueNotFound:
-            pecan.abort(404)
-
-        return result

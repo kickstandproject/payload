@@ -18,9 +18,11 @@
 
 """SQLAlchemy storage backend."""
 
+from sqlalchemy.orm.exc import NoResultFound
+
+from stripe.common import exception
 from stripe.db import api
 from stripe.db.sqlalchemy import models
-
 from stripe.openstack.common.db.sqlalchemy import session as db_session
 from stripe.openstack.common import log as logging
 
@@ -56,6 +58,15 @@ class Connection(api.Connection):
         queue.update(values)
         queue.save()
         return queue
+
+    def get_queue(self, queue):
+        query = model_query(models.Queue).filter_by(id=queue)
+        try:
+            result = query.one()
+        except NoResultFound:
+            raise exception.QueueNotFound(queue=queue)
+
+        return result
 
     def get_queue_list(self):
         query = model_query(models.Queue.id)

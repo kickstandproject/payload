@@ -15,7 +15,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
 # implied.
 
-from stripe.db import api as dbapi
+from stripe.db import api as db_api
 from stripe import test
 from stripe.tests.db import utils
 
@@ -24,15 +24,15 @@ class TestCase(test.TestCase):
 
     def setUp(self):
         super(TestCase, self).setUp()
-        self.dbapi = dbapi.get_instance()
+        self.db_api = db_api.get_instance()
 
     def test_get_queue_list(self):
         queue = []
         for i in xrange(1, 6):
             q = utils.get_test_queue(id=i)
-            self.dbapi.create_queue(q)
+            self.db_api.create_queue(q)
             queue.append(q['id'])
-        res = self.dbapi.get_queue_list()
+        res = self.db_api.get_queue_list()
         res.sort()
         queue.sort()
         self.assertEqual(res, queue)

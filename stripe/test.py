@@ -108,3 +108,18 @@ class TestCase(testtools.TestCase):
                 sqlite_db=CONF.sqlite_db, sqlite_clean_db=CONF.sqlite_clean_db
             )
         self.useFixture(_DB_CACHE)
+
+    def path_get(self, project_file=None):
+        """Get the absolute path to a file. Used for testing the API.
+
+        :param project_file: File whose path to return. Default: None.
+        :returns: path to the specified file, or path to project root.
+        """
+        root = os.path.abspath(
+            os.path.join(os.path.dirname(__file__), '..', '..')
+        )
+
+        if project_file:
+            return os.path.join(root, project_file)
+        else:
+            return root

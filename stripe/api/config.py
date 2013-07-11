@@ -15,28 +15,35 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
 # implied.
 
-import pecan
-import wsmeext.pecan as wsme_pecan
+from oslo.config import cfg
 
-from pecan import rest
-
-from stripe.common import exception
 from stripe.openstack.common import log as logging
 
 LOG = logging.getLogger(__name__)
 
 
-class QueuesController(rest.RestController):
+API_SERVICE_OPTS = [
+    cfg.StrOpt(
+        'bind_host', default='0.0.0.0', help='The host IP to bind to'
+    ),
+    cfg.IntOpt('bind_port', default=9859, help='The port to bind to'),
+]
 
-    @wsme_pecan.wsexpose([unicode])
-    def get_all(self):
-        return pecan.request.db_api.get_queue_list()
+CONF = cfg.CONF
+CONF.register_opts(API_SERVICE_OPTS)
 
-    @pecan.expose()
-    def get_one(self, id):
-        try:
-            result = pecan.request.db_api.get_queue(id)
-        except exception.QueueNotFound:
-            pecan.abort(404)
+# Server Specific Configurations
+server = {
+    'port': CONF.bind_port,
+    'host': CONF.bind_host,
+}
 
-        return result
+# Pecan Application Configurations
+app = {
+    'root': 'stripe.api.root.RootController',
+    'modules': ['stripe.api'],
+    'static_root': '%(confdir)s/public',
+    'template_path': '%(confdir)s/ironic/api/templates',
+    'debug': CONF.debug,
+    'enable_acl': False,
+}

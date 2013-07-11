@@ -150,3 +150,12 @@ class StripeException(Exception):
             return self.args[0]
         else:
             return unicode(self)
+
+
+class NotFound(StripeException):
+    message = 'Resource could not be found'
+    code = 404
+
+
+class QueueNotFound(NotFound):
+    message = 'Queue %(queue)s could not be found'
