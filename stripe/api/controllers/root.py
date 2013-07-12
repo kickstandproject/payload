@@ -15,15 +15,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
 # implied.
 
-from stripe.tests.api.v1 import base
+from stripe.api.controllers.v1 import controller as v1
 
 
-class TestQueuesEmpty(base.FunctionalTest):
+class RootController(object):
 
-    def test_empty(self):
-        response = self.get_json(
-            '/queues/1', expect_errors=True
-        )
-        self.assertEqual(response.status_int, 404)
-        self.assertEqual(response.content_type, 'application/json')
-        self.assertTrue(response.json['error_message'])
+    v1 = v1.Controller()

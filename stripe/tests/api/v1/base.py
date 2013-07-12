@@ -21,7 +21,10 @@
 import pecan
 import pecan.testing
 
+from stripe.openstack.common import log as logging
 from stripe import test
+
+LOG = logging.getLogger(__name__)
 
 
 class FunctionalTest(test.TestCase):
@@ -41,7 +44,7 @@ class FunctionalTest(test.TestCase):
 
         config = {
             'app': {
-                'root': 'stripe.api.root.RootController',
+                'root': 'stripe.api.controllers.root.RootController',
                 'modules': ['stripe.api'],
                 'static_root': '%s/public' % root_dir,
                 'template_path': '%s/api/templates' % root_dir,
@@ -49,6 +52,18 @@ class FunctionalTest(test.TestCase):
         }
 
         return pecan.testing.load_test_app(config)
+
+    def delete(self, path, expect_errors=False, headers=None,
+               extra_environ=None, status=None):
+        full_path = self.PATH_PREFIX + path
+        LOG.debug('DELETE: %s' % (full_path))
+        response = self.app.delete(str(full_path),
+                                   headers=headers,
+                                   status=status,
+                                   extra_environ=extra_environ,
+                                   expect_errors=expect_errors)
+        LOG.debug('GOT: %s' % response)
+        return response
 
     def get_json(self, path, expect_errors=False, headers=None,
                  extra_environ=None, q=[], **params):
@@ -64,6 +79,7 @@ class FunctionalTest(test.TestCase):
         all_params.update(params)
         if q:
             all_params.update(query_params)
+        LOG.debug('GET: %s %r' % (full_path, all_params))
         response = self.app.get(full_path,
                                 params=all_params,
                                 headers=headers,
@@ -71,4 +87,46 @@ class FunctionalTest(test.TestCase):
                                 expect_errors=expect_errors)
         if not expect_errors:
             response = response.json
+        LOG.debug('GOT: %s' % response)
         return response
+
+    def post_json(self, path, params, expect_errors=False, headers=None,
+                  method="post", extra_environ=None, status=None):
+        full_path = self.PATH_PREFIX + path
+        LOG.debug('%s: %s %s' % (method.upper(), full_path, params))
+        response = getattr(self.app, "%s_json" % method)(
+            str(full_path),
+            params=params,
+            headers=headers,
+            status=status,
+            extra_environ=extra_environ,
+            expect_errors=expect_errors
+        )
+        LOG.debug('GOT: %s' % response)
+        return response
+
+    def put_json(self, path, params, expect_errors=False, headers=None,
+                 extra_environ=None, status=None):
+        return self.post_json(path=path, params=params,
+                              expect_errors=expect_errors,
+                              headers=headers, extra_environ=extra_environ,
+                              status=status, method="put")
+
+    def _dict_from_object(self, obj, ignored_keys):
+        if ignored_keys is None:
+            ignored_keys = []
+        return dict(
+            [(k, v) for k, v in obj.iteritems()
+                if k not in ignored_keys]
+        )
+
+    def _assertEqualObjects(self, obj1, obj2, ignored_keys=None):
+        obj1 = self._dict_from_object(obj1, ignored_keys)
+        obj2 = self._dict_from_object(obj2, ignored_keys)
+
+        self.assertEqual(
+            len(obj1), len(obj2), "Keys mismatch: %s" %
+            str(set(obj1.keys()) ^ set(obj2.keys()))
+        )
+        for key, value in obj1.iteritems():
+            self.assertEqual(value, obj2[key])

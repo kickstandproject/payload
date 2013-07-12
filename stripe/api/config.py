@@ -40,7 +40,7 @@ server = {
 
 # Pecan Application Configurations
 app = {
-    'root': 'stripe.api.root.RootController',
+    'root': 'stripe.api.controllers.root.RootController',
     'modules': ['stripe.api'],
     'static_root': '%(confdir)s/public',
     'template_path': '%(confdir)s/ironic/api/templates',

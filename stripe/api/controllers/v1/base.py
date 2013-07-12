@@ -15,9 +15,15 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
 # implied.
 
-from stripe.api.v1 import base as v1
+import wsme
+
+from wsme import types
 
 
-class RootController(object):
+class APIBase(types.Base):
 
-    v1 = v1.BaseController()
+    def as_dict(self):
+        return dict((k, getattr(self, k))
+                    for k in self.fields
+                    if hasattr(self, k) and
+                    getattr(self, k) != wsme.Unset)

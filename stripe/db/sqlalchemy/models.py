@@ -42,7 +42,14 @@ class JSONEncodedDict(TypeDecorator):
 
 
 class StripeBase(models.TimestampMixin, models.ModelBase):
+
     metadata = None
+
+    def as_dict(self):
+        d = {}
+        for c in self.__table__.columns:
+            d[c.name] = self[c.name]
+        return d
 
 
 Base = declarative_base(cls=StripeBase)
