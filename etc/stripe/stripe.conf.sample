@@ -9,7 +9,7 @@
 
 
 #
-# Options defined in stripe.api
+# Options defined in stripe.api.config
 #
 
 # The host IP to bind to (string value)

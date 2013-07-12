@@ -123,3 +123,19 @@ class TestCase(testtools.TestCase):
             return os.path.join(root, project_file)
         else:
             return root
+
+    def config(self, **kw):
+        """Override some configuration values.
+
+        The keyword arguments are the names of configuration options to
+        override and their values.
+
+        If a group argument is supplied, the overrides are applied to
+        the specified configuration option group.
+
+        All overrides are automatically cleared at the end of the current
+        test by the fixtures cleanup process.
+        """
+        group = kw.pop('group', None)
+        for k, v in kw.iteritems():
+            CONF.set_override(k, v, group)

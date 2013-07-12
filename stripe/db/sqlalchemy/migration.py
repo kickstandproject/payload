@@ -17,11 +17,11 @@
 #    under the License.
 
 import distutils.version as dist_version
-import os
-
 import migrate
-from migrate.versioning import util as migrate_util
+import os
 import sqlalchemy
+
+from migrate.versioning import util as migrate_util
 
 from stripe.common import exception
 from stripe.db import migration

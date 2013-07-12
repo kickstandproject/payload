@@ -18,17 +18,16 @@
 from sqlalchemy import Table, Column, MetaData
 from sqlalchemy import DateTime, Integer, String, Text
 
+from stripe.db.sqlalchemy.migrate_repo import schema
 from stripe.openstack.common import log as logging
+
 
 LOG = logging.getLogger(__name__)
 ENGINE = 'InnoDB'
 CHARSET = 'uft8'
 
 
-def upgrade(migrate_engine):
-    meta = MetaData()
-    meta.bind = migrate_engine
-
+def define_queues_table(meta):
     queues = Table(
         'queues', meta,
         Column('id', Integer, primary_key=True, nullable=False),
@@ -39,19 +38,18 @@ def upgrade(migrate_engine):
         mysql_engine=ENGINE,
         mysql_charset=CHARSET,
     )
+    return queues
 
-    tables = [queues]
 
-    for table in tables:
-        try:
-            table.create()
-        except Exception:
-            LOG.info(repr(table))
-            LOG.Exception('Exception while creating table.')
-            raise
+def upgrade(migrate_engine):
+    meta = MetaData()
+    meta.bind = migrate_engine
+    tables = [define_queues_table(meta)]
+    schema.create_tables(tables)
 
 
 def downgrade(migrate_engine):
-    raise NotImplementedError(
-        'Downgrading from initial database is not supported.'
-    )
+    meta = MetaData()
+    meta.bind = migrate_engine
+    tables = [define_queues_table(meta)]
+    schema.drop_tables(tables)
