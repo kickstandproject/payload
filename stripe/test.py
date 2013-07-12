@@ -33,7 +33,7 @@ from stripe.openstack.common import log as logging
 from stripe.tests import conf_fixture
 
 
-test_opts = [
+TEST_OPTS = [
     cfg.StrOpt(
         'sqlite_clean_db', default='clean.sqlite',
         help='Filename of clean sqlite db',
@@ -41,7 +41,7 @@ test_opts = [
 ]
 
 CONF = cfg.CONF
-CONF.register_opts(test_opts)
+CONF.register_opts(TEST_OPTS)
 CONF.import_opt(
     'connection', 'stripe.openstack.common.db.sqlalchemy.session',
     group='database'
@@ -74,7 +74,7 @@ class Database(fixtures.Fixture):
         db_migrate.db_sync()
         if sql_connection == "sqlite://":
             conn = self.engine.connect()
-            self._DB = "".join(line for line in conn.connection.iterdump())
+            self._db = "".join(line for line in conn.connection.iterdump())
             self.engine.dispose()
         else:
             cleandb = paths.state_path_rel(sqlite_clean_db)
@@ -85,7 +85,7 @@ class Database(fixtures.Fixture):
 
         if self.sql_connection == "sqlite://":
             conn = self.engine.connect()
-            conn.connection.executescript(self._DB)
+            conn.connection.executescript(self._db)
             self.addCleanup(self.engine.dispose)
         else:
             shutil.copyfile(paths.state_path_rel(self.sqlite_clean_db),

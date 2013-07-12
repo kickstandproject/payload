@@ -31,6 +31,8 @@ from stripe.openstack.common import log
 
 CONF = cfg.CONF
 
+LOG = log.getLogger(__name__)
+
 
 def main():
     config.parse_args()
@@ -41,7 +43,6 @@ def main():
         host, port, app.VersionSelectorApplication()
     )
 
-    LOG = log.getLogger(__name__)
     LOG.info('Serving on http://%s:%s' % (host, port))
     LOG.info('Configuration:')
     CONF.log_opt_values(LOG, logging.INFO)

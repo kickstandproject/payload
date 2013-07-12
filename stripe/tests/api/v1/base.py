@@ -39,7 +39,7 @@ class FunctionalTest(test.TestCase):
     def _make_app(self):
         root_dir = self.path_get()
 
-        self.config = {
+        config = {
             'app': {
                 'root': 'stripe.api.root.RootController',
                 'modules': ['stripe.api'],
@@ -48,7 +48,7 @@ class FunctionalTest(test.TestCase):
             },
         }
 
-        return pecan.testing.load_test_app(self.config)
+        return pecan.testing.load_test_app(config)
 
     def get_json(self, path, expect_errors=False, headers=None,
                  extra_environ=None, q=[], **params):
