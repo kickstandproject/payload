@@ -18,7 +18,7 @@
 import json
 
 from sqlalchemy import Column
-from sqlalchemy import Integer, String
+from sqlalchemy import Boolean, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.types import TypeDecorator, VARCHAR
 
@@ -59,4 +59,5 @@ class Queue(Base):
     __tablename__ = 'queues'
     id = Column(Integer, primary_key=True)
     description = Column(JSONEncodedDict)
+    disabled = Column(Boolean, default=False)
     name = Column(String(80))

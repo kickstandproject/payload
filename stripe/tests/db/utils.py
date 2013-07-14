@@ -21,6 +21,7 @@ def get_test_queue(**kw):
         'id': kw.get('id', 123),
         'created_at': None,
         'description': 'Example queue',
+        'disabled': kw.get('disabled', False),
         'name': 'example',
         'updated_at': None,
     }

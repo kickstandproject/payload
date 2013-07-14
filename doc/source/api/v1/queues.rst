@@ -27,6 +27,7 @@ Response
       "id": 1,
       "created_at": "2011-04-22T13:33:48Z",
       "description": "24/7 Technical support",
+      "disabled": False,
       "name": "support",
       "updated_at": "2011-04-22T13:33:48Z",
     }
@@ -51,6 +52,7 @@ Response
     "id": 1,
     "created_at": "2011-04-22T13:33:48Z",
     "description": "24/7 Technical support",
+    "disabled": False,
     "name": "support",
     "updated_at": "2011-04-22T13:33:48Z",
   }

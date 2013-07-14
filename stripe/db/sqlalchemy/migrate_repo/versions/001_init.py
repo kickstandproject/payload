@@ -16,7 +16,7 @@
 # implied.
 
 from sqlalchemy import Table, Column, MetaData
-from sqlalchemy import DateTime, Integer, String, Text
+from sqlalchemy import DateTime, Boolean, Integer, String, Text
 
 from stripe.db.sqlalchemy.migrate_repo import schema
 from stripe.openstack.common import log as logging
@@ -33,6 +33,7 @@ def define_queues_table(meta):
         Column('id', Integer, primary_key=True, nullable=False),
         Column('created_at', DateTime),
         Column('description', Text),
+        Column('disabled', Boolean),
         Column('name', String(length=80)),
         Column('updated_at', DateTime),
         mysql_engine=ENGINE,

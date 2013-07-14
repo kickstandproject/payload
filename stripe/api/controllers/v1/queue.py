@@ -35,6 +35,7 @@ class Queue(base.APIBase):
 
     id = int
     description = wtypes.text
+    disabled = bool
     name = wtypes.text
 
     def __init__(self, **kwargs):
