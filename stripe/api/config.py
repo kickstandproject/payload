@@ -44,6 +44,5 @@ app = {
     'modules': ['stripe.api'],
     'static_root': '%(confdir)s/public',
     'template_path': '%(confdir)s/ironic/api/templates',
-    'debug': CONF.debug,
     'enable_acl': False,
 }

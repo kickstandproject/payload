@@ -44,9 +44,13 @@ def setup_app(pecan_config=None):
 
     pecan.configuration.set_config(dict(pecan_config, overwrite=True))
 
+    static_root = None
+    if CONF.debug:
+        static_root = pecan_config.app.static_root,
+
     app = pecan.make_app(
         pecan_config.app.root,
-        static_root=pecan_config.app.static_root,
+        static_root=static_root,
         template_path=pecan_config.app.template_path,
         debug=CONF.debug,
         force_canonical=getattr(pecan_config.app, 'force_canonical', True),
