@@ -39,18 +39,28 @@ def define_queues_table(meta):
         mysql_engine=ENGINE,
         mysql_charset=CHARSET,
     )
-    return queues
+    members = Table(
+        'members', meta,
+        Column('id', Integer, primary_key=True, nullable=False),
+        Column('created_at', DateTime),
+        Column('name', String(length=80)),
+        Column('updated_at', DateTime),
+        mysql_engine=ENGINE,
+        mysql_charset=CHARSET,
+    )
+
+    return [queues, members]
 
 
 def upgrade(migrate_engine):
     meta = MetaData()
     meta.bind = migrate_engine
-    tables = [define_queues_table(meta)]
+    tables = define_queues_table(meta)
     schema.create_tables(tables)
 
 
 def downgrade(migrate_engine):
     meta = MetaData()
     meta.bind = migrate_engine
-    tables = [define_queues_table(meta)]
+    tables = define_queues_table(meta)
     schema.drop_tables(tables)

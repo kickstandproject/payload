@@ -55,6 +55,12 @@ class StripeBase(models.TimestampMixin, models.ModelBase):
 Base = declarative_base(cls=StripeBase)
 
 
+class Member(Base):
+    __tablename__ = 'members'
+    id = Column(Integer, primary_key=True)
+    name = Column(String(80))
+
+
 class Queue(Base):
     __tablename__ = 'queues'
     id = Column(Integer, primary_key=True)

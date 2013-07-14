@@ -157,5 +157,9 @@ class NotFound(StripeException):
     code = 404
 
 
+class MemberNotFound(NotFound):
+    message = 'Member %(member)s could not be found'
+
+
 class QueueNotFound(NotFound):
     message = 'Queue %(queue)s could not be found'

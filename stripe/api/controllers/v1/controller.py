@@ -15,8 +15,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
 # implied.
 
+from stripe.api.controllers.v1 import member
 from stripe.api.controllers.v1 import queue
 
 
 class Controller(object):
+    members = member.MembersController()
     queues = queue.QueuesController()

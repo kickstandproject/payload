@@ -16,6 +16,16 @@
 # implied.
 
 
+def get_test_member(**kw):
+    member = {
+        'id': kw.get('id', 123),
+        'created_at': None,
+        'name': 'John Smith',
+        'updated_at': None,
+    }
+    return member
+
+
 def get_test_queue(**kw):
     queue = {
         'id': kw.get('id', 123),

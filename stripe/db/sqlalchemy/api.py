@@ -53,6 +53,14 @@ class Connection(api.Connection):
     def __init__(self):
         pass
 
+    def create_member(self, values):
+        """Create a new member."""
+        member = models.Member()
+        member.update(values)
+        member.save()
+
+        return member
+
     def create_queue(self, values):
         """Create a new queue."""
         queue = models.Queue()
@@ -60,6 +68,20 @@ class Connection(api.Connection):
         queue.save()
 
         return queue
+
+    def delete_member(self, member):
+        """Delete a member."""
+        session = get_session()
+        with session.begin():
+            query = model_query(
+                models.Member, session=session
+            ).filter_by(id=member)
+
+            count = query.delete()
+            if count != 1:
+                raise exception.MemberNotFound(member=member)
+
+            query.delete()
 
     def delete_queue(self, queue):
         """Delete a queue."""
@@ -75,6 +97,16 @@ class Connection(api.Connection):
 
             query.delete()
 
+    def get_member(self, member):
+        """Retrieve information about the given member."""
+        query = model_query(models.Member).filter_by(id=member)
+        try:
+            result = query.one()
+        except NoResultFound:
+            raise exception.MemberNotFound(member=member)
+
+        return result
+
     def get_queue(self, queue):
         """Retrieve information about the given queue."""
         query = model_query(models.Queue).filter_by(id=queue)
@@ -84,6 +116,12 @@ class Connection(api.Connection):
             raise exception.QueueNotFound(queue=queue)
 
         return result
+
+    def get_member_list(self):
+        """Retrieve a list of members."""
+        query = model_query(models.Member.id)
+
+        return [i[0] for i in query.all()]
 
     def get_queue_list(self):
         """Retrieve a list of queues."""
