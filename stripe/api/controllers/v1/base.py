@@ -15,12 +15,16 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
 # implied.
 
+import datetime
 import wsme
 
 from wsme import types
 
 
 class APIBase(types.Base):
+
+    created_at = datetime.datetime
+    updated_at = datetime.datetime
 
     def as_dict(self):
         return dict((k, getattr(self, k))
