@@ -95,3 +95,7 @@ class MemberNotFound(NotFound):
 
 class QueueNotFound(NotFound):
     message = 'Queue %(queue)s could not be found'
+
+
+class QueueMemberNotFound(NotFound):
+    message = 'Queue member %(queue_member)s could not be found'

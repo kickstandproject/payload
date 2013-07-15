@@ -36,3 +36,16 @@ def get_test_queue(**kw):
         'updated_at': None,
     }
     return queue
+
+
+def get_test_queue_member(**kw):
+    queue_member = {
+        'id': kw.get('id', 123),
+        'created_at': None,
+        'disabled': kw.get('disabled', False),
+        'disabled_reason': kw.get('disabled_reason', None),
+        'member_id': kw.get('member_id', 123),
+        'queue_id': kw.get('queue_id', 123),
+        'updated_at': None,
+    }
+    return queue_member

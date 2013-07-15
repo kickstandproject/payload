@@ -15,7 +15,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
 # implied.
 
-from sqlalchemy import Table, Column, MetaData
+from sqlalchemy import Table, Column, MetaData, Index
 from sqlalchemy import DateTime, Boolean, Integer, String, Text
 
 from stripe.db.sqlalchemy.migrate_repo import schema
@@ -28,6 +28,32 @@ CHARSET = 'uft8'
 
 
 def define_queues_table(meta):
+    members = Table(
+        'members', meta,
+        Column('id', Integer, primary_key=True, nullable=False),
+        Column('created_at', DateTime),
+        Column('name', String(length=80)),
+        Column('updated_at', DateTime),
+        mysql_engine=ENGINE,
+        mysql_charset=CHARSET,
+    )
+
+    queue_members = Table(
+        'queue_members', meta,
+        Column('id', Integer, primary_key=True),
+        Column('created_at', DateTime),
+        Column('disabled', Boolean),
+        Column('disabled_reason', String(255)),
+        Column('extension', String(255)),
+        Column('member_id', Integer),
+        Column('queue_id', Integer),
+        Column('updated_at', DateTime),
+        Index('idx_id_queue', 'id', 'queue_id'),
+        Index('idx_id_member', 'id', 'member_id'),
+        mysql_engine=ENGINE,
+        mysql_charset=CHARSET,
+    )
+
     queues = Table(
         'queues', meta,
         Column('id', Integer, primary_key=True, nullable=False),
@@ -39,17 +65,8 @@ def define_queues_table(meta):
         mysql_engine=ENGINE,
         mysql_charset=CHARSET,
     )
-    members = Table(
-        'members', meta,
-        Column('id', Integer, primary_key=True, nullable=False),
-        Column('created_at', DateTime),
-        Column('name', String(length=80)),
-        Column('updated_at', DateTime),
-        mysql_engine=ENGINE,
-        mysql_charset=CHARSET,
-    )
 
-    return [queues, members]
+    return [members, queue_members, queues]
 
 
 def upgrade(migrate_engine):

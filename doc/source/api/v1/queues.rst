@@ -7,6 +7,8 @@ Queues API
    :maxdepth: 2
    :glob:
 
+   queues/*
+
 List queues
 -----------
 

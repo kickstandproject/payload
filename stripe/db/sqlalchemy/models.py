@@ -18,7 +18,7 @@
 import json
 
 from sqlalchemy import Column
-from sqlalchemy import Boolean, Integer, String
+from sqlalchemy import Boolean, ForeignKey, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.types import TypeDecorator, VARCHAR
 
@@ -53,6 +53,16 @@ class StripeBase(models.TimestampMixin, models.ModelBase):
 
 
 Base = declarative_base(cls=StripeBase)
+
+
+class QueueMember(Base):
+    __tablename__ = 'queue_members'
+    id = Column(Integer, primary_key=True)
+    disabled = Column(Boolean, default=False)
+    disabled_reason = Column(String(255))
+    extension = Column(String(255))
+    member_id = Column(Integer, ForeignKey('members.id'))
+    queue_id = Column(Integer, ForeignKey('queues.id'))
 
 
 class Member(Base):
