@@ -33,6 +33,7 @@ def define_queues_table(meta):
         Column('id', Integer, primary_key=True, nullable=False),
         Column('created_at', DateTime),
         Column('name', String(length=80)),
+        Column('password', String(length=255)),
         Column('updated_at', DateTime),
         mysql_engine=ENGINE,
         mysql_charset=CHARSET,

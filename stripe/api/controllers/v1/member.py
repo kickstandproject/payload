@@ -35,6 +35,7 @@ class Member(base.APIBase):
 
     id = int
     name = wtypes.text
+    password = wtypes.text
 
     def __init__(self, **kwargs):
         self.fields = vars(models.Member)

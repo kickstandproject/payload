@@ -21,6 +21,7 @@ def get_test_member(**kw):
         'id': kw.get('id', 123),
         'created_at': None,
         'name': 'John Smith',
+        'password': kw.get('password', '3a528267660d23d7cbf35388c6e21e6b'),
         'updated_at': None,
     }
     return member
