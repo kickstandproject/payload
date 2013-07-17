@@ -45,6 +45,7 @@ def get_test_queue_member(**kw):
         'created_at': None,
         'disabled': kw.get('disabled', False),
         'disabled_reason': kw.get('disabled_reason', None),
+        'extension': kw.get('extension', '123'),
         'member_id': kw.get('member_id', 123),
         'queue_id': kw.get('queue_id', 123),
         'updated_at': None,

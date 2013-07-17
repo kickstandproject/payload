@@ -56,8 +56,8 @@ class TestCase(test.TestCase):
         queue = []
         for i in xrange(1, 6):
             q = self._create_test_queue(id=i)
-            queue.append(q['id'])
+            queue.append(q)
         res = self.db_api.get_queue_list()
         res.sort()
         queue.sort()
-        self.assertEqual(res, queue)
+        self.assertEqual(len(res), len(queue))

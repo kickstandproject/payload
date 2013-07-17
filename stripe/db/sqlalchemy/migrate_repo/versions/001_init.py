@@ -41,7 +41,7 @@ def define_queues_table(meta):
 
     queue_members = Table(
         'queue_members', meta,
-        Column('id', Integer, primary_key=True),
+        Column('id', Integer, primary_key=True, nullable=False),
         Column('created_at', DateTime),
         Column('disabled', Boolean),
         Column('disabled_reason', String(255)),

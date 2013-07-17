@@ -40,26 +40,34 @@ class TestCase(base.FunctionalTest):
     def setUp(self):
         super(TestCase, self).setUp()
         self.db_api = db_api.get_instance()
+        self._queue_members = []
+        queue = utils.get_test_queue()
+        self.db_api.create_queue(queue)
         for i in xrange(1, 6):
-            self._create_test_queue_member(id=i)
+            qm = self._create_test_queue_member(id=i)
+            self._queue_members.append(qm)
+        self._queue_members.sort()
 
     def _create_test_queue_member(self, **kwargs):
         member = utils.get_test_member(**kwargs)
         new_member = self.db_api.create_member(member)
-        queue = utils.get_test_queue(**kwargs)
-        new_queue = self.db_api.create_queue(queue)
-        queue_member = utils.get_test_queue_member(
-            id=kwargs.get('id'), member_id=new_member['id'],
-            queue_id=new_queue['id'],
-        )
-        new_queue_member = self.db_api.create_queue_member(queue_member)
-        return new_queue_member
+        kwargs['member_id'] = new_member['id']
+        kwargs['queue_id'] = 1
+        queue_member = utils.get_test_queue_member(**kwargs)
+        self.db_api.create_queue_member(queue_member)
+        return queue_member
 
     def test_list_queue_members(self):
         res = self.get_json('/queues/1/members')
         res.sort()
-        self.assertEquals(5, len(res))
-        self.assertEquals([1, 2, 3, 4, 5], res)
+        ignored_keys = [
+            'created_at',
+            'updated_at',
+        ]
+        for idx in range(len(res)):
+            self._assertEqualObjects(
+                self._queue_members[idx], res[idx], ignored_keys
+            )
 
     def test_delete_queue_member(self):
         self.delete(
@@ -67,8 +75,15 @@ class TestCase(base.FunctionalTest):
         )
         res = self.get_json('/queues/1/members')
         res.sort()
-        self.assertEquals(4, len(res))
-        self.assertEquals([2, 3, 4, 5], res)
+        self._queue_members.pop(0)
+        ignored_keys = [
+            'created_at',
+            'updated_at',
+        ]
+        for idx in range(len(res)):
+            self._assertEqualObjects(
+                self._queue_members[idx], res[idx], ignored_keys
+            )
 
     def test_get_queue_member(self):
         queue_member = self._create_test_queue_member()
@@ -94,8 +109,8 @@ class TestCase(base.FunctionalTest):
             'disabled': True,
         }
         res = self.get_json('/queues/1/members')
-        self.assertEquals(len(res), 5)
-        queue_member_id = res[0]
+        self.assertEquals(len(self._queue_members), len(res))
+        queue_member_id = res[0]['id']
         self.put_json(
             '/queues/1/members/%s' % queue_member_id, params=json
         )

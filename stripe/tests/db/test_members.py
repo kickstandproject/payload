@@ -56,8 +56,8 @@ class TestCase(test.TestCase):
         member = []
         for i in xrange(1, 6):
             q = self._create_test_member(id=i)
-            member.append(q['id'])
+            member.append(q)
         res = self.db_api.get_member_list()
         res.sort()
         member.sort()
-        self.assertEqual(res, member)
+        self.assertEqual(len(res), len(member))

@@ -51,7 +51,7 @@ class MembersController(rest.RestController):
         """Delete a member."""
         pecan.request.db_api.delete_member(id)
 
-    @wsme_pecan.wsexpose([unicode])
+    @wsme_pecan.wsexpose([Member])
     def get_all(self):
         """Retrieve a list of member."""
         return pecan.request.db_api.get_member_list()

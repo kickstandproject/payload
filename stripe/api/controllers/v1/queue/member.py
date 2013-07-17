@@ -54,7 +54,7 @@ class QueueMembersController(rest.RestController):
         """Delete a queue."""
         pecan.request.db_api.delete_queue_member(id)
 
-    @wsme_pecan.wsexpose(None, [unicode])
+    @wsme_pecan.wsexpose([QueueMember], unicode)
     def get_all(self, queue_id):
         """Retrieve a list of queue members."""
         return pecan.request.db_api.get_queue_member_list()

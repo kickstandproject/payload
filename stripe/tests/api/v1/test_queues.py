@@ -39,9 +39,12 @@ class TestCase(base.FunctionalTest):
 
     def setUp(self):
         super(TestCase, self).setUp()
+        self._queues = []
         self.db_api = db_api.get_instance()
         for i in xrange(1, 6):
-            self._create_test_queue(id=i)
+            q = self._create_test_queue(id=i)
+            self._queues.append(q)
+        self._queues.sort()
 
     def _create_test_queue(self, **kwargs):
         queue = utils.get_test_queue(**kwargs)
@@ -51,8 +54,12 @@ class TestCase(base.FunctionalTest):
     def test_list_queues(self):
         res = self.get_json('/queues')
         res.sort()
-        self.assertEquals(5, len(res))
-        self.assertEquals([1, 2, 3, 4, 5], res)
+        ignored_keys = [
+            'created_at',
+            'updated_at',
+        ]
+        for idx in range(len(res)):
+            self._assertEqualObjects(self._queues[idx], res[idx], ignored_keys)
 
     def test_delete_queue(self):
         self.delete(
@@ -60,8 +67,13 @@ class TestCase(base.FunctionalTest):
         )
         res = self.get_json('/queues')
         res.sort()
-        self.assertEquals(4, len(res))
-        self.assertEquals([2, 3, 4, 5], res)
+        self._queues.pop(0)
+        ignored_keys = [
+            'created_at',
+            'updated_at',
+        ]
+        for idx in range(len(res)):
+            self._assertEqualObjects(self._queues[idx], res[idx], ignored_keys)
 
     def test_get_queue(self):
         queue = self._create_test_queue()
@@ -88,8 +100,8 @@ class TestCase(base.FunctionalTest):
             'name': 'renamed',
         }
         res = self.get_json('/queues')
-        self.assertEquals(len(res), 5)
-        queue_id = res[0]
+        self.assertEquals(len(self._queues), len(res))
+        queue_id = res[0]['id']
         self.put_json(
             '/queues/%s' % queue_id, params=json
         )

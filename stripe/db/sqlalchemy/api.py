@@ -151,18 +151,18 @@ class Connection(api.Connection):
 
     def get_member_list(self):
         """Retrieve a list of members."""
-        query = model_query(models.Member.id)
+        query = model_query(models.Member)
 
-        return [i[0] for i in query.all()]
+        return [m for m in query.all()]
 
     def get_queue_list(self):
         """Retrieve a list of queues."""
-        query = model_query(models.Queue.id)
+        query = model_query(models.Queue)
 
-        return [i[0] for i in query.all()]
+        return [q for q in query.all()]
 
     def get_queue_member_list(self):
         """Retrieve a list of queue members."""
-        query = model_query(models.QueueMember.id)
+        query = model_query(models.QueueMember)
 
-        return [i[0] for i in query.all()]
+        return [qm for qm in query.all()]
