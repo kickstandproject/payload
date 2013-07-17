@@ -16,21 +16,10 @@
 # implied.
 
 from stripe.common import exception
-from stripe.db import api as db_api
-from stripe import test
-from stripe.tests.db import utils
+from stripe.tests.db import base
 
 
-class TestCase(test.TestCase):
-
-    def setUp(self):
-        super(TestCase, self).setUp()
-        self.db_api = db_api.get_instance()
-
-    def _create_test_queue(self, **kwargs):
-        queue = utils.get_test_queue(**kwargs)
-        self.db_api.create_queue(queue)
-        return queue
+class TestCase(base.FunctionalTest):
 
     def test_create_queue(self):
         self._create_test_queue()
