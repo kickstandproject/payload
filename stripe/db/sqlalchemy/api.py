@@ -69,6 +69,14 @@ class Connection(api.Connection):
 
         return queue
 
+    def create_queue_member(self, values):
+        """Create a new queue member."""
+        queue_member = models.QueueMember()
+        queue_member.update(values)
+        queue_member.save()
+
+        return queue_member
+
     def delete_member(self, member):
         """Delete a member."""
         session = get_session()
@@ -97,6 +105,20 @@ class Connection(api.Connection):
 
             query.delete()
 
+    def delete_queue_member(self, queue_member):
+        """Delete a queue member."""
+        session = get_session()
+        with session.begin():
+            query = model_query(
+                models.QueueMember, session=session
+            ).filter_by(id=queue_member)
+
+            count = query.delete()
+            if count != 1:
+                raise exception.QueueMemberNotFound(queue_member=queue_member)
+
+            query.delete()
+
     def get_member(self, member):
         """Retrieve information about the given member."""
         query = model_query(models.Member).filter_by(id=member)
@@ -117,6 +139,16 @@ class Connection(api.Connection):
 
         return result
 
+    def get_queue_member(self, queue_member):
+        """Retrieve information about the given queue."""
+        query = model_query(models.QueueMember).filter_by(id=queue_member)
+        try:
+            result = query.one()
+        except NoResultFound:
+            raise exception.QueueMemberNotFound(queue_member=queue_member)
+
+        return result
+
     def get_member_list(self):
         """Retrieve a list of members."""
         query = model_query(models.Member.id)
@@ -126,5 +158,11 @@ class Connection(api.Connection):
     def get_queue_list(self):
         """Retrieve a list of queues."""
         query = model_query(models.Queue.id)
+
+        return [i[0] for i in query.all()]
+
+    def get_queue_member_list(self):
+        """Retrieve a list of queue members."""
+        query = model_query(models.QueueMember.id)
 
         return [i[0] for i in query.all()]
