@@ -59,10 +59,35 @@ class TestCase(test.TestCase):
 
     def test_get_queue_member_list(self):
         queue_member = []
+        queue_id = 1
+        queue = utils.get_test_queue(id=queue_id)
+        self.db_api.create_queue(queue)
+
         for i in xrange(1, 6):
             qm = self._create_test_queue_member(id=i)
             queue_member.append(qm['id'])
+        for i in xrange(7, 8):
+            qm = self._create_test_queue_member(id=i, queue_id=queue_id)
+            queue_member.append(qm['id'])
         res = self.db_api.get_queue_member_list()
+        res.sort()
+        queue_member.sort()
+        self.assertEqual(len(res), len(queue_member))
+
+    def test_get_queue_member_list_by_queue_id(self):
+        queue_member = []
+        queue_id = 1
+        queue = utils.get_test_queue(id=queue_id)
+        self.db_api.create_queue(queue)
+
+        for i in xrange(1, 6):
+            self._create_test_queue_member(id=i)
+
+        for i in xrange(7, 8):
+            qm = self._create_test_queue_member(id=i, queue_id=queue_id)
+            queue_member.append(qm['id'])
+
+        res = self.db_api.get_queue_member_list(queue_id=queue_id)
         res.sort()
         queue_member.sort()
         self.assertEqual(len(res), len(queue_member))

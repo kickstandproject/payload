@@ -161,8 +161,11 @@ class Connection(api.Connection):
 
         return [q for q in query.all()]
 
-    def get_queue_member_list(self):
+    def get_queue_member_list(self, queue_id=None):
         """Retrieve a list of queue members."""
         query = model_query(models.QueueMember)
+
+        if queue_id:
+            query = query.filter_by(queue_id=queue_id)
 
         return [qm for qm in query.all()]

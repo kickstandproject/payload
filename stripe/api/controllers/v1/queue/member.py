@@ -57,7 +57,7 @@ class QueueMembersController(rest.RestController):
     @wsme_pecan.wsexpose([QueueMember], unicode)
     def get_all(self, queue_id):
         """Retrieve a list of queue members."""
-        return pecan.request.db_api.get_queue_member_list()
+        return pecan.request.db_api.get_queue_member_list(queue_id=queue_id)
 
     @wsme_pecan.wsexpose(QueueMember, unicode, unicode)
     def get_one(self, queue_id, id):
