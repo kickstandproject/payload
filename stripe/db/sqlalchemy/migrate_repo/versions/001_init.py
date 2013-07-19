@@ -46,7 +46,7 @@ def define_queues_table(meta):
         Column('disabled', Boolean),
         Column('disabled_reason', String(255)),
         Column('extension', String(255)),
-        Column('member_id', Integer),
+        Column('member_id', Integer, unique=True),
         Column('queue_id', Integer),
         Column('updated_at', DateTime),
         Index('idx_id_queue', 'id', 'queue_id'),

@@ -22,7 +22,15 @@ from stripe.tests.db import base
 class TestCase(base.FunctionalTest):
 
     def test_create_queue_member(self):
-        self._create_test_queue_member()
+        res = self._create_test_queue_member()
+        self.assertTrue(res)
+
+    def test_create_queue_member_duplicate(self):
+        self._create_test_queue_member(id=1)
+        self.assertRaises(
+            exception.QueueMemberDuplicated, self._create_test_queue_member,
+            id=2,
+        )
 
     def test_delete_queue_member(self):
         queue_member = self._create_test_queue_member()
@@ -44,14 +52,8 @@ class TestCase(base.FunctionalTest):
 
     def test_get_queue_member_list(self):
         queue_member = []
-        queue_id = 1
-        self._create_test_queue(id=queue_id)
-
-        for i in xrange(1, 6):
-            qm = self._create_test_queue_member(id=i)
-            queue_member.append(qm['id'])
-        for i in xrange(7, 8):
-            qm = self._create_test_queue_member(id=i, queue_id=queue_id)
+        for i in xrange(1, 2):
+            qm = self._create_test_queue_member(id=i, member_id=i)
             queue_member.append(qm['id'])
         res = self.db_api.get_queue_member_list()
         res.sort()
@@ -61,13 +63,13 @@ class TestCase(base.FunctionalTest):
     def test_get_queue_member_list_by_queue_id(self):
         queue_member = []
         queue_id = 1
-        self._create_test_queue(id=queue_id)
+        for i in xrange(1, 2):
+            self._create_test_queue_member(id=i, member_id=i)
 
-        for i in xrange(1, 6):
-            self._create_test_queue_member(id=i)
-
-        for i in xrange(7, 8):
-            qm = self._create_test_queue_member(id=i, queue_id=queue_id)
+        for i in xrange(3, 4):
+            qm = self._create_test_queue_member(
+                id=i, member_id=i, queue_id=queue_id
+            )
             queue_member.append(qm['id'])
 
         res = self.db_api.get_queue_member_list(queue_id=queue_id)

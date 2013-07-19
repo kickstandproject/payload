@@ -99,3 +99,7 @@ class QueueNotFound(NotFound):
 
 class QueueMemberNotFound(NotFound):
     message = 'Queue member %(queue_member)s could not be found'
+
+
+class QueueMemberDuplicated(StripeException):
+    message = 'Queue member %(member_id)s already exists.'

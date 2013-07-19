@@ -18,11 +18,12 @@
 
 """SQLAlchemy storage backend."""
 
-from sqlalchemy.orm.exc import NoResultFound
+from sqlalchemy.orm import exc
 
 from stripe.common import exception
 from stripe.db import api
 from stripe.db.sqlalchemy import models
+from stripe.openstack.common.db import exception as db_exc
 from stripe.openstack.common.db.sqlalchemy import session as db_session
 from stripe.openstack.common import log as logging
 
@@ -73,7 +74,12 @@ class Connection(api.Connection):
         """Create a new queue member."""
         queue_member = models.QueueMember()
         queue_member.update(values)
-        queue_member.save()
+        try:
+            queue_member.save()
+        except db_exc.DBDuplicateEntry:
+            raise exception.QueueMemberDuplicated(
+                member_id=values['member_id']
+            )
 
         return queue_member
 
@@ -124,7 +130,7 @@ class Connection(api.Connection):
         query = model_query(models.Member).filter_by(id=member)
         try:
             result = query.one()
-        except NoResultFound:
+        except exc.NoResultFound:
             raise exception.MemberNotFound(member=member)
 
         return result
@@ -134,7 +140,7 @@ class Connection(api.Connection):
         query = model_query(models.Queue).filter_by(id=queue)
         try:
             result = query.one()
-        except NoResultFound:
+        except exc.NoResultFound:
             raise exception.QueueNotFound(queue=queue)
 
         return result
@@ -144,7 +150,7 @@ class Connection(api.Connection):
         query = model_query(models.QueueMember).filter_by(id=queue_member)
         try:
             result = query.one()
-        except NoResultFound:
+        except exc.NoResultFound:
             raise exception.QueueMemberNotFound(queue_member=queue_member)
 
         return result

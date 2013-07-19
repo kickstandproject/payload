@@ -61,7 +61,7 @@ class QueueMember(Base):
     disabled = Column(Boolean, default=False)
     disabled_reason = Column(String(255))
     extension = Column(String(255))
-    member_id = Column(Integer, ForeignKey('members.id'))
+    member_id = Column(Integer, ForeignKey('members.id'), unique=True)
     queue_id = Column(Integer, ForeignKey('queues.id'))
 
 
