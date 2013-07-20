@@ -15,17 +15,12 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
 # implied.
 
-from stripe import version
-
-
 extensions = ['sphinx.ext.autodoc']
 templates_path = ['_templates']
 source_suffix = '.rst'
 master_doc = 'index'
 project = u'Stripe'
 copyright = u'2013, Paul Belanger'
-release = version.VERSION_INFO.version_string_with_vcs()
-version = version.VERSION_INFO.canonical_version_string()
 exclude_patterns = []
 pygments_style = 'sphinx'
 html_theme = 'default'
