@@ -35,7 +35,9 @@ latex_documents = [
 
 man_pages = [
     ('man/stripe-api', 'stripe-api', u'Stripe Documentation',
-     [u'Paul Belanger'], 1)
+     [u'Paul Belanger'], 1),
+    ('man/stripe-manage', 'stripe-manage', u'Stripe Documentation',
+     [u'Paul Belanger'], 1),
 ]
 
 texinfo_documents = [
