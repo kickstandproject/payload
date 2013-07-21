@@ -27,6 +27,15 @@ Developers Docs
 
    devref/index
 
+Man pages
+=========
+
+.. toctree::
+   :maxdepth: 1
+
+   man/stripe-api
+   man/stripe-manage
+
 Indices and tables
 ==================
 

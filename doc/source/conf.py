@@ -21,7 +21,6 @@ source_suffix = '.rst'
 master_doc = 'index'
 project = u'Stripe'
 copyright = u'2013, Paul Belanger'
-exclude_patterns = []
 pygments_style = 'sphinx'
 html_theme = 'default'
 htmlhelp_basename = 'stripeedoc'
@@ -35,7 +34,7 @@ latex_documents = [
 ]
 
 man_pages = [
-    ('index', 'Stripe', u'Stripe Documentation',
+    ('man/stripe-api', 'stripe-api', u'Stripe Documentation',
      [u'Paul Belanger'], 1)
 ]
 
