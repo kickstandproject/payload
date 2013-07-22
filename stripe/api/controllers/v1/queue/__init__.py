@@ -23,7 +23,9 @@ from wsme import types as wtypes
 from wsmeext import pecan as wsme_pecan
 
 from stripe.api.controllers.v1 import base
+from stripe.api.controllers.v1.queue import caller
 from stripe.api.controllers.v1.queue import member
+from stripe.api.controllers.v1.queue import stat
 from stripe.common import exception
 from stripe.db.sqlalchemy import models
 from stripe.openstack.common import log as logging
@@ -48,7 +50,9 @@ class Queue(base.APIBase):
 class QueuesController(rest.RestController):
     """REST Controller for queues."""
 
+    callers = caller.QueueCallersController()
     members = member.QueueMembersController()
+    stats = stat.QueueStatsController()
 
     @wsme_pecan.wsexpose(None, wtypes.text, status_code=204)
     def delete(self, id):
