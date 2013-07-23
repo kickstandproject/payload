@@ -18,9 +18,16 @@
 from pecan import hooks
 
 from stripe.db import api as db_api
+from stripe.redis import api as redis_api
 
 
 class DBHook(hooks.PecanHook):
 
     def before(self, state):
         state.request.db_api = db_api.get_instance()
+
+
+class RedisHook(hooks.PecanHook):
+
+    def before(self, state):
+        state.request.redis_api = redis_api.get_instance()

@@ -15,6 +15,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
 # implied.
 
+import pecan
+
 from pecan import rest
 from wsmeext import pecan as wsme_pecan
 
@@ -29,12 +31,6 @@ class QueueStatsController(rest.RestController):
     @wsme_pecan.wsexpose(None, unicode)
     def get_all(self, queue_id):
         """Retrieve a list of queue stats."""
-
-        # TODO(pabelanger): Implement redis backend for queue status.
-        res = {
-            'callers': 0,
-            'queue_id': queue_id,
-            'updated_at': None,
-        }
+        res = pecan.request.redis_api.get_queue_stats(queue_id)
 
         return res

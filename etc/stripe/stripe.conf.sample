@@ -147,6 +147,22 @@
 #syslog_log_facility=LOG_USER
 
 
+[redis]
+
+#
+# Options defined in stripe.redis.api
+#
+
+# Host to locate redis (string value)
+#host=127.0.0.1
+
+# Use this port to connect to redis host. (integer value)
+#port=6379
+
+# Password for Redis server. (optional) (string value)
+#password=<None>
+
+
 [database]
 
 #
@@ -210,4 +226,4 @@
 #pool_timeout=<None>
 
 
-# Total option count: 43
+# Total option count: 46

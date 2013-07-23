@@ -14,23 +14,3 @@
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
 # implied.
-
-import pecan
-
-from pecan import rest
-from wsmeext import pecan as wsme_pecan
-
-from stripe.openstack.common import log as logging
-
-LOG = logging.getLogger(__name__)
-
-
-class QueueCallersController(rest.RestController):
-    """REST Controller for queue callers."""
-
-    @wsme_pecan.wsexpose(None, unicode)
-    def get_all(self, queue_id):
-        """Retrieve a list of queue callers."""
-        res = pecan.request.redis_api.get_queue_callers(queue_id)
-
-        return res

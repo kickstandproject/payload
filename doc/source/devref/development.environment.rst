@@ -53,7 +53,7 @@ Install the prerequisite packages.
 
 On Ubuntu Precise (12.04)::
 
-  sudo apt-get install python-dev python-pip git-core
+  sudo apt-get install python-dev python-pip git-core redis-server
 
 
 Getting the code
