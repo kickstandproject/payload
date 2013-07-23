@@ -62,7 +62,9 @@ class MembersController(rest.RestController):
         try:
             result = pecan.request.db_api.get_member(id)
         except exception.MemberNotFound:
-            pecan.abort(404)
+            # TODO(pabelanger): See if there is a better way of handling
+            # exceptions.
+            raise wsme.exc.ClientSideError('Not found')
 
         return result
 
@@ -73,8 +75,9 @@ class MembersController(rest.RestController):
         try:
             d = body.as_dict()
             new_member = pecan.request.db_api.create_member(d)
-        except Exception as e:
-            LOG.exception(e)
+        except Exception:
+            # TODO(pabelanger): See if there is a better way of handling
+            # exceptions.
             raise wsme.exc.ClientSideError('Invalid data')
         return new_member
 

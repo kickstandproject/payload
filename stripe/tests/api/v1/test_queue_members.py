@@ -30,7 +30,7 @@ class TestQueueMembersEmpty(base.FunctionalTest):
         res = self.get_json(
             '/queues/1/members/1', expect_errors=True
         )
-        self.assertEqual(res.status_int, 500)
+        self.assertEqual(res.status_int, 400)
         self.assertEqual(res.content_type, 'application/json')
         self.assertTrue(res.json['error_message'])
 

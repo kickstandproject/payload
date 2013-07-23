@@ -65,7 +65,9 @@ class QueueMembersController(rest.RestController):
         try:
             result = pecan.request.db_api.get_queue_member(id)
         except exception.QueueMemberNotFound:
-            pecan.abort(404)
+            # TODO(pabelanger): See if there is a better way of handling
+            # exceptions.
+            raise wsme.exc.ClientSideError('Not found')
 
         return result
 
@@ -76,8 +78,9 @@ class QueueMembersController(rest.RestController):
         try:
             d = body.as_dict()
             new_queue_member = pecan.request.db_api.create_queue_member(d)
-        except Exception as e:
-            LOG.exception(e)
+        except Exception:
+            # TODO(pabelanger): See if there is a better way of handling
+            # exceptions.
             raise wsme.exc.ClientSideError('Invalid data')
         return new_queue_member
 
