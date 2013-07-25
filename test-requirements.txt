@@ -9,3 +9,4 @@ pylint
 sphinx
 testrepository>=0.0.13
 testtools>=0.9.27
+warlock

@@ -53,6 +53,8 @@ class TestCase(base.FunctionalTest):
 
     def test_list_queues(self):
         res = self.get_json('/queues')
+        for idx in range(len(res)):
+            self._assertEqualSchemas('queue', res[idx])
         res.sort()
         ignored_keys = [
             'created_at',
@@ -66,6 +68,8 @@ class TestCase(base.FunctionalTest):
             '/queues/1', status=200
         )
         res = self.get_json('/queues')
+        for idx in range(len(res)):
+            self._assertEqualSchemas('queue', res[idx])
         res.sort()
         self._queues.pop(0)
         ignored_keys = [
@@ -78,11 +82,7 @@ class TestCase(base.FunctionalTest):
     def test_get_queue(self):
         queue = self._create_test_queue()
         res = self.get_json('/queues/%s' % queue['id'])
-        ignored_keys = [
-            'created_at',
-            'updated_at',
-        ]
-        self._assertEqualObjects(queue, res, ignored_keys)
+        self._assertEqualSchemas('queue', res)
 
     def test_create_queue(self):
         json = {
@@ -92,18 +92,17 @@ class TestCase(base.FunctionalTest):
         res = self.post_json(
             '/queues', params=json, status=200
         )
-        self.assertEqual(res.status_int, 200)
-        self.assertEqual(res.content_type, 'application/json')
+        self._assertEqualSchemas('queue', res.json)
 
     def test_edit_queue(self):
         json = {
             'name': 'renamed',
         }
         res = self.get_json('/queues')
-        self.assertEquals(len(self._queues), len(res))
+        for idx in range(len(res)):
+            self._assertEqualSchemas('queue', res[idx])
         queue_id = res[0]['id']
-        self.put_json(
+        res = self.put_json(
             '/queues/%s' % queue_id, params=json
         )
-        queue = self.db_api.get_queue(queue_id)
-        self.assertEquals(queue.name, unicode(json['name']))
+        self._assertEqualSchemas('queue', res.json)

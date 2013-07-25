@@ -53,6 +53,9 @@ class TestCase(base.FunctionalTest):
 
     def test_list_members(self):
         res = self.get_json('/members')
+        for idx in range(len(res)):
+            self._assertEqualSchemas('member', res[idx])
+
         res.sort()
         ignored_keys = [
             'created_at',
@@ -68,6 +71,8 @@ class TestCase(base.FunctionalTest):
             '/members/1', status=200
         )
         res = self.get_json('/members')
+        for idx in range(len(res)):
+            self._assertEqualSchemas('member', res[idx])
         res.sort()
         self._members.pop(0)
         ignored_keys = [
@@ -82,31 +87,27 @@ class TestCase(base.FunctionalTest):
     def test_get_member(self):
         member = self._create_test_member()
         res = self.get_json('/members/%s' % member['id'])
-        ignored_keys = [
-            'created_at',
-            'updated_at',
-        ]
-        self._assertEqualObjects(member, res, ignored_keys)
+        self._assertEqualSchemas('member', res)
 
     def test_create_member(self):
         json = {
             'name': 'Jane Doe',
+            'password': 'example',
         }
         res = self.post_json(
             '/members', params=json, status=200
         )
-        self.assertEqual(res.status_int, 200)
-        self.assertEqual(res.content_type, 'application/json')
+        self._assertEqualSchemas('member', res.json)
 
     def test_edit_member(self):
         json = {
             'name': 'renamed',
         }
         res = self.get_json('/members')
-        self.assertEquals(len(self._members), len(res))
+        for idx in range(len(res)):
+            self._assertEqualSchemas('member', res[idx])
         member_id = res[0]['id']
-        self.put_json(
+        res = self.put_json(
             '/members/%s' % member_id, params=json
         )
-        member = self.db_api.get_member(member_id)
-        self.assertEquals(member.name, unicode(json['name']))
+        self._assertEqualSchemas('member', res.json)

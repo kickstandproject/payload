@@ -20,6 +20,7 @@
 
 import pecan
 import pecan.testing
+import warlock
 
 from stripe.openstack.common import log as logging
 from stripe import test
@@ -130,3 +131,9 @@ class FunctionalTest(test.TestCase):
         )
         for key, value in obj1.iteritems():
             self.assertEqual(value, obj2[key])
+
+    def _assertEqualSchemas(self, schema, obj1):
+        s = self.get_json('/schemas/%s' % schema)
+        model = warlock.model_factory(s)
+        obj2 = model(obj1)
+        self.assertEqual(obj1, obj2)

@@ -15,12 +15,17 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
 # implied.
 
-from stripe.api.controllers.v1 import member
-from stripe.api.controllers.v1 import queue
-from stripe.api.controllers.v1 import schema
 
+class Schema(object):
 
-class Controller(object):
-    members = member.MembersController()
-    queues = queue.QueuesController()
-    schemas = schema.SchemasController()
+    def __init__(self, name, properties={}):
+        self.name = name
+        self.properties = properties
+
+    def raw(self):
+        raw = {
+            'name': self.name,
+            'properties': self.properties,
+            'additionalProperties': False,
+        }
+        return raw
