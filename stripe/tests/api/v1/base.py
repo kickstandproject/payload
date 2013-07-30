@@ -18,6 +18,8 @@
 
 """Base class for API tests."""
 
+import mock
+import mockredis
 import pecan
 import pecan.testing
 import warlock
@@ -66,6 +68,7 @@ class FunctionalTest(test.TestCase):
         LOG.debug('GOT: %s' % response)
         return response
 
+    @mock.patch('redis.StrictRedis', mockredis.mock_strict_redis_client)
     def get_json(self, path, expect_errors=False, headers=None,
                  extra_environ=None, q=[], **params):
         full_path = self.PATH_PREFIX + path
