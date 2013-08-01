@@ -15,22 +15,17 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
 # implied.
 
-import pecan
-
-from pecan import rest
-from wsmeext import pecan as wsme_pecan
-
-from stripe.openstack.common import log as logging
-
-LOG = logging.getLogger(__name__)
+from stripe.middleware import api as middleware_api
+from stripe.tests import base
 
 
-class QueueStatsController(rest.RestController):
-    """REST Controller for queue stats."""
+class TestCase(base.TestCase):
 
-    @wsme_pecan.wsexpose(None, unicode)
-    def get_all(self, queue_id):
-        """Retrieve a list of queue stats."""
-        res = pecan.request.middleware_api.get_queue_stats(queue_id)
+    def setUp(self):
+        super(TestCase, self).setUp()
+        self.middleware_api = middleware_api.get_instance()
 
-        return res
+    def _create_queue_caller(self, **kwargs):
+        return super(TestCase, self)._create_queue_caller(
+            session=self.middleware_api, **kwargs
+        )

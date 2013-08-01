@@ -18,25 +18,27 @@
 
 """Base class for API tests."""
 
-import mock
-import mockredis
 import pecan
 import pecan.testing
 import warlock
 
+from stripe.db import api as db_api
+from stripe.middleware import api as middleware_api
 from stripe.openstack.common import log as logging
-from stripe import test
+from stripe.tests import base
 
 LOG = logging.getLogger(__name__)
 
 
-class FunctionalTest(test.TestCase):
+class FunctionalTest(base.TestCase):
 
     PATH_PREFIX = '/v1'
 
     def setUp(self):
         super(FunctionalTest, self).setUp()
         self.app = self._make_app()
+        self.db_api = db_api.get_instance()
+        self.middleware_api = middleware_api.get_instance()
 
     def tearDown(self):
         super(FunctionalTest, self).tearDown()
@@ -68,7 +70,6 @@ class FunctionalTest(test.TestCase):
         LOG.debug('GOT: %s' % response)
         return response
 
-    @mock.patch('redis.StrictRedis', mockredis.mock_strict_redis_client)
     def get_json(self, path, expect_errors=False, headers=None,
                  extra_environ=None, q=[], **params):
         full_path = self.PATH_PREFIX + path
@@ -116,27 +117,17 @@ class FunctionalTest(test.TestCase):
                               headers=headers, extra_environ=extra_environ,
                               status=status, method="put")
 
-    def _dict_from_object(self, obj, ignored_keys):
-        if ignored_keys is None:
-            ignored_keys = []
-        return dict(
-            [(k, v) for k, v in obj.iteritems()
-                if k not in ignored_keys]
-        )
-
-    def _assertEqualObjects(self, obj1, obj2, ignored_keys=None):
-        obj1 = self._dict_from_object(obj1, ignored_keys)
-        obj2 = self._dict_from_object(obj2, ignored_keys)
-
-        self.assertEqual(
-            len(obj1), len(obj2), "Keys mismatch: %s" %
-            str(set(obj1.keys()) ^ set(obj2.keys()))
-        )
-        for key, value in obj1.iteritems():
-            self.assertEqual(value, obj2[key])
+    def _validate_queue_caller(self, original, result):
+        super(FunctionalTest, self)._validate_queue_caller(original, result)
+        self._assertEqualSchemas('queuecaller', result)
 
     def _assertEqualSchemas(self, schema, obj1):
         s = self.get_json('/schemas/%s' % schema)
         model = warlock.model_factory(s)
         obj2 = model(obj1)
         self.assertEqual(obj1, obj2)
+
+    def _create_queue_caller(self, **kwargs):
+        return super(FunctionalTest, self)._create_queue_caller(
+            session=self.middleware_api, **kwargs
+        )

@@ -39,6 +39,19 @@ def get_test_queue(**kw):
     return queue
 
 
+def get_test_queue_caller(**kw):
+    caller = {
+        'id': kw.get('id', 123),
+        'created_at': None,
+        'called_id': '6060',
+        'caller_id': '5551234',
+        'caller_name': 'Bob Jones',
+        'queue_id': kw.get('queue_id', 123),
+        'updated_at': None,
+    }
+    return caller
+
+
 def get_test_queue_member(**kw):
     queue_member = {
         'id': kw.get('id', 123),

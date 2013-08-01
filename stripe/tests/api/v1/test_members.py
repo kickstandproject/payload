@@ -15,9 +15,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
 # implied.
 
-from stripe.db import api as db_api
 from stripe.tests.api.v1 import base
-from stripe.tests.db import utils
+from stripe.tests import utils
 
 
 class TestMembersEmpty(base.FunctionalTest):
@@ -40,7 +39,6 @@ class TestCase(base.FunctionalTest):
     def setUp(self):
         super(TestCase, self).setUp()
         self._members = []
-        self.db_api = db_api.get_instance()
         for i in xrange(1, 6):
             m = self._create_test_member(id=i)
             self._members.append(m)

@@ -16,11 +16,11 @@
 # implied.
 
 from stripe.db import api as db_api
-from stripe import test
-from stripe.tests.db import utils
+from stripe.tests import base
+from stripe.tests import utils
 
 
-class FunctionalTest(test.TestCase):
+class FunctionalTest(base.TestCase):
     def setUp(self):
         super(FunctionalTest, self).setUp()
         self.db_api = db_api.get_instance()

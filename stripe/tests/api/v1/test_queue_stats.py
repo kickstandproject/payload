@@ -15,16 +15,14 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
 # implied.
 
-from stripe.db import api as db_api
 from stripe.tests.api.v1 import base
-from stripe.tests.db import utils
+from stripe.tests import utils
 
 
 class TestQueueStatsEmpty(base.FunctionalTest):
 
     def setUp(self):
         super(TestQueueStatsEmpty, self).setUp()
-        self.db_api = db_api.get_instance()
         queue = utils.get_test_queue()
         self.db_api.create_queue(queue)
 

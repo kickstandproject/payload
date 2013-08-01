@@ -1,7 +1,6 @@
 pbr
 
 pecan
-redis
 SQLAlchemy>=0.7.8,<0.7.99
 sqlalchemy-migrate>=0.7.2
 wsme>=0.5b2

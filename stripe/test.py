@@ -139,3 +139,22 @@ class TestCase(testtools.TestCase):
         group = kw.pop('group', None)
         for k, v in kw.iteritems():
             CONF.set_override(k, v, group)
+
+    def _dict_from_object(self, obj, ignored_keys):
+        if ignored_keys is None:
+            ignored_keys = []
+        return dict(
+            [(k, v) for k, v in obj.iteritems()
+                if k not in ignored_keys]
+        )
+
+    def _assertEqualObjects(self, obj1, obj2, ignored_keys=None):
+        obj1 = self._dict_from_object(obj1, ignored_keys)
+        obj2 = self._dict_from_object(obj2, ignored_keys)
+
+        self.assertEqual(
+            len(obj1), len(obj2), "Keys mismatch: %s" %
+            str(set(obj1.keys()) ^ set(obj2.keys()))
+        )
+        for key, value in obj1.iteritems():
+            self.assertEqual(value, obj2[key])

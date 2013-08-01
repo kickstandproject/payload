@@ -37,7 +37,7 @@ def get_pecan_config():
 def setup_app(pecan_config=None):
     app_hooks = [
         hooks.DBHook(),
-        hooks.RedisHook(),
+        hooks.MiddlewareHook(),
     ]
 
     if not pecan_config:

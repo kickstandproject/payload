@@ -22,9 +22,9 @@ Response
     {
       "id": 1,
       "created_at": "2011-04-22T13:33:48Z",
-      "name": "John Doe",
-      "number" "6135551234",
-      "position" 1,
+      "called_id" "5195558812",
+      "caller_id" "6135551234",
+      "caller_name": "John Doe",
       "queue_id": 1,
       "updated_at": "2011-04-22T13:33:48Z"
     }
@@ -48,9 +48,9 @@ Response
   {
     "id": 1,
     "created_at": "2011-04-22T13:33:48Z",
-    "name": "John Doe",
-    "number" "6135551234",
-    "position" 1,
+    "called_id" "5195558812",
+    "caller_id" "6135551234",
+    "caller_name": "John Doe",
     "queue_id": 1,
     "updated_at": "2011-04-22T13:33:48Z"
   }

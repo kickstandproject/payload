@@ -39,6 +39,19 @@ def define_queues_table(meta):
         mysql_charset=CHARSET,
     )
 
+    queue_callers = Table(
+        'queue_callers', meta,
+        Column('id', Integer, primary_key=True),
+        Column('created_at', DateTime),
+        Column('called_id', String(255)),
+        Column('caller_id', String(255)),
+        Column('caller_name', String(255)),
+        Column('queue_id', Integer),
+        Column('updated_at', DateTime),
+        mysql_engine=ENGINE,
+        mysql_charset=CHARSET,
+    )
+
     queue_members = Table(
         'queue_members', meta,
         Column('id', Integer, primary_key=True, nullable=False),
@@ -67,7 +80,7 @@ def define_queues_table(meta):
         mysql_charset=CHARSET,
     )
 
-    return [members, queue_members, queues]
+    return [members, queue_callers, queue_members, queues]
 
 
 def upgrade(migrate_engine):

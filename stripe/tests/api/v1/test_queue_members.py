@@ -15,9 +15,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
 # implied.
 
-from stripe.db import api as db_api
 from stripe.tests.api.v1 import base
-from stripe.tests.db import utils
+from stripe.tests import utils
 
 
 class TestQueueMembersEmpty(base.FunctionalTest):
@@ -39,7 +38,6 @@ class TestCase(base.FunctionalTest):
 
     def setUp(self):
         super(TestCase, self).setUp()
-        self.db_api = db_api.get_instance()
         member = utils.get_test_member()
         self.db_api.create_member(member)
         queue = utils.get_test_queue()

@@ -44,7 +44,7 @@ class Queue(base.APIBase):
     def __init__(self, **kwargs):
         self.fields = vars(models.Queue)
         for k in self.fields:
-                setattr(self, k, kwargs.get(k))
+            setattr(self, k, kwargs.get(k))
 
 
 class QueuesController(rest.RestController):

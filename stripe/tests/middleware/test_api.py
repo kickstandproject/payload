@@ -15,40 +15,23 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
 # implied.
 
-from stripe.tests.api.v1 import base
-from stripe.tests import utils
+from stripe.tests.middleware import base
 
 
-class TestQueueStatsEmpty(base.FunctionalTest):
-
-    def setUp(self):
-        super(TestQueueStatsEmpty, self).setUp()
-        queue = utils.get_test_queue()
-        self.db_api.create_queue(queue)
-
-    def test_empty_get_all(self):
-        res = self.get_json('/queues/123/callers')
-        self.assertEqual(res, [])
-
-
-class TestCase(base.FunctionalTest):
+class TestCase(base.TestCase):
 
     def setUp(self):
         super(TestCase, self).setUp()
-        queue_id = 1
-        queue = utils.get_test_queue(id=queue_id)
-        self.db_api.create_queue(queue)
 
     def test_create_queue_caller(self):
         self._create_queue_caller(queue_id=1)
 
     def test_delete_queue_caller(self):
         callers = self._create_queue_caller(queue_id=1)
-        self.delete(
-            '/queues/%s/callers/%s' % (
-                callers[0]['queue_id'],
-                callers[0]['id'],
-            ), status=200
+
+        self.middleware_api.delete_queue_caller(
+            id=callers[0]['id'],
+            queue_id=callers[0]['queue_id'],
         )
 
         callers.pop(0)
@@ -59,9 +42,9 @@ class TestCase(base.FunctionalTest):
         self._list_queue_callers(callers)
 
     def _list_queue_callers(self, callers):
-        res = self.get_json('/queues/%s/callers' % (
+        res = self.middleware_api.list_queue_callers(
             callers[0]['queue_id']
-        ))
+        )
         self.assertEqual(len(res), len(callers))
 
         for idx in range(len(res)):
@@ -69,13 +52,11 @@ class TestCase(base.FunctionalTest):
                 original=callers[idx], result=res[idx]
             )
 
-    def test_get_queue_caller(self):
+    def test_get_queue_callers(self):
         callers = self._create_queue_caller(queue_id=1)
-        res = self.get_json(
-            '/queues/%s/callers/%s' % (
-                callers[0]['queue_id'],
-                callers[0]['id'],
-            )
+        res = self.middleware_api.get_queue_caller(
+            id=callers[0]['id'],
+            queue_id=callers[0]['queue_id'],
         )
         self._validate_queue_caller(
             original=callers[0], result=res
