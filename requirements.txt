@@ -1,8 +1,8 @@
 pbr
 
+alembic>=0.4.1
 pecan
 SQLAlchemy>=0.7.8,<0.7.99
-sqlalchemy-migrate>=0.7.2
 wsme>=0.5b2
 
 -f http://tarballs.openstack.org/oslo.config/oslo.config-1.2.0a3.tar.gz#egg=oslo.config-1.2.0a3

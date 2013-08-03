@@ -1,6 +1,5 @@
 # vim: tabstop=4 shiftwidth=4 softtabstop=4
 
-# Copyright 2011 OpenStack LLC.
 # Copyright (C) 2013 PolyBeacon, Inc.
 #
 # Author: Paul Belanger <paul.belanger@polybeacon.com>
@@ -17,22 +16,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""${message}
+
+Revision ID: ${up_revision}
+Revises: ${down_revision}
+Create Date: ${create_date}
+
 """
-Various conveniences used for migration scripts
-"""
 
-import stripe.openstack.common.log as logging
+from alembic import op
 
-LOG = logging.getLogger(__name__)
-
-
-def create_tables(tables):
-    for table in tables:
-        LOG.info('Creating table %(table)s' % locals())
-        table.create()
+revision = ${repr(up_revision)}
+down_revision = ${repr(down_revision)}
 
 
-def drop_tables(tables):
-    for table in tables:
-        LOG.info('Dropping table %(table)s' % locals())
-        table.drop()
+def upgrade():
+    ${upgrades if upgrades else "pass"}
+
+
+def downgrade():
+    ${downgrades if downgrades else "pass"}

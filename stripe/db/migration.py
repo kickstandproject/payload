@@ -37,9 +37,9 @@ IMPL = utils.LazyPluggable(
 INIT_VERSION = 0
 
 
-def db_sync(version=None):
+def db_sync():
     """Migrate the database to `version` or the most recent version."""
-    return IMPL.db_sync(version=version)
+    return IMPL.db_sync()
 
 
 def db_version():

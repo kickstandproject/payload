@@ -57,33 +57,33 @@ Base = declarative_base(cls=StripeBase)
 
 
 class QueueCaller_(Base):
-    __tablename__ = 'queue_callers'
+    __tablename__ = 'queue_caller'
     id = Column(Integer, primary_key=True)
     called_id = Column(String(255))
     caller_id = Column(String(255))
     caller_name = Column(String(255))
-    queue_id = Column(Integer, ForeignKey('queues.id'))
+    queue_id = Column(Integer, ForeignKey('queue.id'))
 
 
 class QueueMember(Base):
-    __tablename__ = 'queue_members'
+    __tablename__ = 'queue_member'
     id = Column(Integer, primary_key=True)
     disabled = Column(Boolean, default=False)
     disabled_reason = Column(String(255))
     extension = Column(String(255))
-    member_id = Column(Integer, ForeignKey('members.id'), unique=True)
-    queue_id = Column(Integer, ForeignKey('queues.id'))
+    member_id = Column(Integer, ForeignKey('member.id'), unique=True)
+    queue_id = Column(Integer, ForeignKey('queue.id'))
 
 
 class Member(Base):
-    __tablename__ = 'members'
+    __tablename__ = 'member'
     id = Column(Integer, primary_key=True)
     name = Column(String(80))
     password = Column(String(255))
 
 
 class Queue(Base):
-    __tablename__ = 'queues'
+    __tablename__ = 'queue'
     id = Column(Integer, primary_key=True)
     description = Column(JSONEncodedDict)
     disabled = Column(Boolean, default=False)

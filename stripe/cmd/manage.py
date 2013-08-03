@@ -76,11 +76,9 @@ class DBCommands(object):
     def __init__(self):
         pass
 
-    @args('version', nargs='?', default=None,
-          help='Database version')
-    def sync(self, version=None):
+    def sync(self):
         """Sync the database up to the most recent version."""
-        return migration.db_sync(version)
+        return migration.db_sync()
 
     def version(self):
         """Print the current database version."""
