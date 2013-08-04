@@ -31,64 +31,65 @@ from stripe.openstack.common import log as logging
 LOG = logging.getLogger(__name__)
 
 
-class Member(base.APIBase):
-    """API representation of a member."""
+class Agent(base.APIBase):
+    """API representation of an agent."""
 
     id = int
     name = wtypes.text
     password = wtypes.text
 
     def __init__(self, **kwargs):
-        self.fields = vars(models.Member)
+        self.fields = vars(models.Agent)
         for k in self.fields:
             setattr(self, k, kwargs.get(k))
 
 
-class MembersController(rest.RestController):
-    """REST Controller for Members."""
+class AgentsController(rest.RestController):
+    """REST Controller for Agents."""
 
     @wsme_pecan.wsexpose(None, wtypes.text, status_code=204)
     def delete(self, id):
-        """Delete a member."""
-        pecan.request.db_api.delete_member(id)
+        """Delete an agent."""
+        pecan.request.db_api.delete_agent(id)
 
-    @wsme_pecan.wsexpose([Member])
+    @wsme_pecan.wsexpose([Agent])
     def get_all(self):
-        """Retrieve a list of member."""
-        return pecan.request.db_api.get_member_list()
+        """Retrieve a list of agents."""
+        return pecan.request.db_api.get_agent_list()
 
-    @wsme_pecan.wsexpose(Member, unicode)
+    @wsme_pecan.wsexpose(Agent, unicode)
     def get_one(self, id):
-        """Retrieve information about the given member."""
+        """Retrieve information about the given agent."""
         try:
-            result = pecan.request.db_api.get_member(id)
-        except exception.MemberNotFound:
+            result = pecan.request.db_api.get_agent(id)
+        except exception.AgentNotFound:
             # TODO(pabelanger): See if there is a better way of handling
             # exceptions.
             raise wsme.exc.ClientSideError('Not found')
 
         return result
 
-    @wsme.validate(Member)
-    @wsme_pecan.wsexpose(Member, body=Member)
+    @wsme.validate(Agent)
+    @wsme_pecan.wsexpose(Agent, body=Agent)
     def post(self, body):
-        """Create a new member."""
+        """Create a new agent."""
         try:
             d = body.as_dict()
-            new_member = pecan.request.db_api.create_member(d)
+            new_agent = pecan.request.db_api.create_agent(d)
         except Exception:
             # TODO(pabelanger): See if there is a better way of handling
             # exceptions.
             raise wsme.exc.ClientSideError('Invalid data')
-        return new_member
+        return new_agent
 
-    @wsme.validate(Member)
-    @wsme_pecan.wsexpose(Member, wtypes.text, body=Member)
+    @wsme.validate(Agent)
+    @wsme_pecan.wsexpose(Agent, wtypes.text, body=Agent)
     def put(self, id, body):
-        member = pecan.request.db_api.get_member(id)
+        """Update an existing agent."""
+        agent = pecan.request.db_api.get_agent(id)
         items = body.as_dict().items()
         for k, v in [(k, v) for (k, v) in items if v]:
-            member[k] = v
+            agent[k] = v
 
-        member.save()
-        return member
+        agent.save()
+        return agent

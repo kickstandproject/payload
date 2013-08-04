@@ -26,10 +26,10 @@ class FunctionalTest(base.TestCase):
         super(FunctionalTest, self).setUp()
         self.db_api = db_api.get_instance()
 
-    def _create_test_member(self, **kwargs):
-        member = utils.get_test_member(**kwargs)
-        self.db_api.create_member(member)
-        return member
+    def _create_test_agent(self, **kwargs):
+        agent = utils.get_test_agent(**kwargs)
+        self.db_api.create_agent(agent)
+        return agent
 
     def _create_test_queue(self, **kwargs):
         queue = utils.get_test_queue(**kwargs)

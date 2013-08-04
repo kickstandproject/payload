@@ -38,7 +38,7 @@ class QueueMember(base.APIBase):
     disabled = bool
     disabled_reason = wtypes.text
     extension = wtypes.text
-    member_id = int
+    agent_id = int
     queue_id = int
 
     def __init__(self, **kwargs):

@@ -54,7 +54,7 @@ class TestCase(base.FunctionalTest):
     def test_get_queue_member_list(self):
         queue_member = []
         for i in xrange(1, 2):
-            qm = self._create_test_queue_member(id=i, member_id=i)
+            qm = self._create_test_queue_member(id=i, agent_id=i)
             queue_member.append(qm['id'])
         res = self.db_api.get_queue_member_list()
         res.sort()
@@ -65,11 +65,11 @@ class TestCase(base.FunctionalTest):
         queue_member = []
         queue_id = 1
         for i in xrange(1, 2):
-            self._create_test_queue_member(id=i, member_id=i)
+            self._create_test_queue_member(id=i, agent_id=i)
 
         for i in xrange(3, 4):
             qm = self._create_test_queue_member(
-                id=i, member_id=i, queue_id=queue_id
+                id=i, agent_id=i, queue_id=queue_id
             )
             queue_member.append(qm['id'])
 

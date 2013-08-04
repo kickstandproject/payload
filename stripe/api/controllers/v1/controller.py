@@ -16,12 +16,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from stripe.api.controllers.v1 import member
+from stripe.api.controllers.v1 import agent
 from stripe.api.controllers.v1 import queue
 from stripe.api.controllers.v1 import schema
 
 
 class Controller(object):
-    members = member.MembersController()
+    agents = agent.AgentsController()
     queues = queue.QueuesController()
     schemas = schema.SchemasController()

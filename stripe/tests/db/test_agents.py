@@ -22,32 +22,32 @@ from stripe.tests.db import base
 
 class TestCase(base.FunctionalTest):
 
-    def test_create_member(self):
-        self._create_test_member()
+    def test_create_agent(self):
+        self._create_test_agent()
 
-    def test_delete_member(self):
-        member = self._create_test_member()
-        self.db_api.delete_member(member['id'])
+    def test_delete_agent(self):
+        agent = self._create_test_agent()
+        self.db_api.delete_agent(agent['id'])
         self.assertRaises(
-            exception.MemberNotFound, self.db_api.get_member, member['id']
+            exception.AgentNotFound, self.db_api.get_agent, agent['id']
         )
 
-    def test_delete_member_not_found(self):
+    def test_delete_agent_not_found(self):
         self.assertRaises(
-            exception.MemberNotFound, self.db_api.delete_member, 123
+            exception.AgentNotFound, self.db_api.delete_agent, 123
         )
 
-    def test_get_member_by_id(self):
-        member = self._create_test_member()
-        res = self.db_api.get_member(member['id'])
-        self.assertEqual(member['id'], res['id'])
+    def test_get_agent_by_id(self):
+        agent = self._create_test_agent()
+        res = self.db_api.get_agent(agent['id'])
+        self.assertEqual(agent['id'], res['id'])
 
-    def test_get_member_list(self):
-        member = []
+    def test_get_agent_list(self):
+        agent = []
         for i in xrange(1, 6):
-            q = self._create_test_member(id=i)
-            member.append(q)
-        res = self.db_api.get_member_list()
+            q = self._create_test_agent(id=i)
+            agent.append(q)
+        res = self.db_api.get_agent_list()
         res.sort()
-        member.sort()
-        self.assertEqual(len(res), len(member))
+        agent.sort()
+        self.assertEqual(len(res), len(agent))

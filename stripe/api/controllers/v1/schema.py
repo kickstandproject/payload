@@ -29,14 +29,14 @@ class SchemasController(rest.RestController):
     """REST Controller for Schemas."""
 
     _custom_actions = {
-        'member': ['GET'],
+        'agent': ['GET'],
         'queue': ['GET'],
         'queuecaller': ['GET'],
     }
 
     @wsme_pecan.wsexpose(unicode)
-    def member(self):
-        """Retrieve schema for a member."""
+    def agent(self):
+        """Retrieve schema for an agent."""
         json = {
             'id': {
                 'type': 'integer',
@@ -61,7 +61,7 @@ class SchemasController(rest.RestController):
             },
         }
 
-        return schema.Schema('member', json).raw()
+        return schema.Schema('agent', json).raw()
 
     @wsme_pecan.wsexpose(unicode)
     def queue(self):

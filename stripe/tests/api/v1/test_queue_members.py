@@ -39,8 +39,8 @@ class TestCase(base.FunctionalTest):
 
     def setUp(self):
         super(TestCase, self).setUp()
-        member = utils.get_test_member()
-        self.db_api.create_member(member)
+        member = utils.get_test_agent()
+        self.db_api.create_agent(member)
         queue = utils.get_test_queue()
         self.db_api.create_queue(queue)
 
@@ -86,7 +86,7 @@ class TestCase(base.FunctionalTest):
 
     def test_create_queue_member(self):
         json = {
-            'member_id': 123,
+            'agent_id': 123,
         }
         res = self.post_json(
             '/queues/123/members', params=json, status=200

@@ -71,12 +71,12 @@ class QueueMember(Base):
     disabled = Column(Boolean, default=False)
     disabled_reason = Column(String(255))
     extension = Column(String(255))
-    member_id = Column(Integer, ForeignKey('member.id'), unique=True)
+    agent_id = Column(Integer, ForeignKey('agent.id'), unique=True)
     queue_id = Column(Integer, ForeignKey('queue.id'))
 
 
-class Member(Base):
-    __tablename__ = 'member'
+class Agent(Base):
+    __tablename__ = 'agent'
     id = Column(Integer, primary_key=True)
     name = Column(String(80))
     password = Column(String(255))

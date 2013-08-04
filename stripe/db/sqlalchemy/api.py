@@ -55,13 +55,13 @@ class Connection(api.Connection):
     def __init__(self):
         pass
 
-    def create_member(self, values):
-        """Create a new member."""
-        member = models.Member()
-        member.update(values)
-        member.save()
+    def create_agent(self, values):
+        """Create a new agent."""
+        agent = models.Agent()
+        agent.update(values)
+        agent.save()
 
-        return member
+        return agent
 
     def create_queue(self, values):
         """Create a new queue."""
@@ -79,22 +79,22 @@ class Connection(api.Connection):
             queue_member.save()
         except db_exc.DBDuplicateEntry:
             raise exception.QueueMemberDuplicated(
-                member_id=values['member_id']
+                agent_id=values['agent_id']
             )
 
         return queue_member
 
-    def delete_member(self, member):
-        """Delete a member."""
+    def delete_agent(self, agent):
+        """Delete an agent."""
         session = get_session()
         with session.begin():
             query = model_query(
-                models.Member, session=session
-            ).filter_by(id=member)
+                models.Agent, session=session
+            ).filter_by(id=agent)
 
             count = query.delete()
             if count != 1:
-                raise exception.MemberNotFound(member=member)
+                raise exception.AgentNotFound(agent=agent)
 
             query.delete()
 
@@ -126,13 +126,13 @@ class Connection(api.Connection):
 
             query.delete()
 
-    def get_member(self, member):
-        """Retrieve information about the given member."""
-        query = model_query(models.Member).filter_by(id=member)
+    def get_agent(self, agent):
+        """Retrieve information about the given agent."""
+        query = model_query(models.Agent).filter_by(id=agent)
         try:
             result = query.one()
         except exc.NoResultFound:
-            raise exception.MemberNotFound(member=member)
+            raise exception.AgentNotFound(agent=agent)
 
         return result
 
@@ -156,11 +156,11 @@ class Connection(api.Connection):
 
         return result
 
-    def get_member_list(self):
-        """Retrieve a list of members."""
-        query = model_query(models.Member)
+    def get_agent_list(self):
+        """Retrieve a list of agents."""
+        query = model_query(models.Agent)
 
-        return [m for m in query.all()]
+        return [a for a in query.all()]
 
     def get_queue_list(self):
         """Retrieve a list of queues."""

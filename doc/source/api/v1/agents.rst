@@ -1,18 +1,18 @@
-:title: Members
+:title: Agents
 
-Members API
-===========
+Agents API
+==========
 
 .. toctree::
    :maxdepth: 2
    :glob:
 
-List members
-------------
+List agents
+-----------
 
 .. code-block:: html
 
-  GET /v1/members
+  GET /v1/agents
 
 Parameters
 ''''''''''
@@ -32,12 +32,12 @@ Response
     }
   ]
 
-Get a single member
--------------------
+Get a single agent
+------------------
 
 .. code-block:: html
 
-  GET /v1/members/:id
+  GET /v1/agents/:id
 
 Parameters
 ''''''''''
@@ -55,12 +55,12 @@ Response
     "updated_at": "2011-04-22T13:33:48Z",
   }
 
-Create a member
+Create an agent
 ---------------
 
 .. code-block:: html
 
-  POST /v1/members
+  POST /v1/agents
 
 Input
 '''''
@@ -68,12 +68,12 @@ Input
 Response
 ''''''''
 
-Edit a member
+Edit an agent
 -------------
 
 .. code-block:: html
 
-  PUT /v1/members/:id
+  PUT /v1/agents/:id
 
 Parameters
 ''''''''''
@@ -84,12 +84,12 @@ Input
 Response
 ''''''''
 
-Delete a member
+Delete an agent
 ---------------
 
 .. code-block:: html
 
-  DELETE /v1/members/:id
+  DELETE /v1/agents/:id
 
 Parameters
 ''''''''''

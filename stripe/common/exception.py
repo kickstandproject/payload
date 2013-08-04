@@ -65,7 +65,7 @@ class StripeException(Exception):
             except Exception as e:
                 # kwargs doesn't match a variable in the message
                 # log the issue and the kwargs
-                LOG.exception(_('Exception in string format operation'))
+                LOG.exception('Exception in string format operation')
                 for name, value in kwargs.iteritems():
                     LOG.error("%s: %s" % (name, value))
 
@@ -89,8 +89,8 @@ class NotFound(StripeException):
     code = 404
 
 
-class MemberNotFound(NotFound):
-    message = 'Member %(member)s could not be found'
+class AgentNotFound(NotFound):
+    message = 'Agent %(agent)s could not be found'
 
 
 class QueueNotFound(NotFound):
@@ -106,4 +106,4 @@ class QueueMemberNotFound(NotFound):
 
 
 class QueueMemberDuplicated(StripeException):
-    message = 'Queue member %(member_id)s already exists.'
+    message = 'Queue member %(agent_id)s already exists.'

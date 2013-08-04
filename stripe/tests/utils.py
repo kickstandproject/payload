@@ -17,15 +17,15 @@
 # limitations under the License.
 
 
-def get_test_member(**kw):
-    member = {
+def get_test_agent(**kw):
+    agent = {
         'id': kw.get('id', 123),
         'created_at': None,
         'name': 'John Smith',
         'password': kw.get('password', '3a528267660d23d7cbf35388c6e21e6b'),
         'updated_at': None,
     }
-    return member
+    return agent
 
 
 def get_test_queue(**kw):
@@ -60,7 +60,7 @@ def get_test_queue_member(**kw):
         'disabled': kw.get('disabled', False),
         'disabled_reason': kw.get('disabled_reason', None),
         'extension': kw.get('extension', '123'),
-        'member_id': kw.get('member_id', 123),
+        'agent_id': kw.get('agent_id', 123),
         'queue_id': kw.get('queue_id', 123),
         'updated_at': None,
     }

@@ -35,8 +35,8 @@ from sqlalchemy import Text
 revision = 'caa0c1b6be2'
 down_revision = None
 
-member = (
-    'member',
+agent = (
+    'agent',
     Column('id', Integer, primary_key=True, index=True),
     Column('created_at', DateTime),
     Column('name', String(length=80)),
@@ -62,7 +62,7 @@ queue_member = (
     Column('disabled', Boolean),
     Column('disabled_reason', String(255)),
     Column('extension', String(255)),
-    Column('member_id', Integer, unique=True),
+    Column('agent_id', Integer, unique=True),
     Column('queue_id', Integer),
     Column('updated_at', DateTime),
 )
@@ -77,7 +77,7 @@ queue = (
     Column('updated_at', DateTime),
 )
 
-tables = [member, queue_caller, queue_member, queue]
+tables = [agent, queue_caller, queue_member, queue]
 
 
 def upgrade():
