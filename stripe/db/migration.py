@@ -16,32 +16,33 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Database setup and migration commands."""
+import os
 
-from oslo.config import cfg
+from alembic import command
+from alembic import config
+from alembic import migration
 
-from stripe.common import utils
-
-CONF = cfg.CONF
-CONF.import_opt(
-    'backend', 'stripe.openstack.common.db.api',
-    group='database'
-)
-
-IMPL = utils.LazyPluggable(
-    pivot='backend',
-    config_group='database',
-    sqlalchemy='stripe.db.sqlalchemy.migration'
-)
+from stripe.openstack.common.db.sqlalchemy import session
 
 INIT_VERSION = 0
 
-
-def db_sync():
-    """Migrate the database to `version` or the most recent version."""
-    return IMPL.db_sync()
+get_engine = session.get_engine
 
 
 def db_version():
-    """Display the current database version."""
-    return IMPL.db_version()
+    engine = get_engine()
+    conn = engine.connect()
+    context = migration.MigrationContext.configure(conn)
+
+    return context.get_current_revision()
+
+
+def db_sync():
+    command.upgrade(_alembic_config(), 'head')
+
+
+def _alembic_config():
+    path = os.path.join(os.path.dirname(__file__), 'alembic/alembic.ini')
+    cfg = config.Config(path)
+
+    return cfg

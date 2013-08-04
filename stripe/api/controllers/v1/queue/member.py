@@ -25,7 +25,7 @@ from wsmeext import pecan as wsme_pecan
 
 from stripe.api.controllers.v1 import base
 from stripe.common import exception
-from stripe.db.sqlalchemy import models
+from stripe.db import models
 from stripe.openstack.common import log as logging
 
 LOG = logging.getLogger(__name__)

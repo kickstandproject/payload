@@ -18,7 +18,7 @@
 
 from alembic import context
 
-from stripe.db.sqlalchemy import models
+from stripe.db import models
 from stripe.openstack.common.db.sqlalchemy import session
 from stripe.openstack.common import log as logging
 

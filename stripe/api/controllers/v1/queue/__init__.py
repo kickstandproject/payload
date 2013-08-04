@@ -28,7 +28,7 @@ from stripe.api.controllers.v1.queue import caller
 from stripe.api.controllers.v1.queue import member
 from stripe.api.controllers.v1.queue import stat
 from stripe.common import exception
-from stripe.db.sqlalchemy import models
+from stripe.db import models
 from stripe.openstack.common import log as logging
 
 LOG = logging.getLogger(__name__)
