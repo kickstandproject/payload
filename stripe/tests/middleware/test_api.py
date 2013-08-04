@@ -27,6 +27,9 @@ class TestCase(base.TestCase):
     def test_create_queue_caller(self):
         self._create_queue_caller(queue_id=1)
 
+    def test_create_queue_member(self):
+        self._create_queue_member(queue_id=1)
+
     def test_delete_queue_caller(self):
         callers = self._create_queue_caller(queue_id=1)
 
@@ -37,6 +40,17 @@ class TestCase(base.TestCase):
 
         callers.pop(0)
         self._list_queue_callers(callers)
+
+    def test_delete_queue_member(self):
+        members = self._create_queue_member()
+
+        self.middleware_api.delete_queue_member(
+            id=members[0]['id'],
+            queue_id=members[0]['queue_id'],
+        )
+
+        members.pop(0)
+        self._list_queue_members(members)
 
     def test_list_queue_callers(self):
         callers = self._create_queue_caller(queue_id=1)
@@ -49,8 +63,23 @@ class TestCase(base.TestCase):
         self.assertEqual(len(res), len(callers))
 
         for idx in range(len(res)):
-            self._validate_queue_caller(
+            self._validate_db_model(
                 original=callers[idx], result=res[idx]
+            )
+
+    def test_list_queue_members(self):
+        members = self._create_queue_member(queue_id=1)
+        self._list_queue_members(members)
+
+    def _list_queue_members(self, members):
+        res = self.middleware_api.list_queue_members(
+            members[0]['queue_id']
+        )
+        self.assertEqual(len(res), len(members))
+
+        for idx in range(len(res)):
+            self._validate_db_model(
+                original=members[idx], result=res[idx]
             )
 
     def test_get_queue_callers(self):
@@ -59,6 +88,16 @@ class TestCase(base.TestCase):
             id=callers[0]['id'],
             queue_id=callers[0]['queue_id'],
         )
-        self._validate_queue_caller(
+        self._validate_db_model(
             original=callers[0], result=res
+        )
+
+    def test_get_queue_member(self):
+        members = self._create_queue_member(queue_id=1)
+        res = self.middleware_api.get_queue_member(
+            id=members[0]['id'],
+            queue_id=members[0]['queue_id'],
+        )
+        self._validate_db_model(
+            original=members[0], result=res
         )

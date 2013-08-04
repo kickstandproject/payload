@@ -23,3 +23,9 @@ class QueueCaller(models.QueueCaller_):
 
     def __init__(self):
         super(QueueCaller, self).__init__()
+
+
+class QueueMember(models.QueueMember_):
+
+    def __init__(self):
+        super(QueueMember, self).__init__()

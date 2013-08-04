@@ -25,7 +25,7 @@ from wsmeext import pecan as wsme_pecan
 
 from stripe.api.controllers.v1 import base
 from stripe.common import exception
-from stripe.db import models
+from stripe.middleware import models
 from stripe.openstack.common import log as logging
 
 LOG = logging.getLogger(__name__)
@@ -53,18 +53,25 @@ class QueueMembersController(rest.RestController):
     @wsme_pecan.wsexpose(None, wtypes.text, wtypes.text, status_code=204)
     def delete(self, queue_id, id):
         """Delete a queue."""
-        pecan.request.db_api.delete_queue_member(id)
+        pecan.request.middleware_api.delete_queue_member(
+            id=id, queue_id=queue_id
+        )
 
     @wsme_pecan.wsexpose([QueueMember], unicode)
     def get_all(self, queue_id):
         """Retrieve a list of queue members."""
-        return pecan.request.db_api.get_queue_member_list(queue_id=queue_id)
+
+        return pecan.request.middleware_api.list_queue_members(
+            queue_id=queue_id
+        )
 
     @wsme_pecan.wsexpose(QueueMember, unicode, unicode)
     def get_one(self, queue_id, id):
         """Retrieve information about the given queue."""
         try:
-            result = pecan.request.db_api.get_queue_member(id)
+            result = pecan.request.middleware_api.get_queue_member(
+                id=id, queue_id=queue_id
+            )
         except exception.QueueMemberNotFound:
             # TODO(pabelanger): See if there is a better way of handling
             # exceptions.
@@ -78,22 +85,26 @@ class QueueMembersController(rest.RestController):
         """Create a new queue."""
         try:
             d = body.as_dict()
-            new_queue_member = pecan.request.db_api.create_queue_member(d)
+            queue_member = pecan.request.middleware_api.create_queue_member(d)
         except Exception:
             # TODO(pabelanger): See if there is a better way of handling
             # exceptions.
             raise wsme.exc.ClientSideError('Invalid data')
-        return new_queue_member
+
+        return queue_member
 
     @wsme.validate(QueueMember)
     @wsme_pecan.wsexpose(
         QueueMember, wtypes.text, wtypes.text, body=QueueMember
     )
     def put(self, queue_id, id, body):
-        queue_member = pecan.request.db_api.get_queue_member(id)
+        queue_member = pecan.request.middleware_api.get_queue_member(
+            id=id, queue_id=queue_id
+        )
         items = body.as_dict().items()
         for k, v in [(k, v) for (k, v) in items if v]:
             queue_member[k] = v
 
         queue_member.save()
+
         return queue_member

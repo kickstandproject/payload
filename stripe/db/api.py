@@ -24,7 +24,6 @@ from sqlalchemy.orm import exc
 from stripe.common import exception
 from stripe.db import models
 from stripe.openstack.common.db import api
-from stripe.openstack.common.db import exception as db_exc
 from stripe.openstack.common.db.sqlalchemy import session as db_session
 from stripe.openstack.common import log as logging
 
@@ -78,19 +77,6 @@ class Connection(object):
 
         return queue
 
-    def create_queue_member(self, values):
-        """Create a new queue member."""
-        queue_member = models.QueueMember()
-        queue_member.update(values)
-        try:
-            queue_member.save()
-        except db_exc.DBDuplicateEntry:
-            raise exception.QueueMemberDuplicated(
-                agent_id=values['agent_id']
-            )
-
-        return queue_member
-
     def delete_agent(self, agent):
         """Delete an agent."""
         session = get_session()
@@ -119,20 +105,6 @@ class Connection(object):
 
             query.delete()
 
-    def delete_queue_member(self, queue_member):
-        """Delete a queue member."""
-        session = get_session()
-        with session.begin():
-            query = model_query(
-                models.QueueMember, session=session
-            ).filter_by(id=queue_member)
-
-            count = query.delete()
-            if count != 1:
-                raise exception.QueueMemberNotFound(queue_member=queue_member)
-
-            query.delete()
-
     def get_agent(self, agent):
         """Retrieve information about the given agent."""
         query = model_query(models.Agent).filter_by(id=agent)
@@ -153,16 +125,6 @@ class Connection(object):
 
         return result
 
-    def get_queue_member(self, queue_member):
-        """Retrieve information about the given queue."""
-        query = model_query(models.QueueMember).filter_by(id=queue_member)
-        try:
-            result = query.one()
-        except exc.NoResultFound:
-            raise exception.QueueMemberNotFound(queue_member=queue_member)
-
-        return result
-
     def get_agent_list(self):
         """Retrieve a list of agents."""
         query = model_query(models.Agent)
@@ -174,12 +136,3 @@ class Connection(object):
         query = model_query(models.Queue)
 
         return [q for q in query.all()]
-
-    def get_queue_member_list(self, queue_id=None):
-        """Retrieve a list of queue members."""
-        query = model_query(models.QueueMember)
-
-        if queue_id:
-            query = query.filter_by(queue_id=queue_id)
-
-        return [qm for qm in query.all()]

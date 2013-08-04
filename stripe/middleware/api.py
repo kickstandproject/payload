@@ -48,6 +48,14 @@ class Connection(object):
 
         return caller
 
+    def create_queue_member(self, values):
+        """Create a new queue member."""
+        member = models.QueueMember()
+        member.update(values)
+        member.save()
+
+        return member
+
     def delete_queue_caller(self, queue_id, id):
         """Delete a queue caller."""
         session = get_session()
@@ -62,9 +70,31 @@ class Connection(object):
 
             query.delete()
 
+    def delete_queue_member(self, queue_id, id):
+        """Delete a queue member."""
+        session = get_session()
+        with session.begin():
+            query = model_query(
+                models.QueueMember, session=session
+            ).filter_by(queue_id=queue_id, id=id)
+
+            count = query.delete()
+            if count != 1:
+                raise exception.QueueMemberNotFound(queue_id=queue_id)
+
+            query.delete()
+
     def get_queue_caller(self, queue_id, id):
         """Retrieve information about the given queue caller."""
         query = model_query(models.QueueCaller).filter_by(
+            queue_id=queue_id, id=id)
+        result = query.one()
+
+        return result
+
+    def get_queue_member(self, queue_id, id):
+        """Retrieve information about the given queue member."""
+        query = model_query(models.QueueMember).filter_by(
             queue_id=queue_id, id=id)
         result = query.one()
 
@@ -75,6 +105,12 @@ class Connection(object):
         query = model_query(models.QueueCaller).filter_by(queue_id=queue_id)
 
         return [qc for qc in query.all()]
+
+    def list_queue_members(self, queue_id):
+        """Retrieve a list of queue members."""
+        query = model_query(models.QueueMember).filter_by(queue_id=queue_id)
+
+        return [qm for qm in query.all()]
 
     def get_queue_stats(self, id):
         # TODO(pabelanger): Implement redis backend for queue callers.

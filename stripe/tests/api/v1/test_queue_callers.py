@@ -20,16 +20,24 @@ from stripe.tests.api.v1 import base
 from stripe.tests import utils
 
 
-class TestQueueStatsEmpty(base.FunctionalTest):
+class TestQueueCallersEmpty(base.FunctionalTest):
 
     def setUp(self):
-        super(TestQueueStatsEmpty, self).setUp()
+        super(TestQueueCallersEmpty, self).setUp()
         queue = utils.get_test_queue()
         self.db_api.create_queue(queue)
 
     def test_empty_get_all(self):
         res = self.get_json('/queues/123/callers')
         self.assertEqual(res, [])
+
+    def test_empty_get_one(self):
+        res = self.get_json(
+            '/queues/123/callers/1', expect_errors=True
+        )
+        self.assertEqual(res.status_int, 500)
+        self.assertEqual(res.content_type, 'application/json')
+        self.assertTrue(res.json['error_message'])
 
 
 class TestCase(base.FunctionalTest):
@@ -66,7 +74,7 @@ class TestCase(base.FunctionalTest):
         self.assertEqual(len(res), len(callers))
 
         for idx in range(len(res)):
-            self._validate_queue_caller(
+            self._validate_db_model(
                 original=callers[idx], result=res[idx]
             )
 
@@ -78,6 +86,6 @@ class TestCase(base.FunctionalTest):
                 callers[0]['id'],
             )
         )
-        self._validate_queue_caller(
+        self._validate_db_model(
             original=callers[0], result=res
         )

@@ -30,3 +30,8 @@ class TestCase(base.TestCase):
         return super(TestCase, self)._create_queue_caller(
             session=self.middleware_api, **kwargs
         )
+
+    def _create_queue_member(self, **kwargs):
+        return super(TestCase, self)._create_queue_member(
+            session=self.middleware_api, **kwargs
+        )

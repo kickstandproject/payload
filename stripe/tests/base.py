@@ -25,7 +25,7 @@ class TestCase(test.TestCase):
     def setUp(self):
         super(TestCase, self).setUp()
 
-    def _validate_queue_caller(self, original, result):
+    def _validate_db_model(self, original, result):
         ignored_keys = [
             'created_at',
             'updated_at',
@@ -43,3 +43,16 @@ class TestCase(test.TestCase):
         self.assertEqual(len(callers), 5)
 
         return callers
+
+    def _create_queue_member(self, session, **kwargs):
+        members = []
+        for i in xrange(1, 6):
+            kwargs['id'] = i
+            kwargs['agent_id'] = i
+            member = utils.get_test_queue_member(**kwargs)
+            session.create_queue_member(member)
+            members.append(member)
+
+        self.assertEqual(len(members), 5)
+
+        return members

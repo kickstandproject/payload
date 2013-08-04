@@ -65,7 +65,7 @@ class QueueCaller_(Base):
     queue_id = Column(Integer, ForeignKey('queue.id'))
 
 
-class QueueMember(Base):
+class QueueMember_(Base):
     __tablename__ = 'queue_member'
     id = Column(Integer, primary_key=True)
     disabled = Column(Boolean, default=False)

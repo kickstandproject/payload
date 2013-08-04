@@ -22,15 +22,20 @@ from stripe.tests import utils
 
 class TestQueueMembersEmpty(base.FunctionalTest):
 
+    def setUp(self):
+        super(TestQueueMembersEmpty, self).setUp()
+        queue = utils.get_test_queue()
+        self.db_api.create_queue(queue)
+
     def test_empty_get_all(self):
-        res = self.get_json('/queues/1/members')
+        res = self.get_json('/queues/123/members')
         self.assertEqual(res, [])
 
     def test_empty_get_one(self):
         res = self.get_json(
-            '/queues/1/members/1', expect_errors=True
+            '/queues/123/members/1', expect_errors=True
         )
-        self.assertEqual(res.status_int, 400)
+        self.assertEqual(res.status_int, 500)
         self.assertEqual(res.content_type, 'application/json')
         self.assertTrue(res.json['error_message'])
 
@@ -46,7 +51,7 @@ class TestCase(base.FunctionalTest):
 
     def _create_test_queue_member(self, **kwargs):
         queue_member = utils.get_test_queue_member(**kwargs)
-        self.db_api.create_queue_member(queue_member)
+        self.middleware_api.create_queue_member(queue_member)
         return queue_member
 
     def test_list_queue_members(self):
@@ -104,5 +109,7 @@ class TestCase(base.FunctionalTest):
         self.put_json(
             '/queues/%s/members/%s' % (q['queue_id'], q['id']), params=json
         )
-        queue_member = self.db_api.get_queue_member(q['id'])
+        queue_member = self.middleware_api.get_queue_member(
+            id=q['id'], queue_id=q['queue_id']
+        )
         self.assertEquals(queue_member.disabled, json['disabled'])
