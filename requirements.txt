@@ -2,6 +2,7 @@ pbr
 
 alembic>=0.4.1
 pecan
+redis
 SQLAlchemy>=0.7.8,<0.7.99
 wsme>=0.5b2
 

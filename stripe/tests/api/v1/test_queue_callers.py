@@ -35,9 +35,7 @@ class TestQueueCallersEmpty(base.FunctionalTest):
         res = self.get_json(
             '/queues/123/callers/1', expect_errors=True
         )
-        self.assertEqual(res.status_int, 500)
-        self.assertEqual(res.content_type, 'application/json')
-        self.assertTrue(res.json['error_message'])
+        self.assertEqual(res.json, {})
 
 
 class TestCase(base.FunctionalTest):
@@ -51,41 +49,21 @@ class TestCase(base.FunctionalTest):
     def test_create_queue_caller(self):
         self._create_queue_caller(queue_id=1)
 
-    def test_delete_queue_caller(self):
-        callers = self._create_queue_caller(queue_id=1)
-        self.delete(
-            '/queues/%s/callers/%s' % (
-                callers[0]['queue_id'],
-                callers[0]['id'],
-            ), status=200
-        )
-
-        callers.pop(0)
-        self._list_queue_callers(callers)
-
     def test_list_queue_callers(self):
-        callers = self._create_queue_caller(queue_id=1)
-        self._list_queue_callers(callers)
+        queue_id = 1
+        callers = self._create_queue_caller(queue_id=queue_id)
+        self._list_queue_callers(callers, queue_id)
 
-    def _list_queue_callers(self, callers):
-        res = self.get_json('/queues/%s/callers' % (
-            callers[0]['queue_id']
-        ))
+    def _list_queue_callers(self, callers, queue_id):
+        res = self.get_json('/queues/%s/callers' % queue_id)
         self.assertEqual(len(res), len(callers))
-
-        for idx in range(len(res)):
-            self._validate_db_model(
-                original=callers[idx], result=res[idx]
-            )
 
     def test_get_queue_caller(self):
         callers = self._create_queue_caller(queue_id=1)
         res = self.get_json(
             '/queues/%s/callers/%s' % (
-                callers[0]['queue_id'],
-                callers[0]['id'],
+                '1',
+                callers[0],
             )
         )
-        self._validate_db_model(
-            original=callers[0], result=res
-        )
+        self.assertEqual(callers[0], res['uuid'])

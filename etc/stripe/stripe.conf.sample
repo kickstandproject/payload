@@ -147,6 +147,25 @@
 #syslog_log_facility=LOG_USER
 
 
+[middleware]
+
+#
+# Options defined in stripe.middleware.api
+#
+
+# Hostname (string value)
+#host=127.0.0.1
+
+# The specific TCP port Redis listens on (integer value)
+#port=6379
+
+# Which Redis database to use (integer value)
+#database=0
+
+# Password to use with AUTH command (string value)
+#password=<None>
+
+
 [database]
 
 #
@@ -210,4 +229,4 @@
 #pool_timeout=<None>
 
 
-# Total option count: 43
+# Total option count: 47

@@ -16,9 +16,33 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import redis
+import time
+
+from oslo.config import cfg
+
 from stripe.common import exception
 from stripe.middleware import models
 from stripe.middleware import session as middleware_session
+from stripe.openstack.common import uuidutils
+
+redis_opts = [
+    cfg.StrOpt(
+        'host', default='127.0.0.1', help='Hostname',
+    ),
+    cfg.IntOpt(
+        'port', default=6379, help='The specific TCP port Redis listens on',
+    ),
+    cfg.IntOpt(
+        'database', default=0, help='Which Redis database to use',
+    ),
+    cfg.StrOpt(
+        'password', default=None, help='Password to use with AUTH command',
+    ),
+]
+
+CONF = cfg.CONF
+CONF.register_opts(redis_opts, 'middleware')
 
 get_session = middleware_session.get_session
 
@@ -41,12 +65,31 @@ def model_query(model, *args, **kwargs):
 
 class Connection(object):
 
-    def create_queue_caller(self, data):
-        caller = models.QueueCaller()
-        caller.update(data)
-        caller.save()
+    _session = None
+    _queue_namespace = 'queue'
 
-        return caller
+    def __init__(self):
+        self._session = redis.StrictRedis(
+            host=CONF.middleware.host, port=CONF.middleware.port,
+            db=CONF.middleware.database, password=CONF.middleware.password,
+        )
+
+    def create_queue_caller(self, values):
+        values['created_at'] = time.time()
+        values['uuid'] = uuidutils.generate_uuid()
+        values['state'] = 'onhold'
+
+        callers = self._get_callers_namespace(queue_id=values['queue_id'])
+        self._session.hset(callers, values['uuid'], values['created_at'])
+
+        tmp = '%s:%s' % (callers, values['uuid'])
+        self._session.hmset(tmp, values)
+
+        name = self._get_queue_namespace(queue_id=values['queue_id'])
+        key = '%s:%s' % (name, values['state'])
+        self._session.zadd(key, values['created_at'], values['uuid'])
+
+        return values['uuid']
 
     def create_queue_member(self, values):
         """Create a new queue member."""
@@ -55,20 +98,6 @@ class Connection(object):
         member.save()
 
         return member
-
-    def delete_queue_caller(self, queue_id, id):
-        """Delete a queue caller."""
-        session = get_session()
-        with session.begin():
-            query = model_query(
-                models.QueueCaller, session=session
-            ).filter_by(queue_id=queue_id, id=id)
-
-            count = query.delete()
-            if count != 1:
-                raise exception.QueueCallerNotFound(queue_id=queue_id)
-
-            query.delete()
 
     def delete_queue_member(self, queue_id, id):
         """Delete a queue member."""
@@ -84,13 +113,13 @@ class Connection(object):
 
             query.delete()
 
-    def get_queue_caller(self, queue_id, id):
+    def get_queue_caller(self, queue_id, uuid):
         """Retrieve information about the given queue caller."""
-        query = model_query(models.QueueCaller).filter_by(
-            queue_id=queue_id, id=id)
-        result = query.one()
+        callers = self._get_callers_namespace(queue_id=queue_id)
+        name = '%s:%s' % (callers, uuid)
+        res = self._session.hgetall(name)
 
-        return result
+        return res
 
     def get_queue_member(self, queue_id, id):
         """Retrieve information about the given queue member."""
@@ -100,11 +129,16 @@ class Connection(object):
 
         return result
 
-    def list_queue_callers(self, queue_id):
+    def list_queue_callers(self, queue_id, state):
         """Retrieve a list of queue callers."""
-        query = model_query(models.QueueCaller).filter_by(queue_id=queue_id)
+        name = self._get_queue_namespace(queue_id=queue_id)
+        key = '%s:%s' % (name, state)
+        res = self._session.zrange(key, 0, -1)
 
-        return [qc for qc in query.all()]
+        if res is None:
+            res = []
+
+        return res
 
     def list_queue_members(self, queue_id):
         """Retrieve a list of queue members."""
@@ -121,3 +155,14 @@ class Connection(object):
         }
 
         return res
+
+    def _get_queue_namespace(self, queue_id):
+        name = '%s:%s' % (self._queue_namespace, queue_id)
+
+        return name
+
+    def _get_callers_namespace(self, queue_id):
+        name = self._get_queue_namespace(queue_id=queue_id)
+        callers = '%s:%s' % (name, 'callers')
+
+        return callers

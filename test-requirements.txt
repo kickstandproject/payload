@@ -5,8 +5,9 @@ hacking>=0.5.3,<0.6
 
 coverage
 fixtures>=0.3.12
+nose
+nosehtmloutput
 pylint
 sphinx
-testrepository>=0.0.13
 testtools>=0.9.27
 warlock

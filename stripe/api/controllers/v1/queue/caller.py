@@ -49,28 +49,21 @@ class QueueCaller(base.APIBase):
 class QueueCallersController(rest.RestController):
     """REST Controller for queue callers."""
 
-    @wsme_pecan.wsexpose(None, wtypes.text, wtypes.text, status_code=204)
-    def delete(self, queue_id, id):
-        """Delete a queue caller."""
-        pecan.request.middleware_api.delete_queue_caller(
-            queue_id=queue_id, id=id
-        )
-
-    @wsme_pecan.wsexpose([QueueCaller], unicode)
+    @wsme_pecan.wsexpose(None, unicode)
     def get_all(self, queue_id):
         """Retrieve a list of queue callers."""
         res = pecan.request.middleware_api.list_queue_callers(
-            queue_id=queue_id
+            queue_id=queue_id, state='onhold',
         )
 
         return res
 
-    @wsme_pecan.wsexpose(QueueCaller, unicode, unicode)
-    def get_one(self, queue_id, id):
+    @wsme_pecan.wsexpose(None, unicode, unicode)
+    def get_one(self, queue_id, uuid):
         """Retrieve information about the given queue."""
         try:
             result = pecan.request.middleware_api.get_queue_caller(
-                queue_id=queue_id, id=id
+                queue_id=queue_id, uuid=uuid
             )
         except exception.QueueCallerNotFound:
             # TODO(pabelanger): See if there is a better way of handling
