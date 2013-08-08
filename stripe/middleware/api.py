@@ -63,6 +63,11 @@ def model_query(model, *args, **kwargs):
     return query
 
 
+class QueueCallerStatus(object):
+
+    ONHOLD, RINGING, ONCALL, HUNGUP = range(1, 5)
+
+
 class Connection(object):
 
     _session = None
@@ -77,7 +82,7 @@ class Connection(object):
     def create_queue_caller(self, values):
         values['created_at'] = time.time()
         values['uuid'] = uuidutils.generate_uuid()
-        values['state'] = 'onhold'
+        status = QueueCallerStatus.ONHOLD
 
         callers = self._get_callers_namespace(queue_id=values['queue_id'])
         self._session.hset(callers, values['uuid'], values['created_at'])
@@ -85,11 +90,33 @@ class Connection(object):
         tmp = '%s:%s' % (callers, values['uuid'])
         self._session.hmset(tmp, values)
 
-        name = self._get_queue_namespace(queue_id=values['queue_id'])
-        key = '%s:%s' % (name, values['state'])
-        self._session.zadd(key, values['created_at'], values['uuid'])
+        self._create_queue_caller_status(
+            queue_id=values['queue_id'], status=status,
+            timestamp=values['created_at'], uuid=values['uuid'],
+        )
 
         return values['uuid']
+
+    def _queue_caller_status(self, queue_id, status, uuid):
+        name = self._get_queue_namespace(queue_id=queue_id)
+        key = '%s:%s' % (name, status)
+
+        return key
+
+    def _create_queue_caller_status(self, queue_id, status, timestamp, uuid):
+        key = self._queue_caller_status(
+            queue_id=queue_id, status=status, uuid=uuid
+        )
+        self._session.zadd(key, timestamp, uuid)
+        callers = self._get_callers_namespace(queue_id=queue_id)
+        tmp = '%s:%s' % (callers, uuid)
+        self._session.hset(tmp, 'status', status)
+
+    def _delete_queue_caller_status(self, queue_id, status, uuid):
+        key = self._queue_caller_status(
+            queue_id=queue_id, status=status, uuid=uuid
+        )
+        self._session.zrem(key, uuid)
 
     def create_queue_member(self, values):
         """Create a new queue member."""
@@ -129,10 +156,13 @@ class Connection(object):
 
         return result
 
-    def list_queue_callers(self, queue_id, state):
+    def list_queue_callers(self, queue_id, status=None):
         """Retrieve a list of queue callers."""
+        if status is None:
+            status = QueueCallerStatus.ONHOLD
+
         name = self._get_queue_namespace(queue_id=queue_id)
-        key = '%s:%s' % (name, state)
+        key = '%s:%s' % (name, status)
         res = self._session.zrange(key, 0, -1)
 
         if res is None:
@@ -145,6 +175,19 @@ class Connection(object):
         query = model_query(models.QueueMember).filter_by(queue_id=queue_id)
 
         return [qm for qm in query.all()]
+
+    def set_queue_caller_status(self, queue_id, status, uuid):
+        res = self.get_queue_caller(queue_id=queue_id, uuid=uuid)
+
+        # Delete caller from current sorted set
+        self._delete_queue_caller_status(
+            queue_id=queue_id, status=res['status'], uuid=uuid
+        )
+
+        # Add caller to new sorted set
+        self._create_queue_caller_status(
+            queue_id=queue_id, status=status, timestamp=time.time(), uuid=uuid
+        )
 
     def get_queue_stats(self, id):
         # TODO(pabelanger): Implement redis backend for queue callers.

@@ -53,7 +53,7 @@ class QueueCallersController(rest.RestController):
     def get_all(self, queue_id):
         """Retrieve a list of queue callers."""
         res = pecan.request.middleware_api.list_queue_callers(
-            queue_id=queue_id, state='onhold',
+            queue_id=queue_id,
         )
 
         return res
