@@ -36,6 +36,14 @@ Man pages
    man/stripe-api
    man/stripe-manage
 
+Modules
+=======
+
+.. toctree::
+   :maxdepth: 1
+
+   modules/modules
+
 Indices and tables
 ==================
 
