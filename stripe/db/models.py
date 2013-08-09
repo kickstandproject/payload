@@ -56,15 +56,6 @@ class StripeBase(models.TimestampMixin, models.ModelBase):
 Base = declarative_base(cls=StripeBase)
 
 
-class QueueCaller_(Base):
-    __tablename__ = 'queue_caller'
-    id = Column(Integer, primary_key=True)
-    called_id = Column(String(255))
-    caller_id = Column(String(255))
-    caller_name = Column(String(255))
-    queue_id = Column(Integer, ForeignKey('queue.id'))
-
-
 class QueueMember_(Base):
     __tablename__ = 'queue_member'
     id = Column(Integer, primary_key=True)
