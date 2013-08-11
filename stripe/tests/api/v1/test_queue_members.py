@@ -51,7 +51,7 @@ class TestCase(base.FunctionalTest):
 
     def _create_test_queue_member(self, **kwargs):
         queue_member = utils.get_test_queue_member(**kwargs)
-        self.middleware_api.create_queue_member(queue_member)
+        self.db_api.create_queue_member(queue_member)
         return queue_member
 
     def test_list_queue_members(self):
@@ -98,18 +98,3 @@ class TestCase(base.FunctionalTest):
         )
         self.assertEqual(res.status_int, 200)
         self.assertEqual(res.content_type, 'application/json')
-
-    def test_edit_queue_member(self):
-        qm = self._create_test_queue_member()
-        json = {
-            'disabled': True,
-        }
-        res = self.get_json('/queues/%s/members' % qm['queue_id'])
-        q = res[0]
-        self.put_json(
-            '/queues/%s/members/%s' % (q['queue_id'], q['id']), params=json
-        )
-        queue_member = self.middleware_api.get_queue_member(
-            id=q['id'], queue_id=q['queue_id']
-        )
-        self.assertEquals(queue_member.disabled, json['disabled'])

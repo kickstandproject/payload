@@ -53,12 +53,7 @@ def get_test_queue_caller(**kw):
 def get_test_queue_member(**kw):
     queue_member = {
         'id': kw.get('id', 123),
-        'created_at': None,
-        'disabled': kw.get('disabled', False),
-        'disabled_reason': kw.get('disabled_reason', None),
-        'extension': kw.get('extension', '123'),
         'agent_id': kw.get('agent_id', 123),
         'queue_id': kw.get('queue_id', 123),
-        'updated_at': None,
     }
     return queue_member

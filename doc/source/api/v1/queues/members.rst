@@ -70,22 +70,6 @@ Input
 Response
 ''''''''
 
-Edit queue member
------------------
-
-.. code-block:: html
-
-  PUT /v1/queues/:queue_id/members/:id
-
-Parameters
-''''''''''
-
-Input
-'''''
-
-Response
-''''''''
-
 Remove member from queue
 ------------------------
 

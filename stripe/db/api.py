@@ -63,76 +63,121 @@ class Connection(object):
 
     def create_agent(self, values):
         """Create a new agent."""
-        agent = models.Agent()
-        agent.update(values)
-        agent.save()
+        res = self._create_model(model=models.Agent(), values=values)
 
-        return agent
+        return res
 
     def create_queue(self, values):
         """Create a new queue."""
-        queue = models.Queue()
-        queue.update(values)
-        queue.save()
+        res = self._create_model(model=models.Queue(), values=values)
 
-        return queue
+        return res
 
-    def delete_agent(self, agent):
+    def create_queue_member(self, values):
+        """Create a new queue member."""
+        res = self._create_model(model=models.QueueMember(), values=values)
+
+        return res
+
+    def delete_agent(self, agent_id):
         """Delete an agent."""
-        session = get_session()
-        with session.begin():
-            query = model_query(
-                models.Agent, session=session
-            ).filter_by(id=agent)
+        res = self._delete_model(model=models.Agent, id=agent_id)
 
-            count = query.delete()
-            if count != 1:
-                raise exception.AgentNotFound(agent=agent)
+        if res != 1:
+            raise exception.AgentNotFound(agent_id=agent_id)
 
-            query.delete()
-
-    def delete_queue(self, queue):
+    def delete_queue(self, queue_id):
         """Delete a queue."""
+        res = self._delete_model(model=models.Queue, id=queue_id)
+
+        if res != 1:
+            raise exception.QueueNotFound(queue_id=queue_id)
+
+    def delete_queue_member(self, queue_member_id):
+        """Delete a queue member."""
+        res = self._delete_model(
+            model=models.QueueMember, id=queue_member_id
+        )
+
+        if res != 1:
+            raise exception.QueueMemberNotFound(
+                queue_member_id=queue_member_id
+            )
+
+    def get_agent(self, agent_id):
+        """Retrieve information about the given agent."""
+        try:
+            res = self._get_model(model=models.Agent, id=agent_id)
+        except exc.NoResultFound:
+            raise exception.AgentNotFound(agent_id=agent_id)
+
+        return res
+
+    def get_queue(self, queue_id):
+        """Retrieve information about the given queue."""
+        try:
+            res = self._get_model(model=models.Queue, id=queue_id)
+        except exc.NoResultFound:
+            raise exception.QueueNotFound(queue_id=queue_id)
+
+        return res
+
+    def get_queue_member(self, queue_member_id):
+        """Retrieve information about the given queue member."""
+        try:
+            res = self._get_model(model=models.QueueMember, id=queue_member_id)
+        except exc.NoResultFound:
+            raise exception.QueueMemberNotFound(
+                queue_member_id=queue_member_id
+            )
+
+        return res
+
+    def list_agents(self):
+        """Retrieve a list of agents."""
+        res = self._list_model(model=models.Agent)
+
+        return res
+
+    def list_queues(self):
+        """Retrieve a list of queues."""
+        res = self._list_model(model=models.Queue)
+
+        return res
+
+    def list_queue_members(self):
+        """Retrieve a list of queue members."""
+        res = self._list_model(model=models.QueueMember)
+
+        return res
+
+    def _create_model(self, model, values):
+        """Create a new model."""
+        model.update(values)
+        model.save()
+
+        return model
+
+    def _delete_model(self, model, id):
         session = get_session()
         with session.begin():
             query = model_query(
-                models.Queue, session=session
-            ).filter_by(id=queue)
+                model, session=session
+            ).filter_by(id=id)
 
             count = query.delete()
-            if count != 1:
-                raise exception.QueueNotFound(queue=queue)
 
-            query.delete()
+            return count
 
-    def get_agent(self, agent):
-        """Retrieve information about the given agent."""
-        query = model_query(models.Agent).filter_by(id=agent)
-        try:
-            result = query.one()
-        except exc.NoResultFound:
-            raise exception.AgentNotFound(agent=agent)
+    def _get_model(self, model, id):
+        """Retrieve information about the given model."""
+        query = model_query(model).filter_by(id=id)
+        res = query.one()
 
-        return result
+        return res
 
-    def get_queue(self, queue):
-        """Retrieve information about the given queue."""
-        query = model_query(models.Queue).filter_by(id=queue)
-        try:
-            result = query.one()
-        except exc.NoResultFound:
-            raise exception.QueueNotFound(queue=queue)
+    def _list_model(self, model):
+        """Retrieve a list of the given model."""
+        query = model_query(model)
 
-        return result
-
-    def get_agent_list(self):
-        """Retrieve a list of agents."""
-        query = model_query(models.Agent)
-
-        return [a for a in query.all()]
-
-    def get_queue_list(self):
-        """Retrieve a list of queues."""
-        query = model_query(models.Queue)
-
-        return [q for q in query.all()]
+        return [m for m in query.all()]

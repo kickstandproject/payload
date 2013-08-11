@@ -90,19 +90,19 @@ class NotFound(StripeException):
 
 
 class AgentNotFound(NotFound):
-    message = 'Agent %(agent)s could not be found'
+    message = 'Agent %(agent_id)s could not be found'
 
 
 class QueueNotFound(NotFound):
-    message = 'Queue %(queue)s could not be found'
+    message = 'Queue %(queue_id)s could not be found'
 
 
 class QueueCallerNotFound(NotFound):
-    message = 'Queue caller %(caller)s could not be found'
+    message = 'Queue caller %(caller_id)s could not be found'
 
 
 class QueueMemberNotFound(NotFound):
-    message = 'Queue member %(queue_member)s could not be found'
+    message = 'Queue member %(queue_member_id)s could not be found'
 
 
 class QueueMemberDuplicated(StripeException):

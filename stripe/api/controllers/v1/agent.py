@@ -55,7 +55,9 @@ class AgentsController(rest.RestController):
     @wsme_pecan.wsexpose([Agent])
     def get_all(self):
         """Retrieve a list of agents."""
-        return pecan.request.db_api.get_agent_list()
+        res = pecan.request.db_api.list_agents()
+
+        return res
 
     @wsme_pecan.wsexpose(Agent, unicode)
     def get_one(self, id):

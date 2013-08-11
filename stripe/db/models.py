@@ -46,24 +46,8 @@ class StripeBase(models.TimestampMixin, models.ModelBase):
 
     metadata = None
 
-    def as_dict(self):
-        d = {}
-        for c in self.__table__.columns:
-            d[c.name] = self[c.name]
-        return d
-
 
 Base = declarative_base(cls=StripeBase)
-
-
-class QueueMember_(Base):
-    __tablename__ = 'queue_member'
-    id = Column(Integer, primary_key=True)
-    disabled = Column(Boolean, default=False)
-    disabled_reason = Column(String(255))
-    extension = Column(String(255))
-    agent_id = Column(Integer, ForeignKey('agent.id'), unique=True)
-    queue_id = Column(Integer, ForeignKey('queue.id'))
 
 
 class Agent(Base):
@@ -79,3 +63,10 @@ class Queue(Base):
     description = Column(JSONEncodedDict)
     disabled = Column(Boolean, default=False)
     name = Column(String(80))
+
+
+class QueueMember(Base):
+    __tablename__ = 'queue_member'
+    id = Column(Integer, primary_key=True)
+    agent_id = Column(Integer, ForeignKey('agent.id'), unique=True)
+    queue_id = Column(Integer, ForeignKey('queue.id'))

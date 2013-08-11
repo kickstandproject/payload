@@ -37,17 +37,12 @@ class TestCase(base.FunctionalTest):
             exception.AgentNotFound, self.db_api.delete_agent, 123
         )
 
-    def test_get_agent_by_id(self):
-        agent = self._create_test_agent()
-        res = self.db_api.get_agent(agent['id'])
-        self.assertEqual(agent['id'], res['id'])
-
-    def test_get_agent_list(self):
+    def test_list_agents(self):
         agent = []
         for i in xrange(1, 6):
             q = self._create_test_agent(id=i)
             agent.append(q)
-        res = self.db_api.get_agent_list()
+        res = self.db_api.list_agents()
         res.sort()
         agent.sort()
         self.assertEqual(len(res), len(agent))

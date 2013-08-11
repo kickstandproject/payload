@@ -24,8 +24,7 @@ from wsme import types as wtypes
 from wsmeext import pecan as wsme_pecan
 
 from stripe.api.controllers.v1 import base
-from stripe.common import exception
-from stripe.middleware import models
+from stripe.db import models
 from stripe.openstack.common import log as logging
 
 LOG = logging.getLogger(__name__)
@@ -35,16 +34,13 @@ class QueueMember(base.APIBase):
     """API representation of a queue member."""
 
     id = int
-    disabled = bool
-    disabled_reason = wtypes.text
-    extension = wtypes.text
     agent_id = int
     queue_id = int
 
     def __init__(self, **kwargs):
         self.fields = vars(models.QueueMember)
         for k in self.fields:
-                setattr(self, k, kwargs.get(k))
+            setattr(self, k, kwargs.get(k))
 
 
 class QueueMembersController(rest.RestController):
@@ -52,59 +48,27 @@ class QueueMembersController(rest.RestController):
 
     @wsme_pecan.wsexpose(None, wtypes.text, wtypes.text, status_code=204)
     def delete(self, queue_id, id):
-        """Delete a queue."""
-        pecan.request.middleware_api.delete_queue_member(
-            id=id, queue_id=queue_id
-        )
+        """Delete a queue member."""
+        pecan.request.db_api.delete_queue_member(id)
 
-    @wsme_pecan.wsexpose([QueueMember], unicode)
+    @wsme_pecan.wsexpose([QueueMember], wtypes.text)
     def get_all(self, queue_id):
         """Retrieve a list of queue members."""
+        res = pecan.request.db_api.list_queue_members()
 
-        return pecan.request.middleware_api.list_queue_members(
-            queue_id=queue_id
-        )
+        return res
 
-    @wsme_pecan.wsexpose(QueueMember, unicode, unicode)
+    @wsme_pecan.wsexpose(QueueMember, wtypes.text, wtypes.text)
     def get_one(self, queue_id, id):
-        """Retrieve information about the given queue."""
-        try:
-            result = pecan.request.middleware_api.get_queue_member(
-                id=id, queue_id=queue_id
-            )
-        except exception.QueueMemberNotFound:
-            # TODO(pabelanger): See if there is a better way of handling
-            # exceptions.
-            raise wsme.exc.ClientSideError('Not found')
+        """Retrieve information about the given queue member."""
+        res = pecan.request.db_api.get_queue_member(id)
 
-        return result
+        return res
 
     @wsme.validate(QueueMember)
-    @wsme_pecan.wsexpose(QueueMember, unicode, body=QueueMember)
+    @wsme_pecan.wsexpose(QueueMember, wtypes.text, body=QueueMember)
     def post(self, queue_id, body):
-        """Create a new queue."""
-        try:
-            d = body.as_dict()
-            queue_member = pecan.request.middleware_api.create_queue_member(d)
-        except Exception:
-            # TODO(pabelanger): See if there is a better way of handling
-            # exceptions.
-            raise wsme.exc.ClientSideError('Invalid data')
+        """Create a new queue member."""
+        res = pecan.request.db_api.create_queue_member(body.as_dict())
 
-        return queue_member
-
-    @wsme.validate(QueueMember)
-    @wsme_pecan.wsexpose(
-        QueueMember, wtypes.text, wtypes.text, body=QueueMember
-    )
-    def put(self, queue_id, id, body):
-        queue_member = pecan.request.middleware_api.get_queue_member(
-            id=id, queue_id=queue_id
-        )
-        items = body.as_dict().items()
-        for k, v in [(k, v) for (k, v) in items if v]:
-            queue_member[k] = v
-
-        queue_member.save()
-
-        return queue_member
+        return res

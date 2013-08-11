@@ -21,9 +21,6 @@ import time
 
 from oslo.config import cfg
 
-from stripe.common import exception
-from stripe.middleware import models
-from stripe.middleware import session as middleware_session
 from stripe.openstack.common import uuidutils
 
 redis_opts = [
@@ -44,23 +41,10 @@ redis_opts = [
 CONF = cfg.CONF
 CONF.register_opts(redis_opts, 'middleware')
 
-get_session = middleware_session.get_session
-
 
 def get_instance():
     """Return a DB API instance."""
     return Connection()
-
-
-def model_query(model, *args, **kwargs):
-    """Query helper for simpler session usage.
-
-    :param session: if present, the session to use
-    """
-    session = kwargs.get('session') or get_session()
-    query = session.query(model, *args)
-
-    return query
 
 
 class QueueCallerStatus(object):
@@ -118,28 +102,6 @@ class Connection(object):
         )
         self._session.zrem(key, uuid)
 
-    def create_queue_member(self, values):
-        """Create a new queue member."""
-        member = models.QueueMember()
-        member.update(values)
-        member.save()
-
-        return member
-
-    def delete_queue_member(self, queue_id, id):
-        """Delete a queue member."""
-        session = get_session()
-        with session.begin():
-            query = model_query(
-                models.QueueMember, session=session
-            ).filter_by(queue_id=queue_id, id=id)
-
-            count = query.delete()
-            if count != 1:
-                raise exception.QueueMemberNotFound(queue_id=queue_id)
-
-            query.delete()
-
     def get_queue_caller(self, queue_id, uuid):
         """Retrieve information about the given queue caller."""
         callers = self._get_callers_namespace(queue_id=queue_id)
@@ -147,14 +109,6 @@ class Connection(object):
         res = self._session.hgetall(name)
 
         return res
-
-    def get_queue_member(self, queue_id, id):
-        """Retrieve information about the given queue member."""
-        query = model_query(models.QueueMember).filter_by(
-            queue_id=queue_id, id=id)
-        result = query.one()
-
-        return result
 
     def list_queue_callers(self, queue_id, status=None):
         """Retrieve a list of queue callers."""
@@ -169,12 +123,6 @@ class Connection(object):
             res = []
 
         return res
-
-    def list_queue_members(self, queue_id):
-        """Retrieve a list of queue members."""
-        query = model_query(models.QueueMember).filter_by(queue_id=queue_id)
-
-        return [qm for qm in query.all()]
 
     def set_queue_caller_status(self, queue_id, status, uuid):
         res = self.get_queue_caller(queue_id=queue_id, uuid=uuid)

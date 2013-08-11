@@ -63,7 +63,9 @@ class QueuesController(rest.RestController):
     @wsme_pecan.wsexpose([Queue])
     def get_all(self):
         """Retrieve a list of queues."""
-        return pecan.request.db_api.get_queue_list()
+        res = pecan.request.db_api.list_queues()
+
+        return res
 
     @wsme_pecan.wsexpose(Queue, unicode)
     def get_one(self, id):

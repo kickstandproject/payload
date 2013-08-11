@@ -16,20 +16,3 @@ middleware Package
     :members:
     :undoc-members:
     :show-inheritance:
-
-:mod:`models` Module
---------------------
-
-.. automodule:: stripe.middleware.models
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-:mod:`session` Module
----------------------
-
-.. automodule:: stripe.middleware.session
-    :members:
-    :undoc-members:
-    :show-inheritance:
-

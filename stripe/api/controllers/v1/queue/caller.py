@@ -20,30 +20,12 @@ import pecan
 import wsme
 
 from pecan import rest
-from wsme import types as wtypes
 from wsmeext import pecan as wsme_pecan
 
-from stripe.api.controllers.v1 import base
 from stripe.common import exception
-from stripe.middleware import models
 from stripe.openstack.common import log as logging
 
 LOG = logging.getLogger(__name__)
-
-
-class QueueCaller(base.APIBase):
-    """API representation of a queue caller."""
-
-    id = int
-    called_id = wtypes.text
-    caller_id = wtypes.text
-    caller_name = wtypes.text
-    queue_id = int
-
-    def __init__(self, **kwargs):
-        self.fields = vars(models.QueueCaller)
-        for k in self.fields:
-            setattr(self, k, kwargs.get(k))
 
 
 class QueueCallersController(rest.RestController):
