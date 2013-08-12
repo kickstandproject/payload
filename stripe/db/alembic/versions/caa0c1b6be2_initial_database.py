@@ -44,24 +44,10 @@ agent = (
     Column('updated_at', DateTime),
 )
 
-queue_caller = (
-    'queue_caller',
-    Column('id', Integer, primary_key=True, index=True),
-    Column('created_at', DateTime),
-    Column('called_id', String(255)),
-    Column('caller_id', String(255)),
-    Column('caller_name', String(255)),
-    Column('queue_id', Integer),
-    Column('updated_at', DateTime),
-)
-
 queue_member = (
     'queue_member',
     Column('id', Integer, primary_key=True, index=True),
     Column('created_at', DateTime),
-    Column('disabled', Boolean),
-    Column('disabled_reason', String(255)),
-    Column('extension', String(255)),
     Column('agent_id', Integer, unique=True),
     Column('queue_id', Integer),
     Column('updated_at', DateTime),
@@ -77,7 +63,7 @@ queue = (
     Column('updated_at', DateTime),
 )
 
-tables = [agent, queue_caller, queue_member, queue]
+tables = [agent, queue_member, queue]
 
 
 def upgrade():
