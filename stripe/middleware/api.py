@@ -77,7 +77,11 @@ class Connection(object):
             timestamp=values['created_at'], uuid=values['uuid'],
         )
 
-        return values['uuid']
+        res = self.get_queue_caller(
+            queue_id=values['queue_id'], uuid=values['uuid']
+        )
+
+        return res
 
     def _queue_caller_status(self, queue_id, status, uuid):
         name = self._get_queue_namespace(queue_id=queue_id)
@@ -115,10 +119,12 @@ class Connection(object):
 
         name = self._get_queue_namespace(queue_id=queue_id)
         key = '%s:%s' % (name, status)
-        res = self._session.zrange(key, 0, -1)
-
-        if res is None:
-            res = []
+        data = self._session.zrange(key, 0, -1)
+        res = []
+        for uuid in data:
+            res.append(self.get_queue_caller(
+                queue_id=queue_id, uuid=uuid
+            ))
 
         return res
 

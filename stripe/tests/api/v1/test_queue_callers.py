@@ -61,7 +61,7 @@ class TestCase(base.FunctionalTest):
         res = self.get_json(
             '/queues/%s/callers/%s' % (
                 '1',
-                callers[0],
+                callers[0]['uuid'],
             )
         )
-        self.assertEqual(callers[0], res['uuid'])
+        self.assertEqual(callers[0]['uuid'], res['uuid'])

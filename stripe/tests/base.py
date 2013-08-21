@@ -35,8 +35,8 @@ class TestCase(test.TestCase):
         for i in xrange(1, 6):
             kwargs['id'] = i
             caller = utils.get_test_queue_caller(**kwargs)
-            uuid = session.create_queue_caller(caller)
-            callers.append(uuid)
+            res = session.create_queue_caller(caller)
+            callers.append(res)
 
         self.assertEqual(len(callers), 5)
 
