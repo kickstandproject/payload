@@ -21,9 +21,9 @@ import pecan
 import pecan.testing
 import warlock
 
-from stripe.db import api as db_api
 from stripe.openstack.common import log as logging
 from stripe.tests import base
+from stripe.tests import utils
 
 LOG = logging.getLogger(__name__)
 
@@ -35,7 +35,6 @@ class FunctionalTest(base.TestCase):
     def setUp(self):
         super(FunctionalTest, self).setUp()
         self.app = self._make_app()
-        self.db_api = db_api.get_instance()
 
     def tearDown(self):
         super(FunctionalTest, self).tearDown()
@@ -114,12 +113,26 @@ class FunctionalTest(base.TestCase):
                               headers=headers, extra_environ=extra_environ,
                               status=status, method="put")
 
-    def _validate_queue_caller(self, original, result):
-        super(FunctionalTest, self)._validate_queue_caller(original, result)
-        self._assertEqualSchemas('queuecaller', result)
-
     def _assertEqualSchemas(self, schema, obj1):
         s = self.get_json('/schemas/%s' % schema)
         model = warlock.model_factory(s)
         obj2 = model(obj1)
         self.assertEqual(obj1, obj2)
+
+    def _create_test_agent(self, **kwargs):
+        json = utils.get_test_agent(**kwargs)
+        res = self.post_json(
+            '/agents', params=json, status=200
+        )
+        self._assertEqualSchemas('agent', res.json)
+
+        return res.json
+
+    def _create_test_queue(self, **kwargs):
+        json = utils.get_test_queue(**kwargs)
+        res = self.post_json(
+            '/queues', params=json, status=200
+        )
+        self._assertEqualSchemas('queue', res.json)
+
+        return res.json

@@ -15,15 +15,13 @@
 # limitations under the License.
 
 from stripe.tests.api.v1 import base
-from stripe.tests import utils
 
 
 class TestQueueStatsEmpty(base.FunctionalTest):
 
     def setUp(self):
         super(TestQueueStatsEmpty, self).setUp()
-        queue = utils.get_test_queue()
-        self.db_api.create_queue(queue)
+        self._create_test_queue()
 
     def test_empty_get_all(self):
         json = {

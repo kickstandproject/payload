@@ -15,7 +15,6 @@
 # limitations under the License.
 
 from stripe.tests.api.v1 import base
-from stripe.tests import utils
 
 
 class TestAgentsEmpty(base.FunctionalTest):
@@ -35,76 +34,35 @@ class TestAgentsEmpty(base.FunctionalTest):
 
 class TestCase(base.FunctionalTest):
 
-    def setUp(self):
-        super(TestCase, self).setUp()
-        self._agents = []
-        for i in xrange(1, 6):
-            m = self._create_test_agent(id=i)
-            self._agents.append(m)
-        self._agents.sort()
-
-    def _create_test_agent(self, **kwargs):
-        agent = utils.get_test_agent(**kwargs)
-        self.db_api.create_agent(agent)
-        return agent
-
-    def test_list_agents(self):
-        res = self.get_json('/agents')
-        for idx in range(len(res)):
-            self._assertEqualSchemas('agent', res[idx])
-
-        res.sort()
-        ignored_keys = [
-            'created_at',
-            'updated_at',
-        ]
-        for idx in range(len(res)):
-            self._assertEqualObjects(
-                self._agents[idx], res[idx], ignored_keys
-            )
+    def test_create_agent(self):
+        self._create_test_agent()
 
     def test_delete_agent(self):
+        res = self._create_test_agent()
         self.delete(
-            '/agents/1', status=200
+            '/agents/%s' % res['id'], status=200
         )
-        res = self.get_json('/agents')
-        for idx in range(len(res)):
-            self._assertEqualSchemas('agent', res[idx])
-        res.sort()
-        self._agents.pop(0)
-        ignored_keys = [
-            'created_at',
-            'updated_at',
-        ]
-        for idx in range(len(res)):
-            self._assertEqualObjects(
-                self._agents[idx], res[idx], ignored_keys
-            )
+        self._list_agents([])
+
+    def test_edit_agent(self):
+        agent = self._create_test_agent()
+        json = {
+            'name': 'renamed',
+        }
+        res = self.put_json(
+            '/agents/%s' % agent['id'], params=json
+        )
+        self._assertEqualSchemas('agent', res.json)
 
     def test_get_agent(self):
         agent = self._create_test_agent()
         res = self.get_json('/agents/%s' % agent['id'])
         self._assertEqualSchemas('agent', res)
 
-    def test_create_agent(self):
-        json = {
-            'name': 'Jane Doe',
-            'password': 'example',
-        }
-        res = self.post_json(
-            '/agents', params=json, status=200
-        )
-        self._assertEqualSchemas('agent', res.json)
+    def test_list_agents(self):
+        res = self._create_test_agent()
+        self._list_agents([res])
 
-    def test_edit_agent(self):
-        json = {
-            'name': 'renamed',
-        }
+    def _list_agents(self, agents):
         res = self.get_json('/agents')
-        for idx in range(len(res)):
-            self._assertEqualSchemas('agent', res[idx])
-        agent_id = res[0]['id']
-        res = self.put_json(
-            '/agents/%s' % agent_id, params=json
-        )
-        self._assertEqualSchemas('agent', res.json)
+        self.assertEqual(res, agents)

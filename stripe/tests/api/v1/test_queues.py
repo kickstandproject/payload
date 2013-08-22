@@ -15,7 +15,6 @@
 # limitations under the License.
 
 from stripe.tests.api.v1 import base
-from stripe.tests import utils
 
 
 class TestQueuesEmpty(base.FunctionalTest):
@@ -35,71 +34,35 @@ class TestQueuesEmpty(base.FunctionalTest):
 
 class TestCase(base.FunctionalTest):
 
-    def setUp(self):
-        super(TestCase, self).setUp()
-        self._queues = []
-        for i in xrange(1, 6):
-            q = self._create_test_queue(id=i)
-            self._queues.append(q)
-        self._queues.sort()
-
-    def _create_test_queue(self, **kwargs):
-        queue = utils.get_test_queue(**kwargs)
-        self.db_api.create_queue(queue)
-        return queue
-
-    def test_list_queues(self):
-        res = self.get_json('/queues')
-        for idx in range(len(res)):
-            self._assertEqualSchemas('queue', res[idx])
-        res.sort()
-        ignored_keys = [
-            'created_at',
-            'updated_at',
-        ]
-        for idx in range(len(res)):
-            self._assertEqualObjects(self._queues[idx], res[idx], ignored_keys)
+    def test_create_queue(self):
+        self._create_test_queue()
 
     def test_delete_queue(self):
+        res = self._create_test_queue()
         self.delete(
-            '/queues/1', status=200
+            '/queues/%s' % res['id'], status=200
         )
-        res = self.get_json('/queues')
-        for idx in range(len(res)):
-            self._assertEqualSchemas('queue', res[idx])
-        res.sort()
-        self._queues.pop(0)
-        ignored_keys = [
-            'created_at',
-            'updated_at',
-        ]
-        for idx in range(len(res)):
-            self._assertEqualObjects(self._queues[idx], res[idx], ignored_keys)
+        self._list_queues([])
 
     def test_get_queue(self):
         queue = self._create_test_queue()
         res = self.get_json('/queues/%s' % queue['id'])
         self._assertEqualSchemas('queue', res)
 
-    def test_create_queue(self):
-        json = {
-            'name': 'support',
-            'description': 'Support queue',
-        }
-        res = self.post_json(
-            '/queues', params=json, status=200
-        )
-        self._assertEqualSchemas('queue', res.json)
+    def test_list_queues(self):
+        queue = self._create_test_queue()
+        self._list_queues([queue])
 
     def test_edit_queue(self):
+        queue = self._create_test_queue()
         json = {
             'name': 'renamed',
         }
-        res = self.get_json('/queues')
-        for idx in range(len(res)):
-            self._assertEqualSchemas('queue', res[idx])
-        queue_id = res[0]['id']
         res = self.put_json(
-            '/queues/%s' % queue_id, params=json
+            '/queues/%s' % queue['id'], params=json
         )
         self._assertEqualSchemas('queue', res.json)
+
+    def _list_queues(self, queues):
+        res = self.get_json('/queues')
+        self.assertEqual(res, queues)

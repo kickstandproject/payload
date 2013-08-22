@@ -22,8 +22,7 @@ class TestQueueCallersEmpty(base.FunctionalTest):
 
     def setUp(self):
         super(TestQueueCallersEmpty, self).setUp()
-        queue = utils.get_test_queue()
-        self.db_api.create_queue(queue)
+        self._create_test_queue()
 
     def test_empty_get_all(self):
         res = self.get_json('/queues/123/callers')
@@ -40,9 +39,8 @@ class TestCase(base.FunctionalTest):
 
     def setUp(self):
         super(TestCase, self).setUp()
-        self.queue_id = 1
-        queue = utils.get_test_queue(id=self.queue_id)
-        self.db_api.create_queue(queue)
+        res = self._create_test_queue()
+        self.queue_id = res['id']
 
     def test_create_queue_caller(self):
         self._create_queue_caller()

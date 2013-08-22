@@ -29,11 +29,9 @@ def get_test_agent(**kw):
 def get_test_queue(**kw):
     queue = {
         'id': kw.get('id', 123),
-        'created_at': None,
         'description': 'Example queue',
         'disabled': kw.get('disabled', False),
         'name': 'example',
-        'updated_at': None,
     }
     return queue
 
@@ -51,6 +49,5 @@ def get_test_queue_member(**kw):
     queue_member = {
         'id': kw.get('id', 123),
         'agent_id': kw.get('agent_id', 123),
-        'queue_id': kw.get('queue_id', 123),
     }
     return queue_member
