@@ -30,12 +30,14 @@ class TestCase(test.TestCase):
         ]
         self._assertEqualObjects(original, result, ignored_keys)
 
-    def _create_queue_caller(self, session, **kwargs):
+    def _create_queue_caller(self, session, queue_id, **kwargs):
         callers = []
         for i in xrange(1, 6):
             kwargs['id'] = i
             caller = utils.get_test_queue_caller(**kwargs)
-            res = session.create_queue_caller(caller)
+            res = session.create_queue_caller(
+                queue_id=queue_id, values=caller
+            )
             callers.append(res)
 
         self.assertEqual(len(callers), 5)

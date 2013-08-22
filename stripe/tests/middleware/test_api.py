@@ -44,11 +44,11 @@ class TestCase(base.TestCase):
         )
         self.assertEqual(res['uuid'], callers[0]['uuid'])
 
-    def test_set_queue_caller_status(self):
+    def test__set_queue_caller_status(self):
         queue_id = 1
         status = api.QueueCallerStatus.RINGING
         callers = self._create_queue_caller(queue_id=queue_id)
-        self.middleware_api.set_queue_caller_status(
+        self.middleware_api._set_queue_caller_status(
             queue_id=queue_id, status=status,
             uuid=callers[0]['uuid'],
         )
@@ -58,7 +58,6 @@ class TestCase(base.TestCase):
         )
         self.assertEqual(res['uuid'], callers[0]['uuid'])
         self.assertEqual(res['status'], unicode(status))
-        self.assertEqual(res['queue_id'], unicode(queue_id))
         callers.pop(0)
         self._list_queue_callers(len(callers), queue_id)
         self._list_queue_callers(1, queue_id, status=status)

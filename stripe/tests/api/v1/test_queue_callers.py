@@ -40,28 +40,45 @@ class TestCase(base.FunctionalTest):
 
     def setUp(self):
         super(TestCase, self).setUp()
-        queue_id = 1
-        queue = utils.get_test_queue(id=queue_id)
+        self.queue_id = 1
+        queue = utils.get_test_queue(id=self.queue_id)
         self.db_api.create_queue(queue)
 
     def test_create_queue_caller(self):
-        self._create_queue_caller(queue_id=1)
+        self._create_queue_caller()
+
+    def test_delete_queue_caller(self):
+        callers = self._create_queue_caller()
+        self.delete(
+            '/queues/%s/callers/%s' % (
+                self.queue_id, callers['uuid']
+            ), status=200,
+        )
+        self._list_queue_callers([])
 
     def test_list_queue_callers(self):
-        queue_id = 1
-        callers = self._create_queue_caller(queue_id=queue_id)
-        self._list_queue_callers(callers, queue_id)
-
-    def _list_queue_callers(self, callers, queue_id):
-        res = self.get_json('/queues/%s/callers' % queue_id)
-        self.assertEqual(len(res), len(callers))
+        callers = self._create_queue_caller()
+        self._list_queue_callers([callers])
 
     def test_get_queue_caller(self):
-        callers = self._create_queue_caller(queue_id=1)
+        callers = self._create_queue_caller()
         res = self.get_json(
             '/queues/%s/callers/%s' % (
-                '1',
-                callers[0]['uuid'],
+                self.queue_id, callers['uuid'],
             )
         )
-        self.assertEqual(callers[0]['uuid'], res['uuid'])
+        self.assertEqual(callers['uuid'], res['uuid'])
+
+    def _create_queue_caller(self):
+        json = utils.get_test_queue_caller(queue_id=self.queue_id)
+        res = self.post_json(
+            '/queues/%s/callers' % self.queue_id, params=json, status=200
+        )
+        self.assertEqual(res.status_int, 200)
+        self.assertEqual(res.content_type, 'application/json')
+
+        return res.json
+
+    def _list_queue_callers(self, callers):
+        res = self.get_json('/queues/%s/callers' % self.queue_id)
+        self.assertEqual(res, callers)

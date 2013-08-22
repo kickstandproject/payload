@@ -22,7 +22,6 @@ import pecan.testing
 import warlock
 
 from stripe.db import api as db_api
-from stripe.middleware import api as middleware_api
 from stripe.openstack.common import log as logging
 from stripe.tests import base
 
@@ -37,7 +36,6 @@ class FunctionalTest(base.TestCase):
         super(FunctionalTest, self).setUp()
         self.app = self._make_app()
         self.db_api = db_api.get_instance()
-        self.middleware_api = middleware_api.get_instance()
 
     def tearDown(self):
         super(FunctionalTest, self).tearDown()
@@ -125,8 +123,3 @@ class FunctionalTest(base.TestCase):
         model = warlock.model_factory(s)
         obj2 = model(obj1)
         self.assertEqual(obj1, obj2)
-
-    def _create_queue_caller(self, **kwargs):
-        return super(FunctionalTest, self)._create_queue_caller(
-            session=self.middleware_api, **kwargs
-        )

@@ -29,7 +29,7 @@ class SchemasController(rest.RestController):
     _custom_actions = {
         'agent': ['GET'],
         'queue': ['GET'],
-        'queuecaller': ['GET'],
+        'queue_caller': ['GET'],
     }
 
     @wsme_pecan.wsexpose(unicode)
@@ -88,18 +88,9 @@ class SchemasController(rest.RestController):
         return schema.Schema('queue', json).raw()
 
     @wsme_pecan.wsexpose(unicode)
-    def queuecaller(self):
+    def queue_caller(self):
         """Retrieve schema for a queue caller."""
         json = {
-            'id': {
-                'type': 'integer',
-            },
-            'created_at': {
-                'type': ['string', 'null'],
-            },
-            'description': {
-                'type': ['string', 'null'],
-            },
             'called_id': {
                 'type': 'string',
             },
@@ -109,12 +100,21 @@ class SchemasController(rest.RestController):
             'caller_name': {
                 'type': 'string',
             },
-            'queue_id': {
+            'created_at': {
+                'type': ['string', 'null'],
+            },
+            'position': {
                 'type': 'integer',
+            },
+            'status': {
+                'type': 'string',
             },
             'updated_at': {
                 'type': ['string', 'null'],
             },
+            'uuid': {
+                'type': 'string',
+            },
         }
 
-        return schema.Schema('queuecaller', json).raw()
+        return schema.Schema('queue_caller', json).raw()

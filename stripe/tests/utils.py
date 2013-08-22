@@ -43,7 +43,6 @@ def get_test_queue_caller(**kw):
         'called_id': '6060',
         'caller_id': '5551234',
         'caller_name': 'Bob Jones',
-        'queue_id': kw.get('queue_id', 123),
     }
     return caller
 

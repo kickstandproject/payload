@@ -61,27 +61,32 @@ class Connection(object):
             db=CONF.middleware.database, password=CONF.middleware.password,
         )
 
-    def create_queue_caller(self, values):
+    def create_queue_caller(self, queue_id, values):
         values['created_at'] = time.time()
         values['uuid'] = uuidutils.generate_uuid()
         status = QueueCallerStatus.ONHOLD
 
-        callers = self._get_callers_namespace(queue_id=values['queue_id'])
+        callers = self._get_callers_namespace(queue_id=queue_id)
         self._session.hset(callers, values['uuid'], values['created_at'])
 
         tmp = '%s:%s' % (callers, values['uuid'])
         self._session.hmset(tmp, values)
 
         self._create_queue_caller_status(
-            queue_id=values['queue_id'], status=status,
-            timestamp=values['created_at'], uuid=values['uuid'],
+            queue_id=queue_id, status=status, timestamp=values['created_at'],
+            uuid=values['uuid'],
         )
 
         res = self.get_queue_caller(
-            queue_id=values['queue_id'], uuid=values['uuid']
+            queue_id=queue_id, uuid=values['uuid']
         )
 
         return res
+
+    def delete_queue_caller(self, queue_id, uuid):
+        self._set_queue_caller_status(
+            queue_id=queue_id, status=QueueCallerStatus.HUNGUP, uuid=uuid
+        )
 
     def _queue_caller_status(self, queue_id, status, uuid):
         name = self._get_queue_namespace(queue_id=queue_id)
@@ -110,6 +115,13 @@ class Connection(object):
         name = '%s:%s' % (callers, uuid)
         res = self._session.hgetall(name)
 
+        try:
+            name = self._get_queue_namespace(queue_id=queue_id)
+            key = '%s:%s' % (name, res['status'])
+            res['position'] = self._session.zrank(key, uuid)
+        except Exception:
+            pass
+
         return res
 
     def list_queue_callers(self, queue_id, status=None):
@@ -128,7 +140,7 @@ class Connection(object):
 
         return res
 
-    def set_queue_caller_status(self, queue_id, status, uuid):
+    def _set_queue_caller_status(self, queue_id, status, uuid):
         res = self.get_queue_caller(queue_id=queue_id, uuid=uuid)
 
         # Delete caller from current sorted set
