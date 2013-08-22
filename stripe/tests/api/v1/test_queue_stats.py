@@ -26,8 +26,6 @@ class TestQueueStatsEmpty(base.FunctionalTest):
     def test_empty_get_all(self):
         json = {
             'callers': 0,
-            'queue_id': '123',
-            'updated_at': None,
         }
         res = self.get_json('/queues/123/stats')
         self.assertEqual(res, json)

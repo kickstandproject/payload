@@ -88,7 +88,7 @@ class Connection(object):
             queue_id=queue_id, status=QueueCallerStatus.HUNGUP, uuid=uuid
         )
 
-    def _queue_caller_status(self, queue_id, status, uuid):
+    def _queue_caller_status(self, queue_id, status):
         name = self._get_queue_namespace(queue_id=queue_id)
         key = '%s:%s' % (name, status)
 
@@ -96,7 +96,7 @@ class Connection(object):
 
     def _create_queue_caller_status(self, queue_id, status, timestamp, uuid):
         key = self._queue_caller_status(
-            queue_id=queue_id, status=status, uuid=uuid
+            queue_id=queue_id, status=status
         )
         self._session.zadd(key, timestamp, uuid)
         callers = self._get_callers_namespace(queue_id=queue_id)
@@ -105,7 +105,7 @@ class Connection(object):
 
     def _delete_queue_caller_status(self, queue_id, status, uuid):
         key = self._queue_caller_status(
-            queue_id=queue_id, status=status, uuid=uuid
+            queue_id=queue_id, status=status
         )
         self._session.zrem(key, uuid)
 
@@ -129,9 +129,8 @@ class Connection(object):
         if status is None:
             status = QueueCallerStatus.ONHOLD
 
-        name = self._get_queue_namespace(queue_id=queue_id)
-        key = '%s:%s' % (name, status)
-        data = self._session.zrange(key, 0, -1)
+        data = self._list_queue_callers(queue_id=queue_id, status=status)
+
         res = []
         for uuid in data:
             res.append(self.get_queue_caller(
@@ -139,6 +138,20 @@ class Connection(object):
             ))
 
         return res
+
+    def _count_queue_callers(self, queue_id, status):
+        key = self._queue_caller_status(
+            queue_id=queue_id, status=status
+        )
+
+        return self._session.zcard(key)
+
+    def _list_queue_callers(self, queue_id, status):
+        key = self._queue_caller_status(
+            queue_id=queue_id, status=status
+        )
+
+        return self._session.zrange(key, 0, -1)
 
     def _set_queue_caller_status(self, queue_id, status, uuid):
         res = self.get_queue_caller(queue_id=queue_id, uuid=uuid)
@@ -153,12 +166,15 @@ class Connection(object):
             queue_id=queue_id, status=status, timestamp=time.time(), uuid=uuid
         )
 
-    def get_queue_stats(self, id):
-        # TODO(pabelanger): Implement redis backend for queue callers.
+    def get_queue_stats(self, queue_id, status=None):
+        """Retrieve stats for a queue."""
+        if status is None:
+            status = QueueCallerStatus.ONHOLD
+
+        callers = self._count_queue_callers(queue_id=queue_id, status=status)
+
         res = {
-            'callers': 0,
-            'queue_id': id,
-            'updated_at': None,
+            'callers': callers,
         }
 
         return res
