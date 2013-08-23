@@ -34,7 +34,6 @@ class Agent(base.APIBase):
 
     id = int
     name = wtypes.text
-    password = wtypes.text
 
     def __init__(self, **kwargs):
         self.fields = vars(models.Agent)
@@ -44,6 +43,10 @@ class Agent(base.APIBase):
 
 class AgentsController(rest.RestController):
     """REST Controller for Agents."""
+
+    _custom_actions = {
+        'login': ['POST'],
+    }
 
     @wsme_pecan.wsexpose(None, wtypes.text, status_code=204)
     def delete(self, id):
@@ -68,6 +71,10 @@ class AgentsController(rest.RestController):
             raise wsme.exc.ClientSideError('Not found')
 
         return result
+
+    @wsme_pecan.wsexpose(None, unicode)
+    def login(self, id):
+        pass
 
     @wsme.validate(Agent)
     @wsme_pecan.wsexpose(Agent, body=Agent)

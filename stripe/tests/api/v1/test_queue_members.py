@@ -15,7 +15,6 @@
 # limitations under the License.
 
 from stripe.tests.api.v1 import base
-from stripe.tests import utils
 
 
 class TestQueueMembersEmpty(base.FunctionalTest):
@@ -41,9 +40,10 @@ class TestCase(base.FunctionalTest):
 
     def setUp(self):
         super(TestCase, self).setUp()
-        self._create_test_agent()
-        res = self._create_test_queue()
-        self.queue_id = res['id']
+        agent = self._create_test_agent()
+        self.agent_id = agent['id']
+        queue = self._create_test_queue()
+        self.queue_id = queue['id']
 
     def test_create_queue_member(self):
         self._create_test_queue_member()
@@ -70,8 +70,13 @@ class TestCase(base.FunctionalTest):
         member = self._create_test_queue_member()
         self._list_queue_members([member])
 
-    def _create_test_queue_member(self, **kwargs):
-        json = utils.get_test_queue_member(**kwargs)
+    def test_login_queue_member(self):
+        self.post_json('/agents/%s/login' % self.agent_id, status=200)
+
+    def _create_test_queue_member(self):
+        json = {
+            'agent_id': self.agent_id,
+        }
         res = self.post_json(
             '/queues/%s/members' % self.queue_id, params=json, status=200
         )

@@ -27,7 +27,6 @@ Response
       "id": 1,
       "created_at": "2011-04-22T13:33:48Z",
       "name": "John Smith",
-      "password": "3a528267660d23d7cbf35388c6e21e6b",
       "updated_at": "2011-04-22T13:33:48Z",
     }
   ]
@@ -51,7 +50,6 @@ Response
     "id": 1,
     "created_at": "2011-04-22T13:33:48Z",
     "name": "John Smith",
-    "password": "3a528267660d23d7cbf35388c6e21e6b",
     "updated_at": "2011-04-22T13:33:48Z",
   }
 

@@ -38,7 +38,6 @@ agent = (
     Column('id', Integer, primary_key=True, index=True),
     Column('created_at', DateTime),
     Column('name', String(length=80)),
-    Column('password', String(length=255)),
     Column('updated_at', DateTime),
 )
 

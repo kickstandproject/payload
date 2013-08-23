@@ -52,7 +52,6 @@ class Agent(Base):
     __tablename__ = 'agent'
     id = Column(Integer, primary_key=True)
     name = Column(String(80))
-    password = Column(String(255))
 
 
 class Queue(Base):

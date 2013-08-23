@@ -91,7 +91,7 @@ class FunctionalTest(base.TestCase):
         LOG.debug('GOT: %s' % response)
         return response
 
-    def post_json(self, path, params, expect_errors=False, headers=None,
+    def post_json(self, path, params={}, expect_errors=False, headers=None,
                   method="post", extra_environ=None, status=None):
         full_path = self.PATH_PREFIX + path
         LOG.debug('%s: %s %s' % (method.upper(), full_path, params))
@@ -106,7 +106,7 @@ class FunctionalTest(base.TestCase):
         LOG.debug('GOT: %s' % response)
         return response
 
-    def put_json(self, path, params, expect_errors=False, headers=None,
+    def put_json(self, path, params={}, expect_errors=False, headers=None,
                  extra_environ=None, status=None):
         return self.post_json(path=path, params=params,
                               expect_errors=expect_errors,

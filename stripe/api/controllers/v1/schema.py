@@ -42,16 +42,7 @@ class SchemasController(rest.RestController):
             'created_at': {
                 'type': ['string', 'null'],
             },
-            'description': {
-                'type': ['string', 'null'],
-            },
-            'disabled': {
-                'type': 'boolean',
-            },
             'name': {
-                'type': 'string',
-            },
-            'password': {
                 'type': 'string',
             },
             'updated_at': {
