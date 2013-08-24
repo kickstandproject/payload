@@ -65,3 +65,11 @@ v1 Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`utils` Module
+-------------------
+
+.. automodule:: stripe.tests.api.v1.utils
+    :members:
+    :undoc-members:
+    :show-inheritance:
+

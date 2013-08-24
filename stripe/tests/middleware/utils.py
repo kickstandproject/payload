@@ -15,7 +15,7 @@
 # limitations under the License.
 
 
-def get_test_agent(**kw):
+def get_middleware_agent(**kw):
     agent = {
         'id': kw.get('id', 123),
         'name': 'John Smith',
@@ -23,7 +23,7 @@ def get_test_agent(**kw):
     return agent
 
 
-def get_test_queue(**kw):
+def get_middleware_queue(**kw):
     queue = {
         'id': kw.get('id', 123),
         'description': 'Example queue',
@@ -33,7 +33,7 @@ def get_test_queue(**kw):
     return queue
 
 
-def get_test_queue_caller(**kw):
+def get_middleware_queue_caller(**kw):
     caller = {
         'called_id': '6060',
         'caller_id': '5551234',
@@ -42,9 +42,8 @@ def get_test_queue_caller(**kw):
     return caller
 
 
-def get_test_queue_member(**kw):
+def get_middleware_queue_member(**kw):
     queue_member = {
-        'id': kw.get('id', 123),
-        'agent_id': kw.get('agent_id', 123),
+        'extension': kw.get('extension', 'alice@example.org'),
     }
     return queue_member

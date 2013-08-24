@@ -16,6 +16,7 @@
 
 from stripe.middleware import api as middleware_api
 from stripe.tests import base
+from stripe.tests.middleware import utils
 
 
 class TestCase(base.TestCase):
@@ -24,12 +25,22 @@ class TestCase(base.TestCase):
         super(TestCase, self).setUp()
         self.middleware_api = middleware_api.get_instance()
 
-    def _create_queue_caller(self, **kwargs):
-        return super(TestCase, self)._create_queue_caller(
-            session=self.middleware_api, **kwargs
+    def _create_queue_caller(self, queue_id, **kwargs):
+        callers = []
+        caller = utils.get_middleware_queue_caller(**kwargs)
+        res = self.middleware_api.create_queue_caller(
+            queue_id=queue_id, values=caller
         )
+        callers.append(res)
 
-    def _create_queue_member(self, **kwargs):
-        return super(TestCase, self)._create_queue_member(
-            session=self.middleware_api, **kwargs
+        return callers
+
+    def _create_queue_member(self, agent_id, queue_id, **kwargs):
+        members = []
+        member = utils.get_middleware_queue_member(**kwargs)
+        res = self.middleware_api.create_queue_member(
+            agent_id=agent_id, queue_id=queue_id, values=member
         )
+        members.append(res)
+
+        return members

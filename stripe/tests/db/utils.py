@@ -14,17 +14,28 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from stripe import test
+
+def get_db_agent(**kw):
+    agent = {
+        'id': kw.get('id', 123),
+        'name': 'John Smith',
+    }
+    return agent
 
 
-class TestCase(test.TestCase):
+def get_db_queue(**kw):
+    queue = {
+        'id': kw.get('id', 123),
+        'description': 'Example queue',
+        'disabled': kw.get('disabled', False),
+        'name': 'example',
+    }
+    return queue
 
-    def setUp(self):
-        super(TestCase, self).setUp()
 
-    def _validate_db_model(self, original, result):
-        ignored_keys = [
-            'created_at',
-            'updated_at',
-        ]
-        self._assertEqualObjects(original, result, ignored_keys)
+def get_db_queue_member(**kw):
+    queue_member = {
+        'id': kw.get('id', 123),
+        'agent_id': kw.get('agent_id', 123),
+    }
+    return queue_member

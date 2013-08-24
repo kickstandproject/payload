@@ -23,10 +23,21 @@ class TestCase(base.TestCase):
     def test_create_queue_caller(self):
         self._create_queue_caller(queue_id=1)
 
+    def test_create_queue_member(self):
+        self._create_queue_member(agent_id=1, queue_id=1)
+
     def test_list_queue_callers(self):
         queue_id = 1
         callers = self._create_queue_caller(queue_id=queue_id)
         self._list_queue_callers(len(callers), queue_id)
+
+    def test_list_queue_members(self):
+        agent_id = 1
+        queue_id = 1
+        members = self._create_queue_member(
+            agent_id=agent_id, queue_id=queue_id
+        )
+        self._list_queue_members(len(members), queue_id)
 
     def _list_queue_callers(self, total_callers, queue_id, status=None):
         res = self.middleware_api.list_queue_callers(
@@ -35,7 +46,14 @@ class TestCase(base.TestCase):
         )
         self.assertEqual(len(res), total_callers)
 
-    def test_get_queue_callers(self):
+    def _list_queue_members(self, total_members, queue_id, status=None):
+        res = self.middleware_api.list_queue_members(
+            queue_id=queue_id,
+            status=status,
+        )
+        self.assertEqual(len(res), total_members)
+
+    def test_get_queue_caller(self):
         queue_id = 1
         callers = self._create_queue_caller(queue_id=queue_id)
         res = self.middleware_api.get_queue_caller(
@@ -43,6 +61,18 @@ class TestCase(base.TestCase):
             queue_id=queue_id,
         )
         self.assertEqual(res['uuid'], callers[0]['uuid'])
+
+    def test_get_queue_member(self):
+        agent_id = 1
+        queue_id = 1
+        members = self._create_queue_member(
+            agent_id=agent_id, queue_id=queue_id
+        )
+        res = self.middleware_api.get_queue_member(
+            agent_id=agent_id,
+            queue_id=queue_id,
+        )
+        self.assertEqual(res['extension'], members[0]['extension'])
 
     def test__set_queue_caller_status(self):
         queue_id = 1

@@ -16,7 +16,7 @@
 
 from stripe.db import api as db_api
 from stripe.tests import base
-from stripe.tests import utils
+from stripe.tests.db import utils
 
 
 class FunctionalTest(base.TestCase):
@@ -25,16 +25,16 @@ class FunctionalTest(base.TestCase):
         self.db_api = db_api.get_instance()
 
     def _create_test_agent(self, **kwargs):
-        agent = utils.get_test_agent(**kwargs)
+        agent = utils.get_db_agent(**kwargs)
         self.db_api.create_agent(agent)
         return agent
 
     def _create_test_queue(self, **kwargs):
-        queue = utils.get_test_queue(**kwargs)
+        queue = utils.get_db_queue(**kwargs)
         self.db_api.create_queue(queue)
         return queue
 
     def _create_test_queue_member(self, **kwargs):
-        queue_member = utils.get_test_queue_member(**kwargs)
+        queue_member = utils.get_db_queue_member(**kwargs)
         self.db_api.create_queue_member(queue_member)
         return queue_member

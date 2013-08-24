@@ -25,10 +25,26 @@ db Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`test_queue_members` Module
+--------------------------------
+
+.. automodule:: stripe.tests.db.test_queue_members
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`test_queues` Module
 -------------------------
 
 .. automodule:: stripe.tests.db.test_queues
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`utils` Module
+-------------------
+
+.. automodule:: stripe.tests.db.utils
     :members:
     :undoc-members:
     :show-inheritance:

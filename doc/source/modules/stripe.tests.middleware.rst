@@ -25,3 +25,11 @@ middleware Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`utils` Module
+-------------------
+
+.. automodule:: stripe.tests.middleware.utils
+    :members:
+    :undoc-members:
+    :show-inheritance:
+

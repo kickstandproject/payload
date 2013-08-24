@@ -33,14 +33,6 @@ tests Package
     :undoc-members:
     :show-inheritance:
 
-:mod:`utils` Module
--------------------
-
-.. automodule:: stripe.tests.utils
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 Subpackages
 -----------
 

@@ -22,8 +22,9 @@ import pecan.testing
 import warlock
 
 from stripe.openstack.common import log as logging
+from stripe.tests.api.v1 import utils
 from stripe.tests import base
-from stripe.tests import utils
+
 
 LOG = logging.getLogger(__name__)
 
@@ -120,7 +121,7 @@ class FunctionalTest(base.TestCase):
         self.assertEqual(obj1, obj2)
 
     def _create_test_agent(self, **kwargs):
-        json = utils.get_test_agent(**kwargs)
+        json = utils.get_api_agent(**kwargs)
         res = self.post_json(
             '/agents', params=json, status=200
         )
@@ -129,10 +130,20 @@ class FunctionalTest(base.TestCase):
         return res.json
 
     def _create_test_queue(self, **kwargs):
-        json = utils.get_test_queue(**kwargs)
+        json = utils.get_api_queue(**kwargs)
         res = self.post_json(
             '/queues', params=json, status=200
         )
         self._assertEqualSchemas('queue', res.json)
+
+        return res.json
+
+    def _create_test_queue_caller(self, queue_id, **kwargs):
+        json = utils.get_api_queue_caller(**kwargs)
+        res = self.post_json(
+            '/queues/%s/callers' % queue_id, params=json, status=200
+        )
+        self.assertEqual(res.status_int, 200)
+        self.assertEqual(res.content_type, 'application/json')
 
         return res.json

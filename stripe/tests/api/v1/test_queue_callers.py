@@ -15,7 +15,6 @@
 # limitations under the License.
 
 from stripe.tests.api.v1 import base
-from stripe.tests import utils
 
 
 class TestQueueCallersEmpty(base.FunctionalTest):
@@ -43,10 +42,10 @@ class TestCase(base.FunctionalTest):
         self.queue_id = res['id']
 
     def test_create_queue_caller(self):
-        self._create_queue_caller()
+        self._create_test_queue_caller(queue_id=self.queue_id)
 
     def test_delete_queue_caller(self):
-        callers = self._create_queue_caller()
+        callers = self._create_test_queue_caller(queue_id=self.queue_id)
         self.delete(
             '/queues/%s/callers/%s' % (
                 self.queue_id, callers['uuid']
@@ -55,27 +54,17 @@ class TestCase(base.FunctionalTest):
         self._list_queue_callers([])
 
     def test_list_queue_callers(self):
-        callers = self._create_queue_caller()
+        callers = self._create_test_queue_caller(queue_id=self.queue_id)
         self._list_queue_callers([callers])
 
     def test_get_queue_caller(self):
-        callers = self._create_queue_caller()
+        callers = self._create_test_queue_caller(queue_id=self.queue_id)
         res = self.get_json(
             '/queues/%s/callers/%s' % (
                 self.queue_id, callers['uuid'],
             )
         )
         self.assertEqual(callers['uuid'], res['uuid'])
-
-    def _create_queue_caller(self):
-        json = utils.get_test_queue_caller(queue_id=self.queue_id)
-        res = self.post_json(
-            '/queues/%s/callers' % self.queue_id, params=json, status=200
-        )
-        self.assertEqual(res.status_int, 200)
-        self.assertEqual(res.content_type, 'application/json')
-
-        return res.json
 
     def _list_queue_callers(self, callers):
         res = self.get_json('/queues/%s/callers' % self.queue_id)
