@@ -3,8 +3,8 @@
 Queue Members API
 =================
 
-List members from queue
------------------------
+List queue members
+------------------
 
 .. code-block:: html
 
@@ -20,23 +20,18 @@ Response
 
   [
     {
-      "id": 1,
       "created_at": "2011-04-22T13:33:48Z",
-      "extension": "1000",
       "agent_id": 1,
-      "paused": true,
-      "paused_reason": "lunch",
-      "queue_id": 1,
       "updated_at": "2011-04-22T13:33:48Z"
     }
   ]
 
-Get single member from queue
-----------------------------
+Get queue memeber
+-----------------
 
 .. code-block:: html
 
-  GET /v1/queues/:queue_id/members/:id
+  GET /v1/queues/:queue_id/members/:agent_id
 
 Parameters
 ''''''''''
@@ -44,25 +39,12 @@ Parameters
 Response
 ''''''''
 
-.. code-block:: html
-
-  {
-    "id": 1,
-    "created_at": "2011-04-22T13:33:48Z",
-    "extension": "1000",
-    "agent_id": 1,
-    "paused": true,
-    "paused_reason": "lunch",
-    "queue_id": 1,
-    "updated_at": "2011-04-22T13:33:48Z"
-  }
-
-Add member to queue
--------------------
+Add queue member
+----------------
 
 .. code-block:: html
 
-  POST /v1/queues/:queue_id/members
+  PUT /v1/queues/:queue_id/members/:agent_id
 
 Input
 '''''
@@ -70,12 +52,12 @@ Input
 Response
 ''''''''
 
-Remove member from queue
-------------------------
+Remove queue member
+-------------------
 
 .. code-block:: html
 
-  DELETE /v1/queues/:queue_id/members/:id
+  DELETE /v1/queues/:queue_id/members/:agent_id
 
 Parameters
 ''''''''''

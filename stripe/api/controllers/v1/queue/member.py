@@ -15,7 +15,6 @@
 # limitations under the License.
 
 import pecan
-import wsme
 
 from pecan import rest
 from wsme import types as wtypes
@@ -45,9 +44,11 @@ class QueueMembersController(rest.RestController):
     """REST Controller for queue members."""
 
     @wsme_pecan.wsexpose(None, wtypes.text, wtypes.text, status_code=204)
-    def delete(self, queue_id, id):
+    def delete(self, queue_id, agent_id):
         """Delete a queue member."""
-        pecan.request.db_api.delete_queue_member(id)
+        pecan.request.db_api.delete_queue_member(
+            agent_id=agent_id, queue_id=queue_id
+        )
 
     @wsme_pecan.wsexpose([QueueMember], wtypes.text)
     def get_all(self, queue_id):
@@ -56,17 +57,16 @@ class QueueMembersController(rest.RestController):
 
         return res
 
-    @wsme_pecan.wsexpose(QueueMember, wtypes.text, wtypes.text)
-    def get_one(self, queue_id, id):
+    @wsme_pecan.wsexpose(None, wtypes.text, wtypes.text, status_code=204)
+    def get_one(self, queue_id, agent_id):
         """Retrieve information about the given queue member."""
-        res = pecan.request.db_api.get_queue_member(id)
+        pecan.request.db_api.get_queue_member(
+            agent_id=agent_id, queue_id=queue_id
+        )
 
-        return res
-
-    @wsme.validate(QueueMember)
-    @wsme_pecan.wsexpose(QueueMember, wtypes.text, body=QueueMember)
-    def post(self, queue_id, body):
+    @wsme_pecan.wsexpose(None, wtypes.text, wtypes.text, status_code=204)
+    def put(self, queue_id, agent_id):
         """Create a new queue member."""
-        res = pecan.request.db_api.create_queue_member(body.as_dict())
-
-        return res
+        pecan.request.db_api.create_queue_member(
+            agent_id=agent_id, queue_id=queue_id
+        )

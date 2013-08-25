@@ -71,8 +71,12 @@ class Connection(object):
 
         return res
 
-    def create_queue_member(self, values):
+    def create_queue_member(self, agent_id, queue_id):
         """Create a new queue member."""
+        values = {
+            'agent_id': agent_id,
+            'queue_id': queue_id,
+        }
         res = self._create_model(model=models.QueueMember(), values=values)
 
         return res
@@ -91,15 +95,15 @@ class Connection(object):
         if res != 1:
             raise exception.QueueNotFound(queue_id=queue_id)
 
-    def delete_queue_member(self, queue_member_id):
+    def delete_queue_member(self, agent_id, queue_id):
         """Delete a queue member."""
         res = self._delete_model(
-            model=models.QueueMember, id=queue_member_id
+            model=models.QueueMember, agent_id=agent_id, queue_id=queue_id
         )
 
         if res != 1:
             raise exception.QueueMemberNotFound(
-                queue_member_id=queue_member_id
+                agent_id=agent_id
             )
 
     def get_agent(self, agent_id):
@@ -120,13 +124,15 @@ class Connection(object):
 
         return res
 
-    def get_queue_member(self, queue_member_id):
+    def get_queue_member(self, agent_id, queue_id):
         """Retrieve information about the given queue member."""
         try:
-            res = self._get_model(model=models.QueueMember, id=queue_member_id)
+            res = self._get_model(
+                model=models.QueueMember, agent_id=agent_id, queue_id=queue_id
+            )
         except exc.NoResultFound:
             raise exception.QueueMemberNotFound(
-                queue_member_id=queue_member_id
+                agent_id=agent_id
             )
 
         return res
@@ -156,20 +162,20 @@ class Connection(object):
 
         return model
 
-    def _delete_model(self, model, id):
+    def _delete_model(self, model, **kwargs):
         session = get_session()
         with session.begin():
             query = model_query(
                 model, session=session
-            ).filter_by(id=id)
+            ).filter_by(**kwargs)
 
             count = query.delete()
 
             return count
 
-    def _get_model(self, model, id):
+    def _get_model(self, model, **kwargs):
         """Retrieve information about the given model."""
-        query = model_query(model).filter_by(id=id)
+        query = model_query(model).filter_by(**kwargs)
         res = query.one()
 
         return res

@@ -20,34 +20,47 @@ from stripe.tests.db import base
 
 class TestCase(base.FunctionalTest):
 
+    def setUp(self):
+        super(TestCase, self).setUp()
+        self.queue = self._create_test_queue()
+        self.agent = self._create_test_agent()
+
     def test_create_queue_member(self):
-        res = self._create_test_queue_member()
+        res = self._create_test_queue_member(
+            agent_id=self.agent['id'], queue_id=self.queue['id']
+        )
         self.assertTrue(res)
 
     def test_delete_queue_member(self):
-        queue_member = self._create_test_queue_member()
-        self.db_api.delete_queue_member(queue_member['id'])
+        self._create_test_queue_member(
+            agent_id=self.agent['id'], queue_id=self.queue['id']
+        )
+        self.db_api.delete_queue_member(
+            agent_id=self.agent['id'], queue_id=self.queue['id']
+        )
         self.assertRaises(
             exception.QueueMemberNotFound, self.db_api.get_queue_member,
-            queue_member['id'],
+            self.agent['id'], self.queue['id'],
         )
 
     def test_delete_queue_member_not_found(self):
         self.assertRaises(
-            exception.QueueMemberNotFound, self.db_api.delete_queue_member, 123
+            exception.QueueMemberNotFound, self.db_api.delete_queue_member,
+            123, 123
         )
 
     def test_get_queue_member(self):
-        queue_member = self._create_test_queue_member()
-        res = self.db_api.get_queue_member(queue_member['id'])
-        self.assertEqual(queue_member['id'], res['id'])
+        member = self._create_test_queue_member(
+            agent_id=self.agent['id'], queue_id=self.queue['id']
+        )
+        res = self.db_api.get_queue_member(
+            agent_id=self.agent['id'], queue_id=self.queue['id']
+        )
+        self.assertEqual(member['id'], res['id'])
 
     def test_list_queue_members(self):
-        queue_member = []
-        for i in xrange(1, 2):
-            qm = self._create_test_queue_member(id=i, agent_id=i)
-            queue_member.append(qm['id'])
+        member = self._create_test_queue_member(
+            agent_id=self.agent['id'], queue_id=self.queue['id']
+        )
         res = self.db_api.list_queue_members()
-        res.sort()
-        queue_member.sort()
-        self.assertEqual(len(res), len(queue_member))
+        self.assertEqual(res[0]['id'], member['id'])
