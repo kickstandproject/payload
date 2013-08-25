@@ -209,6 +209,13 @@ class Connection(object):
 
         return self._session.zcard(key)
 
+    def _count_queue_members(self, queue_id, status):
+        key = self._queue_member_status(
+            queue_id=queue_id, status=status
+        )
+
+        return self._session.zcard(key)
+
     def _list_queue_callers(self, queue_id, status):
         key = self._queue_caller_status(
             queue_id=queue_id, status=status
@@ -236,15 +243,19 @@ class Connection(object):
             queue_id=queue_id, status=status, timestamp=time.time(), uuid=uuid
         )
 
-    def get_queue_stats(self, queue_id, status=None):
+    def get_queue_stats(self, queue_id):
         """Retrieve stats for a queue."""
-        if status is None:
-            status = QueueCallerStatus.ONHOLD
 
-        callers = self._count_queue_callers(queue_id=queue_id, status=status)
+        callers = self._count_queue_callers(
+            queue_id=queue_id, status=QueueCallerStatus.ONHOLD
+        )
+        members = self._count_queue_members(
+            queue_id=queue_id, status=QueueMemberStatus.WAITING
+        )
 
         res = {
-            'callers': callers,
+            'callers_count': callers,
+            'members_count': members,
         }
 
         return res
