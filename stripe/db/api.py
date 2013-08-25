@@ -81,6 +81,12 @@ class Connection(object):
 
         return res
 
+    def create_user(self, values):
+        """Create a new user."""
+        res = self._create_model(model=models.User(), values=values)
+
+        return res
+
     def delete_agent(self, agent_id):
         """Delete an agent."""
         res = self._delete_model(model=models.Agent, id=agent_id)
@@ -105,6 +111,13 @@ class Connection(object):
             raise exception.QueueMemberNotFound(
                 agent_id=agent_id
             )
+
+    def delete_user(self, user_id):
+        """Delete an user."""
+        res = self._delete_model(model=models.User, id=user_id)
+
+        if res != 1:
+            raise exception.UserNotFound(user_id=user_id)
 
     def get_agent(self, agent_id):
         """Retrieve information about the given agent."""
@@ -137,6 +150,15 @@ class Connection(object):
 
         return res
 
+    def get_user(self, user_id):
+        """Retrieve information about the given user."""
+        try:
+            res = self._get_model(model=models.User, id=user_id)
+        except exc.NoResultFound:
+            raise exception.UserNotFound(user_id=user_id)
+
+        return res
+
     def list_agents(self):
         """Retrieve a list of agents."""
         res = self._list_model(model=models.Agent)
@@ -152,6 +174,12 @@ class Connection(object):
     def list_queue_members(self):
         """Retrieve a list of queue members."""
         res = self._list_model(model=models.QueueMember)
+
+        return res
+
+    def list_users(self):
+        """Retrieve a list of users."""
+        res = self._list_model(model=models.User)
 
         return res
 

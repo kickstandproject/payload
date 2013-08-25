@@ -1,20 +1,18 @@
-:title: Queues
+:title: Users
 
-Queues API
-==========
+Users API
+=========
 
 .. toctree::
    :maxdepth: 2
    :glob:
 
-   queues/*
-
-List queues
+List users
 -----------
 
 .. code-block:: html
 
-  GET /v1/queues
+  GET /v1/users
 
 Parameters
 ''''''''''
@@ -28,20 +26,19 @@ Response
     {
       "id": 1,
       "created_at": "2011-04-22T13:33:48Z",
-      "description": "24/7 Technical support",
-      "disabled": False,
-      "name": "support",
+      "email": "alice@example.org",
+      "name": "Alice Smith",
+      "password": "secret",
       "updated_at": "2011-04-22T13:33:48Z",
-      "user_id": 1,
     }
   ]
 
-Get a single queue
-------------------
+Get a single user
+-----------------
 
 .. code-block:: html
 
-  GET /v1/queues/:id
+  GET /v1/users/:id
 
 Parameters
 ''''''''''
@@ -54,19 +51,18 @@ Response
   {
     "id": 1,
     "created_at": "2011-04-22T13:33:48Z",
-    "description": "24/7 Technical support",
-    "disabled": False,
-    "name": "support",
+    "email": "alice@example.org",
+    "name": "Alice Smith",
+    "password": "secret",
     "updated_at": "2011-04-22T13:33:48Z",
-    "user_id": 1,
   }
 
-Create a queue
+Create an user
 --------------
 
 .. code-block:: html
 
-  POST /v1/queues
+  POST /v1/users
 
 Input
 '''''
@@ -74,12 +70,12 @@ Input
 Response
 ''''''''
 
-Edit a queue
+Edit an user
 ------------
 
 .. code-block:: html
 
-  PUT /v1/queues/:id
+  PUT /v1/users/:id
 
 Parameters
 ''''''''''
@@ -90,12 +86,12 @@ Input
 Response
 ''''''''
 
-Delete a queue
+Delete an user
 --------------
 
 .. code-block:: html
 
-  DELETE /v1/queues/:id
+  DELETE /v1/users/:id
 
 Parameters
 ''''''''''

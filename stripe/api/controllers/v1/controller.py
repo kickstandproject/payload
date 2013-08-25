@@ -17,9 +17,11 @@
 from stripe.api.controllers.v1 import agent
 from stripe.api.controllers.v1 import queue
 from stripe.api.controllers.v1 import schema
+from stripe.api.controllers.v1 import user
 
 
 class Controller(object):
     agents = agent.AgentsController()
     queues = queue.QueuesController()
     schemas = schema.SchemasController()
+    users = user.UsersController()

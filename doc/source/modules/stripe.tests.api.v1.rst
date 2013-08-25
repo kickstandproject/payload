@@ -65,6 +65,14 @@ v1 Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`test_users` Module
+------------------------
+
+.. automodule:: stripe.tests.api.v1.test_users
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`utils` Module
 -------------------
 

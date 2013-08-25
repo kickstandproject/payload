@@ -8,3 +8,4 @@ API Operations
 
    v1/agents
    v1/queues
+   v1/users

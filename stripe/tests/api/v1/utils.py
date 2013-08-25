@@ -16,11 +16,11 @@
 
 
 def get_api_agent(**kw):
-    agent = {
+    json = {
         'id': kw.get('id', 123),
-        'name': 'John Smith',
+        'user_id': kw.get('user_id', 123),
     }
-    return agent
+    return json
 
 
 def get_api_queue(**kw):
@@ -48,3 +48,14 @@ def get_api_queue_member(**kw):
         'agent_id': kw.get('agent_id', 123),
     }
     return queue_member
+
+
+def get_api_user(**kw):
+    json = {
+        'id': kw.get('id', 123),
+        'email': 'alice@example.com',
+        'name': 'Alice',
+        'password': 'secret',
+    }
+
+    return json

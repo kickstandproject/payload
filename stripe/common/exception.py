@@ -107,3 +107,7 @@ class QueueMemberNotFound(NotFound):
 
 class QueueMemberDuplicated(StripeException):
     message = 'Queue member %(agent_id)s already exists.'
+
+
+class UserNotFound(NotFound):
+    message = 'User %(user_id)s could not be found'

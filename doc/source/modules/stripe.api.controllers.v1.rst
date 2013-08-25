@@ -41,6 +41,14 @@ v1 Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`user` Module
+------------------
+
+.. automodule:: stripe.api.controllers.v1.user
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Subpackages
 -----------
 

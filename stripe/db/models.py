@@ -51,7 +51,7 @@ Base = declarative_base(cls=StripeBase)
 class Agent(Base):
     __tablename__ = 'agent'
     id = Column(Integer, primary_key=True)
-    name = Column(String(80))
+    user_id = Column(Integer, ForeignKey('user.id'), unique=True)
 
 
 class Queue(Base):
@@ -60,6 +60,7 @@ class Queue(Base):
     description = Column(JSONEncodedDict)
     disabled = Column(Boolean, default=False)
     name = Column(String(80))
+    user_id = Column(Integer, ForeignKey('user.id'))
 
 
 class QueueMember(Base):
@@ -67,3 +68,11 @@ class QueueMember(Base):
     id = Column(Integer, primary_key=True)
     agent_id = Column(Integer, ForeignKey('agent.id'), unique=True)
     queue_id = Column(Integer, ForeignKey('queue.id'))
+
+
+class User(Base):
+    __tablename__ = 'user'
+    id = Column(Integer, primary_key=True)
+    email = Column(String(255))
+    name = Column(String(80))
+    password = Column(String(255))

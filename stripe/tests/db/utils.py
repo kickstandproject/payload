@@ -16,11 +16,12 @@
 
 
 def get_db_agent(**kw):
-    agent = {
+    json = {
         'id': kw.get('id', 123),
-        'name': 'John Smith',
+        'agent_id': kw.get('agent_id', 123),
     }
-    return agent
+
+    return json
 
 
 def get_db_queue(**kw):
@@ -39,3 +40,14 @@ def get_db_queue_member(**kw):
         'agent_id': kw.get('agent_id', 123),
     }
     return queue_member
+
+
+def get_db_user(**kw):
+    json = {
+        'id': kw.get('id', 123),
+        'email': 'alice@example.com',
+        'name': 'Alice',
+        'password': 'secret',
+    }
+
+    return json

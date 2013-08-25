@@ -147,3 +147,12 @@ class FunctionalTest(base.TestCase):
         self.assertEqual(res.content_type, 'application/json')
 
         return res.json
+
+    def _create_test_user(self, **kwargs):
+        json = utils.get_api_user(**kwargs)
+        res = self.post_json(
+            '/users', params=json, status=200
+        )
+        self._assertEqualSchemas('user', res.json)
+
+        return res.json
