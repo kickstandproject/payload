@@ -82,6 +82,10 @@ class AgentsController(rest.RestController):
         """Create a new agent."""
         try:
             d = body.as_dict()
+            # TODO(pabelanger): The user_id should be extracted from
+            # authentication so we don't have to pass it.  Until then, just
+            # hardcode everything to 1.
+            d['user_id'] = 1
             new_agent = pecan.request.db_api.create_agent(d)
         except Exception:
             # TODO(pabelanger): See if there is a better way of handling
