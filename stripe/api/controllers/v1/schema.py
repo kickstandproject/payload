@@ -125,7 +125,7 @@ class SchemasController(rest.RestController):
                 'type': ['string', 'null'],
             },
             'email': {
-                'type': 'string',
+                'type': ['string', 'null'],
             },
             'name': {
                 'type': 'string',
