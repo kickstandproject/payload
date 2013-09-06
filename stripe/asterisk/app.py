@@ -30,42 +30,37 @@ class App(threading.Thread):
         self.client = None
         self.event_queue = Queue.Queue()
         self.trigger = None
-        self.wake_event = threading.Event()
         self._hangup = False
 
     def hangup(self):
         self.log.debug('Preparing to hangup')
         self._hangup = True
-        self.wake_event.set()
+        self.add_event(None)
         self.log.debug('Waiting for hangup')
 
     def run(self):
         while True:
-            self.log.debug('Run handler sleeping')
-            self.wake_event.wait()
-            self.wake_event.clear()
             self.log.debug('Run handler awake')
 
             if self._hangup:
                 self._do_hangup()
 
-            if not self.event_queue.empty():
-                self.process_event_queue()
+            self.process_event_queue()
 
     def add_event(self, event):
         self.log.debug('Adding event: %s' % event)
         self.event_queue.put(event)
-        self.wake_event.set()
         self.log.debug('Done adding event: %s' % event)
 
     def process_event_queue(self):
         self.log.debug('Fetching event')
         event = self.event_queue.get()
-        self.log.debug('Processing event %s' % event)
-        if event.name == 'Client':
-            self._process_client_event(event)
-        elif event.name == 'Trigger':
-            self._process_trigger_event(event)
+        if event is not None:
+            self.log.debug('Processing event %s' % event)
+            if event.name == 'Client':
+                self._process_client_event(event)
+            elif event.name == 'Trigger':
+                self._process_trigger_event(event)
 
         self.event_queue.task_done()
 
