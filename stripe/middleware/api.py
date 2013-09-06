@@ -19,7 +19,10 @@ import time
 
 from oslo.config import cfg
 
+from stripe.openstack.common import log as logging
 from stripe.openstack.common import uuidutils
+
+LOG = logging.getLogger(__name__)
 
 redis_opts = [
     cfg.StrOpt(
