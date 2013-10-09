@@ -39,7 +39,7 @@ class TestCase(base.FunctionalTest):
 
     def test_delete_agent(self):
         res = self._create_test_agent()
-        self.delete('/agents/%s' % res['id'], status=200)
+        self.delete('/agents/%s' % res['id'], status=204)
         self._list_agents([])
 
     def test_edit_agent(self):

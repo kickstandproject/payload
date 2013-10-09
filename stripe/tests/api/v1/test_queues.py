@@ -40,7 +40,7 @@ class TestCase(base.FunctionalTest):
     def test_delete_queue(self):
         res = self._create_test_queue()
         self.delete(
-            '/queues/%s' % res['id'], status=200
+            '/queues/%s' % res['id'], status=204
         )
         self._list_queues([])
 

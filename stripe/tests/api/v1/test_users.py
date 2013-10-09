@@ -40,7 +40,7 @@ class TestCase(base.FunctionalTest):
     def test_delete_user(self):
         res = self._create_test_user()
         self.delete(
-            '/users/%s' % res['id'], status=200
+            '/users/%s' % res['id'], status=204
         )
         self._list_users([])
 

@@ -49,7 +49,7 @@ class TestCase(base.FunctionalTest):
         self.delete(
             '/queues/%s/callers/%s' % (
                 self.queue_id, callers['uuid']
-            ), status=200,
+            ), status=204,
         )
         self._list_queue_callers([])
 

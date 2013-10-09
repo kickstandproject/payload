@@ -31,7 +31,7 @@ class TestQueueMembersEmpty(base.FunctionalTest):
         res = self.get_json(
             '/queues/123/members/1', expect_errors=True
         )
-        self.assertEqual(res.status_int, 500)
+        self.assertEqual(res.status_int, 404)
         self.assertEqual(res.content_type, 'application/json')
         self.assertTrue(res.json['error_message'])
 
@@ -53,7 +53,7 @@ class TestCase(base.FunctionalTest):
         self.delete(
             '/queues/%s/members/%s' % (
                 self.queue_id, self.agent_id
-            ), status=200,
+            ), status=204,
         )
 
         self._list_queue_members([])
@@ -65,7 +65,7 @@ class TestCase(base.FunctionalTest):
                 self.queue_id, self.agent_id
             ), expect_errors=True
         )
-        self.assertEqual(res.status_int, 200)
+        self.assertEqual(res.status_int, 204)
 
     def test_list_queue_members(self):
         self._create_test_queue_member()
@@ -82,10 +82,10 @@ class TestCase(base.FunctionalTest):
         res = self.put_json(
             '/queues/%s/members/%s' % (
                 self.queue_id, self.agent_id
-            ), status=200
+            ), status=204
         )
-        self.assertEqual(res.status_int, 200)
-        self.assertEqual(res.content_type, 'application/json')
+        self.assertEqual(res.status_int, 204)
+#        self.assertEqual(res.content_type, 'application/json')
 
     def _list_queue_members(self, members):
         res = self.get_json('/queues/%s/members' % self.queue_id)

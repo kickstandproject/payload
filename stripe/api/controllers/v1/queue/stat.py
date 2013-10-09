@@ -27,7 +27,7 @@ LOG = logging.getLogger(__name__)
 class QueueStatsController(rest.RestController):
     """REST Controller for queue stats."""
 
-    @wsme_pecan.wsexpose(None, unicode)
+    @wsme_pecan.wsexpose(unicode, unicode)
     def get_all(self, queue_id):
         """Retrieve a list of queue stats."""
         res = pecan.request.middleware_api.get_queue_stats(queue_id)

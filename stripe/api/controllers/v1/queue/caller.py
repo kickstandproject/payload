@@ -37,7 +37,7 @@ class QueueCallersController(rest.RestController):
             queue_id=queue_id, uuid=uuid
         )
 
-    @wsme_pecan.wsexpose(None, wtypes.text)
+    @wsme_pecan.wsexpose(unicode, wtypes.text)
     def get_all(self, queue_id):
         """Retrieve a list of queue callers."""
         res = pecan.request.middleware_api.list_queue_callers(
@@ -46,7 +46,7 @@ class QueueCallersController(rest.RestController):
 
         return res
 
-    @wsme_pecan.wsexpose(None, wtypes.text, wtypes.text)
+    @wsme_pecan.wsexpose(unicode, wtypes.text, wtypes.text)
     def get_one(self, queue_id, uuid):
         """Retrieve information about the given queue."""
         try:
@@ -60,7 +60,7 @@ class QueueCallersController(rest.RestController):
 
         return result
 
-    @wsme_pecan.wsexpose(None, wtypes.text, body=wtypes.text)
+    @wsme_pecan.wsexpose(unicode, wtypes.text, body=wtypes.text)
     def post(self, queue_id, body):
         """Create a new queue caller."""
         res = pecan.request.middleware_api.create_queue_caller(
