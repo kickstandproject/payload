@@ -61,8 +61,7 @@
 # Whether to disable inter-process locks (boolean value)
 #disable_process_locking=false
 
-# Directory to use for lock files. Default to a temp directory
-# (string value)
+# Directory to use for lock files. (string value)
 #lock_path=<None>
 
 
@@ -121,9 +120,9 @@
 # (string value)
 #log_config=<None>
 
-# A logging.Formatter log message format string which may use
-# any of the available logging.LogRecord attributes. This
-# option is deprecated.  Please use
+# DEPRECATED. A logging.Formatter log message format string
+# which may use any of the available logging.LogRecord
+# attributes. This option is deprecated.  Please use
 # logging_context_format_string and
 # logging_default_format_string instead. (string value)
 #log_format=<None>
@@ -229,4 +228,3 @@
 #pool_timeout=<None>
 
 
-# Total option count: 47

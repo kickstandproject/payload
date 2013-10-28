@@ -4,7 +4,7 @@
 # Administrator of the National Aeronautics and Space Administration.
 # All Rights Reserved.
 #
-# Copyright 2010 OpenStack, LLC
+# Copyright 2010 OpenStack Foundation
 # Copyright 2013 IBM Corp.
 #
 #    Licensed under the Apache License, Version 2.0 (the "License"); you may
@@ -19,43 +19,47 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-"""Installation script for Stripe's development virtualenv."""
-
 import os
 import sys
 
-import install_venv_common as install_venv
+import install_venv_common as install_venv  # noqa
 
 
-def print_help():
+def print_help(venv, root):
     help = """
     Stripe development environment setup is complete.
 
-    Stripe development uses virtualenv to track and manage Python dependencies
-    while in development and testing.
+    Stripe development uses virtualenv to track and manage Python
+    dependencies while in development and testing.
 
     To activate the Stripe virtualenv for the extent of your current shell
     session you can run:
 
-    $ source .venv/bin/activate
+    $ source %s/bin/activate
 
     Or, if you prefer, you can run commands in the virtualenv on a case by case
     basis by running:
 
-    $ tools/with_venv.sh <your command>
+    $ %s/tools/with_venv.sh <your command>
 
     Also, make test will automatically use the virtualenv.
     """
-    print help
+    print(help % (venv, root))
 
 
 def main(argv):
     root = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+
+    if os.environ.get('tools_path'):
+        root = os.environ['tools_path']
     venv = os.path.join(root, '.venv')
+    if os.environ.get('venv'):
+        venv = os.environ['venv']
+
     pip_requires = os.path.join(root, 'requirements.txt')
     test_requires = os.path.join(root, 'test-requirements.txt')
-    project = 'Stripe'
     py_version = "python%s.%s" % (sys.version_info[0], sys.version_info[1])
+    project = 'Stripe'
     install = install_venv.InstallVenv(root, venv, pip_requires, test_requires,
                                        py_version, project)
     options = install.parse_args(argv)
@@ -63,8 +67,7 @@ def main(argv):
     install.check_dependencies()
     install.create_virtualenv(no_site_packages=options.no_site_packages)
     install.install_dependencies()
-    install.post_process()
-    print_help()
+    print_help(venv, root)
 
 if __name__ == '__main__':
     main(sys.argv)
