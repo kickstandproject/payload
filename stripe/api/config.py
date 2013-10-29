@@ -42,6 +42,6 @@ app = {
     'root': 'stripe.api.controllers.root.RootController',
     'modules': ['stripe.api'],
     'static_root': '%(confdir)s/public',
-    'template_path': '%(confdir)s/ironic/api/templates',
-    'enable_acl': False,
+    'template_path': '%(confdir)s/stripe/api/templates',
+    'enable_acl': True,
 }

@@ -20,11 +20,19 @@ import pecan
 
 from oslo.config import cfg
 
+from stripe.api import acl
 from stripe.api import config
 from stripe.api import hooks
 from stripe.api import middleware
 
+auth_opts = [
+    cfg.StrOpt(
+        'auth_strategy', default='keystone',
+        help='The strategy to use for auth: noauth or keystone.'),
+]
+
 CONF = cfg.CONF
+CONF.register_opts(auth_opts)
 
 
 def get_pecan_config():
@@ -57,6 +65,9 @@ def setup_app(pecan_config=None):
         hooks=app_hooks,
         wrap_app=middleware.ParsableErrorMiddleware,
     )
+
+    if pecan_config.app.enable_acl:
+        return acl.install(app, cfg.CONF)
 
     return app
 

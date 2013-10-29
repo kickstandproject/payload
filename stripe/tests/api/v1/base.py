@@ -50,6 +50,7 @@ class FunctionalTest(base.TestCase):
                 'modules': ['stripe.api'],
                 'static_root': '%s/public' % root_dir,
                 'template_path': '%s/api/templates' % root_dir,
+                'enable_acl': False,
             },
         }
 
