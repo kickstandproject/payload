@@ -39,7 +39,7 @@ class Queue(base.APIBase):
     description = wtypes.text
     disabled = bool
     name = wtypes.text
-    user_id = int
+    user_id = wtypes.text
 
     def __init__(self, **kwargs):
         self.fields = vars(models.Queue)
@@ -87,7 +87,7 @@ class QueuesController(rest.RestController):
             # TODO(pabelanger): The user_id should be extracted from
             # authentication so we don't have to pass it.  Until then, just
             # hardcode everything to 1.
-            d['user_id'] = 1
+            d['user_id'] = '1'
             new_queue = pecan.request.db_api.create_queue(d)
         except Exception:
             # TODO(pabelanger): See if there is a better way of handling

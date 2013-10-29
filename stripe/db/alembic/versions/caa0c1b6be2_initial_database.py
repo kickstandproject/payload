@@ -38,7 +38,7 @@ agent = (
     Column('id', Integer, primary_key=True, index=True),
     Column('created_at', DateTime),
     Column('updated_at', DateTime),
-    Column('user_id', Integer, unique=True),
+    Column('user_id', String(length=255), unique=True),
 )
 
 queue_member = (
@@ -58,20 +58,10 @@ queue = (
     Column('disabled', Boolean),
     Column('name', String(length=80)),
     Column('updated_at', DateTime),
-    Column('user_id', Integer),
+    Column('user_id', String(length=255)),
 )
 
-user = (
-    'user',
-    Column('id', Integer, primary_key=True, index=True),
-    Column('created_at', DateTime),
-    Column('email', String(length=255)),
-    Column('name', String(length=80)),
-    Column('password', String(length=255)),
-    Column('updated_at', DateTime),
-)
-
-tables = [agent, queue_member, queue, user]
+tables = [agent, queue_member, queue]
 
 
 def upgrade():

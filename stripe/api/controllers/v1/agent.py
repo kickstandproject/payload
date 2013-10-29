@@ -33,7 +33,7 @@ class Agent(base.APIBase):
     """API representation of an agent."""
 
     id = int
-    user_id = int
+    user_id = wtypes.text
 
     def __init__(self, **kwargs):
         self.fields = vars(models.Agent)
@@ -85,7 +85,7 @@ class AgentsController(rest.RestController):
             # TODO(pabelanger): The user_id should be extracted from
             # authentication so we don't have to pass it.  Until then, just
             # hardcode everything to 1.
-            d['user_id'] = 1
+            d['user_id'] = '1'
             new_agent = pecan.request.db_api.create_agent(d)
         except Exception:
             # TODO(pabelanger): See if there is a better way of handling

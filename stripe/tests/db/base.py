@@ -42,9 +42,3 @@ class FunctionalTest(base.TestCase):
         )
 
         return res
-
-    def _create_test_user(self, **kwargs):
-        user = utils.get_db_user(**kwargs)
-        res = self.db_api.create_user(user)
-
-        return res

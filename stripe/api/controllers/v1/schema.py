@@ -30,7 +30,6 @@ class SchemasController(rest.RestController):
         'agent': ['GET'],
         'queue': ['GET'],
         'queue_caller': ['GET'],
-        'user': ['GET'],
     }
 
     @wsme_pecan.wsexpose(unicode)
@@ -47,7 +46,7 @@ class SchemasController(rest.RestController):
                 'type': ['string', 'null'],
             },
             'user_id': {
-                'type': 'integer',
+                'type': 'string',
             },
         }
 
@@ -76,7 +75,7 @@ class SchemasController(rest.RestController):
                 'type': ['string', 'null'],
             },
             'user_id': {
-                'type': 'integer',
+                'type': 'string',
             },
         }
 
@@ -113,29 +112,3 @@ class SchemasController(rest.RestController):
         }
 
         return schema.Schema('queue_caller', json).raw()
-
-    @wsme_pecan.wsexpose(unicode)
-    def user(self):
-        """Retrieve schema for an user."""
-        json = {
-            'id': {
-                'type': 'integer',
-            },
-            'created_at': {
-                'type': ['string', 'null'],
-            },
-            'email': {
-                'type': ['string', 'null'],
-            },
-            'name': {
-                'type': 'string',
-            },
-            'password': {
-                'type': 'string',
-            },
-            'updated_at': {
-                'type': ['string', 'null'],
-            },
-        }
-
-        return schema.Schema('agent', json).raw()

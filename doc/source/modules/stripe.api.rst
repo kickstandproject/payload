@@ -9,6 +9,14 @@ api Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`acl` Module
+-----------------
+
+.. automodule:: stripe.api.acl
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`app` Module
 -----------------
 
