@@ -22,6 +22,7 @@ import pecan.testing
 import warlock
 
 from stripe.openstack.common import log as logging
+from stripe.openstack.common import uuidutils
 from stripe.tests.api.v1 import utils
 from stripe.tests import base
 
@@ -36,6 +37,8 @@ class FunctionalTest(base.TestCase):
     def setUp(self):
         super(FunctionalTest, self).setUp()
         self.app = self._make_app()
+        self.auth_headers = {
+            'X-User-Id': uuidutils.generate_uuid()}
 
     def tearDown(self):
         super(FunctionalTest, self).tearDown()
@@ -124,8 +127,7 @@ class FunctionalTest(base.TestCase):
     def _create_test_agent(self, **kwargs):
         json = utils.get_api_agent(**kwargs)
         res = self.post_json(
-            '/agents', params=json, status=200
-        )
+            '/agents', params=json, status=200, headers=self.auth_headers)
         self._assertEqualSchemas('agent', res.json)
 
         return res.json
@@ -133,8 +135,7 @@ class FunctionalTest(base.TestCase):
     def _create_test_queue(self, **kwargs):
         json = utils.get_api_queue(**kwargs)
         res = self.post_json(
-            '/queues', params=json, status=200
-        )
+            '/queues', params=json, status=200, headers=self.auth_headers)
         self._assertEqualSchemas('queue', res.json)
 
         return res.json
@@ -142,8 +143,8 @@ class FunctionalTest(base.TestCase):
     def _create_test_queue_caller(self, queue_id, **kwargs):
         json = utils.get_api_queue_caller(**kwargs)
         res = self.post_json(
-            '/queues/%s/callers' % queue_id, params=json, status=200
-        )
+            '/queues/%s/callers' % queue_id, params=json, status=200,
+            headers=self.auth_headers)
         self.assertEqual(res.status_int, 200)
         self.assertEqual(res.content_type, 'application/json')
 

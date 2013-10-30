@@ -38,7 +38,8 @@ agent = (
     Column('id', Integer, primary_key=True, index=True),
     Column('created_at', DateTime),
     Column('updated_at', DateTime),
-    Column('user_id', String(length=255), unique=True),
+    Column('user_id', String(length=255)),
+    Column('uuid', String(length=255)),
 )
 
 queue_member = (
@@ -59,6 +60,7 @@ queue = (
     Column('name', String(length=80)),
     Column('updated_at', DateTime),
     Column('user_id', String(length=255)),
+    Column('uuid', String(length=255)),
 )
 
 tables = [agent, queue_member, queue]

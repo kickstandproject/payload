@@ -48,6 +48,9 @@ class SchemasController(rest.RestController):
             'user_id': {
                 'type': 'string',
             },
+            'uuid': {
+                'type': 'string',
+            },
         }
 
         return schema.Schema('agent', json).raw()
@@ -75,6 +78,9 @@ class SchemasController(rest.RestController):
                 'type': ['string', 'null'],
             },
             'user_id': {
+                'type': 'string',
+            },
+            'uuid': {
                 'type': 'string',
             },
         }

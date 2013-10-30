@@ -26,8 +26,9 @@ Response
     {
       "id": 1,
       "created_at": "2011-04-22T13:33:48Z",
-      "user_id": '1',
+      "user_id": "02d99a62af974b26b510c3564ba84644",
       "updated_at": "2011-04-22T13:33:48Z",
+      "uuid": "51419ce0411511e3aa6e0800200c9a66",
     }
   ]
 
@@ -49,8 +50,9 @@ Response
   {
     "id": 1,
     "created_at": "2011-04-22T13:33:48Z",
-    "user_id": '1',
+    "user_id": "02d99a62af974b26b510c3564ba84644",
     "updated_at": "2011-04-22T13:33:48Z",
+    "uuid": "51419ce0411511e3aa6e0800200c9a66",
   }
 
 Create an agent

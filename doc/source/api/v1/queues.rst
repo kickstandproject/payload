@@ -31,8 +31,9 @@ Response
       "description": "24/7 Technical support",
       "disabled": False,
       "name": "support",
+      "user_id": "02d99a62af974b26b510c3564ba84644",
       "updated_at": "2011-04-22T13:33:48Z",
-      "user_id": '1',
+      "uuid": "8090f8b0-4115-11e3-aa6e-0800200c9a66",
     }
   ]
 
@@ -57,8 +58,9 @@ Response
     "description": "24/7 Technical support",
     "disabled": False,
     "name": "support",
+    "user_id": "02d99a62af974b26b510c3564ba84644",
     "updated_at": "2011-04-22T13:33:48Z",
-    "user_id": '1',
+    "uuid": "8090f8b0-4115-11e3-aa6e-0800200c9a66",
   }
 
 Create a queue

@@ -51,7 +51,8 @@ Base = declarative_base(cls=StripeBase)
 class Agent(Base):
     __tablename__ = 'agent'
     id = Column(Integer, primary_key=True)
-    user_id = Column(String(255), unique=True)
+    user_id = Column(String(255))
+    uuid = Column(String(255))
 
 
 class Queue(Base):
@@ -61,6 +62,7 @@ class Queue(Base):
     disabled = Column(Boolean, default=False)
     name = Column(String(80))
     user_id = Column(String(255))
+    uuid = Column(String(255))
 
 
 class QueueMember(Base):
