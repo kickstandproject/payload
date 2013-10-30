@@ -34,12 +34,10 @@ def get_middleware_queue(**kw):
 
 
 def get_middleware_queue_caller(**kw):
-    caller = {
-        'called_id': '6060',
-        'caller_id': '5551234',
-        'caller_name': 'Bob Jones',
-    }
-    return caller
+    json = {
+        'uuid': '3649acc0411a11e3aa6e0800200c9a66'}
+
+    return json
 
 
 def get_middleware_queue_member(**kw):
