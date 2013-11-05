@@ -1,9 +1,9 @@
-Stripe
-======
+Payload
+=======
 
 Automatic call distributor (ACD) using Python and Redis.
 
-* `Official Stripe documentation <http://stripe.readthedocs.org>`
+* `Official Payload documentation <http://payload.readthedocs.org>`
 
 License
 =======

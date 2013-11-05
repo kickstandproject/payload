@@ -27,17 +27,17 @@ Setting Up a Development Environment
   OpenStack project for the original [#f1]_.
 
 This page describes how to setup a working Python development
-environment that can be used in developing stripe on Ubuntu. These
+environment that can be used in developing payload on Ubuntu. These
 instructions assume you're already familiar with git.
 
-Following these instructions will allow you to run the stripe unit
+Following these instructions will allow you to run the payload unit
 tests.
 
 
 Virtual environments
 --------------------
 
-Stripe development uses a set of shell scripts from OpenStack's DevStack.
+payload development uses a set of shell scripts from OpenStack's DevStack.
 Virtual enviroments with venv are also available with the source code.
 
 Linux Systems
@@ -45,7 +45,7 @@ Linux Systems
 
 .. note::
 
-  This section is tested for Stripe on Ubuntu (12.04-64) distribution. Feel
+  This section is tested for payload on Ubuntu (12.04-64) distribution. Feel
   free to add notes and change according to your experiences or operating
   system.
 
@@ -60,8 +60,8 @@ Getting the code
 ----------------
 Grab the code from GitHub::
 
-  git clone https://github.com/kickstandproject/stripe.git
-  cd stripe
+  git clone https://github.com/kickstandproject/payload.git
+  cd payload
 
 
 Installing and using the virtualenv
@@ -78,12 +78,12 @@ by the ``tools/install_venv.py`` file into the virutalenv.
 
 If all goes well, you should get a message something like this::
 
-  Stripe development environment setup is complete.
+  payload development environment setup is complete.
 
-  Stripe development uses virtualenv to track and manage Python dependencies
+  payload development uses virtualenv to track and manage Python dependencies
   while in development and testing.
 
-  To activate the Stripe virtualenv for the extent of your current shell
+  To activate the payload virtualenv for the extent of your current shell
   session you can run:
 
   $ source .venv/bin/activate

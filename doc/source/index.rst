@@ -3,8 +3,8 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to Stripe's documentation!
-==================================
+Welcome to Payload's documentation!
+===================================
 
 Contents:
 
@@ -33,8 +33,8 @@ Man pages
 .. toctree::
    :maxdepth: 1
 
-   man/stripe-api
-   man/stripe-manage
+   man/payload-api
+   man/payload-manage
 
 Modules
 =======

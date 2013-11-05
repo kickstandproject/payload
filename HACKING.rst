@@ -1,4 +1,4 @@
-Stripe Style Commandments
+payload Style Commandments
 =========================
 
 - Step 1: Read http://www.python.org/dev/peps/pep-0008/
@@ -91,8 +91,8 @@ Example::
   import eventlet
   import webob.exc
 
-  import stripe.api.v1
-  from stripe import test
+  import payload.api.v1
+  from payload import test
 
 
 Docstrings
@@ -208,7 +208,7 @@ Example::
 
 Python 3.x compatibility
 ------------------------
-Stripe code should become Python 3.x compatible. That means all Python 2.x-only
+payload code should become Python 3.x compatible. That means all Python 2.x-only
 constructs or dependencies should be avoided. An example is
 
     except x,y:
@@ -255,7 +255,7 @@ always update oslo-incubator first and then run the script to copy
 the changes across.
 
 
-Stripe Licensing
+payload Licensing
 ----------------
 
 Newly contributed Source Code should be licensed under the Apache 2.0 license.

@@ -3,7 +3,7 @@ include LICENSE
 include README.rst
 include ChangeLog
 include tox.ini
-include stripe/versioninfo
+include payload/versioninfo
 recursive-include doc *
 recursive-include tools *
-recursive-include stripe *.cfg, *.ini
+recursive-include payload *.cfg, *.ini

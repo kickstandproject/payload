@@ -26,7 +26,7 @@ Unit Tests
   have obviously made changes that only affect our project but we credit the
   OpenStack project for the original [#f1]_.
 
-Stripe contains a suite of unit tests, in the stripe/tests directory.
+Payload contains a suite of unit tests, in the payload/tests directory.
 
 Any proposed code change will be automatically rejected by the Kickstand
 Project Jenkins server if the change causes unit test failures.

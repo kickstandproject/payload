@@ -23,29 +23,29 @@ extensions = ['sphinx.ext.autodoc']
 templates_path = ['_templates']
 source_suffix = '.rst'
 master_doc = 'index'
-project = u'Stripe'
+project = u'payload'
 copyright = u'2013, Paul Belanger'
 pygments_style = 'sphinx'
 html_theme = 'default'
-htmlhelp_basename = 'stripeedoc'
+htmlhelp_basename = 'payloadedoc'
 
 latex_elements = {
 }
 
 latex_documents = [
-    ('index', 'Stripe.tex', u'Stripe Documentation',
+    ('index', 'payload.tex', u'payload Documentation',
      u'Paul Belanger', 'manual'),
 ]
 
 man_pages = [
-    ('man/stripe-api', 'stripe-api', u'Stripe Documentation',
+    ('man/payload-api', 'payload-api', u'payload Documentation',
      [u'Paul Belanger'], 1),
-    ('man/stripe-manage', 'stripe-manage', u'Stripe Documentation',
+    ('man/payload-manage', 'payload-manage', u'payload Documentation',
      [u'Paul Belanger'], 1),
 ]
 
 texinfo_documents = [
-    ('index', 'Stripe', u'Stripe Documentation',
-     u'Paul Belanger', 'Stripe', 'One line description of project.',
+    ('index', 'payload', u'payload Documentation',
+     u'Paul Belanger', 'payload', 'One line description of project.',
      'Miscellaneous'),
 ]

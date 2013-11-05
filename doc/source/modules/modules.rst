@@ -1,7 +1,7 @@
-stripe
-======
+payload
+=======
 
 .. toctree::
    :maxdepth: 4
 
-   stripe
+   payload
