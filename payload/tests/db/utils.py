@@ -17,7 +17,6 @@
 
 def get_db_agent(**kw):
     json = {
-        'id': kw.get('id', 123),
         'agent_id': kw.get('agent_id', 123),
     }
 
@@ -26,7 +25,6 @@ def get_db_agent(**kw):
 
 def get_db_queue(**kw):
     queue = {
-        'id': kw.get('id', 123),
         'description': 'Example queue',
         'disabled': kw.get('disabled', False),
         'name': 'example',

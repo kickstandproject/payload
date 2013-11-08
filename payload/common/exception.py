@@ -90,11 +90,11 @@ class NotFound(payloadException):
 
 
 class AgentNotFound(NotFound):
-    message = 'Agent %(agent_id)s could not be found'
+    message = 'Agent %(uuid)s could not be found'
 
 
 class QueueNotFound(NotFound):
-    message = 'Queue %(queue_id)s could not be found'
+    message = 'Queue %(uuid)s could not be found'
 
 
 class QueueCallerNotFound(NotFound):
@@ -107,7 +107,3 @@ class QueueMemberNotFound(NotFound):
 
 class QueueMemberDuplicated(payloadException):
     message = 'Queue member %(agent_id)s already exists.'
-
-
-class UserNotFound(NotFound):
-    message = 'User %(user_id)s could not be found'

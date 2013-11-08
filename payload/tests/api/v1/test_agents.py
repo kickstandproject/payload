@@ -39,7 +39,7 @@ class TestCase(base.FunctionalTest):
 
     def test_delete_agent(self):
         res = self._create_test_agent()
-        self.delete('/agents/%s' % res['id'], status=204)
+        self.delete('/agents/%s' % res['uuid'], status=204)
         self._list_agents([])
 
     def test_edit_agent(self):
@@ -48,13 +48,13 @@ class TestCase(base.FunctionalTest):
             'name': 'renamed',
         }
         res = self.put_json(
-            '/agents/%s' % agent['id'], params=json
+            '/agents/%s' % agent['uuid'], params=json
         )
         self._assertEqualSchemas('agent', res.json)
 
     def test_get_agent(self):
         agent = self._create_test_agent()
-        res = self.get_json('/agents/%s' % agent['id'])
+        res = self.get_json('/agents/%s' % agent['uuid'])
         self._assertEqualSchemas('agent', res)
 
     def test_list_agents(self):

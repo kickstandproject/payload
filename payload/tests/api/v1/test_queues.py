@@ -40,13 +40,13 @@ class TestCase(base.FunctionalTest):
     def test_delete_queue(self):
         res = self._create_test_queue()
         self.delete(
-            '/queues/%s' % res['id'], status=204
+            '/queues/%s' % res['uuid'], status=204
         )
         self._list_queues([])
 
     def test_get_queue(self):
         queue = self._create_test_queue()
-        res = self.get_json('/queues/%s' % queue['id'])
+        res = self.get_json('/queues/%s' % queue['uuid'])
         self._assertEqualSchemas('queue', res)
 
     def test_list_queues(self):
@@ -59,7 +59,7 @@ class TestCase(base.FunctionalTest):
             'name': 'renamed',
         }
         res = self.put_json(
-            '/queues/%s' % queue['id'], params=json
+            '/queues/%s' % queue['uuid'], params=json
         )
         self._assertEqualSchemas('queue', res.json)
 

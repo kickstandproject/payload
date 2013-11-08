@@ -35,11 +35,11 @@ down_revision = None
 
 agent = (
     'agent',
-    Column('id', Integer, primary_key=True, index=True),
+    Column('id', Integer, primary_key=True, index=True, autoincrement=True),
     Column('created_at', DateTime),
     Column('updated_at', DateTime),
     Column('user_id', String(length=255)),
-    Column('uuid', String(length=255)),
+    Column('uuid', String(length=255), unique=True),
 )
 
 queue_member = (
@@ -53,14 +53,14 @@ queue_member = (
 
 queue = (
     'queue',
-    Column('id', Integer, primary_key=True, index=True),
+    Column('id', Integer, primary_key=True, index=True, autoincrement=True),
     Column('created_at', DateTime),
     Column('description', Text),
     Column('disabled', Boolean),
     Column('name', String(length=80)),
     Column('updated_at', DateTime),
     Column('user_id', String(length=255)),
-    Column('uuid', String(length=255)),
+    Column('uuid', String(length=255), unique=True),
 )
 
 tables = [agent, queue_member, queue]

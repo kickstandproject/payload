@@ -62,6 +62,8 @@ class Connection(object):
 
     def create_agent(self, values):
         """Create a new agent."""
+        if not values.get('uuid'):
+            values['uuid'] = uuidutils.generate_uuid()
         res = self._create_model(model=models.Agent(), values=values)
 
         return res
@@ -84,19 +86,19 @@ class Connection(object):
 
         return res
 
-    def delete_agent(self, agent_id):
+    def delete_agent(self, uuid):
         """Delete an agent."""
-        res = self._delete_model(model=models.Agent, id=agent_id)
+        res = self._delete_model(model=models.Agent, uuid=uuid)
 
         if res != 1:
-            raise exception.AgentNotFound(agent_id=agent_id)
+            raise exception.AgentNotFound(uuid=uuid)
 
-    def delete_queue(self, queue_id):
+    def delete_queue(self, uuid):
         """Delete a queue."""
-        res = self._delete_model(model=models.Queue, id=queue_id)
+        res = self._delete_model(model=models.Queue, uuid=uuid)
 
         if res != 1:
-            raise exception.QueueNotFound(queue_id=queue_id)
+            raise exception.QueueNotFound(uuid=uuid)
 
     def delete_queue_member(self, agent_id, queue_id):
         """Delete a queue member."""
@@ -109,21 +111,21 @@ class Connection(object):
                 agent_id=agent_id
             )
 
-    def get_agent(self, agent_id):
+    def get_agent(self, uuid):
         """Retrieve information about the given agent."""
         try:
-            res = self._get_model(model=models.Agent, id=agent_id)
+            res = self._get_model(model=models.Agent, uuid=uuid)
         except exc.NoResultFound:
-            raise exception.AgentNotFound(agent_id=agent_id)
+            raise exception.AgentNotFound(uuid=uuid)
 
         return res
 
-    def get_queue(self, queue_id):
+    def get_queue(self, uuid):
         """Retrieve information about the given queue."""
         try:
-            res = self._get_model(model=models.Queue, id=queue_id)
+            res = self._get_model(model=models.Queue, uuid=uuid)
         except exc.NoResultFound:
-            raise exception.QueueNotFound(queue_id=queue_id)
+            raise exception.QueueNotFound(uuid=uuid)
 
         return res
 
@@ -137,15 +139,6 @@ class Connection(object):
             raise exception.QueueMemberNotFound(
                 agent_id=agent_id
             )
-
-        return res
-
-    def get_user(self, user_id):
-        """Retrieve information about the given user."""
-        try:
-            res = self._get_model(model=models.User, id=user_id)
-        except exc.NoResultFound:
-            raise exception.UserNotFound(user_id=user_id)
 
         return res
 
@@ -164,12 +157,6 @@ class Connection(object):
     def list_queue_members(self):
         """Retrieve a list of queue members."""
         res = self._list_model(model=models.QueueMember)
-
-        return res
-
-    def list_users(self):
-        """Retrieve a list of users."""
-        res = self._list_model(model=models.User)
 
         return res
 

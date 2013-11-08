@@ -50,9 +50,9 @@ class AgentsController(rest.RestController):
     }
 
     @wsme_pecan.wsexpose(None, wtypes.text, status_code=204)
-    def delete(self, id):
+    def delete(self, uuid):
         """Delete an agent."""
-        pecan.request.db_api.delete_agent(id)
+        pecan.request.db_api.delete_agent(uuid=uuid)
 
     @wsme_pecan.wsexpose([Agent])
     def get_all(self):
@@ -62,10 +62,10 @@ class AgentsController(rest.RestController):
         return res
 
     @wsme_pecan.wsexpose(Agent, unicode)
-    def get_one(self, id):
+    def get_one(self, uuid):
         """Retrieve information about the given agent."""
         try:
-            result = pecan.request.db_api.get_agent(id)
+            result = pecan.request.db_api.get_agent(uuid)
         except exception.AgentNotFound:
             # TODO(pabelanger): See if there is a better way of handling
             # exceptions.
@@ -74,7 +74,7 @@ class AgentsController(rest.RestController):
         return result
 
     @wsme_pecan.wsexpose(None, unicode)
-    def login(self, id):
+    def login(self, uuid):
         pass
 
     @wsme.validate(Agent)
@@ -94,9 +94,9 @@ class AgentsController(rest.RestController):
 
     @wsme.validate(Agent)
     @wsme_pecan.wsexpose(Agent, wtypes.text, body=Agent)
-    def put(self, id, body):
+    def put(self, uuid, body):
         """Update an existing agent."""
-        agent = pecan.request.db_api.get_agent(id)
+        agent = pecan.request.db_api.get_agent(uuid=uuid)
         items = body.as_dict().items()
         for k, v in [(k, v) for (k, v) in items if v]:
             agent[k] = v

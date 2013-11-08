@@ -25,9 +25,9 @@ class TestCase(base.FunctionalTest):
 
     def test_delete_agent(self):
         agent = self._create_test_agent()
-        self.db_api.delete_agent(agent['id'])
+        self.db_api.delete_agent(uuid=agent['uuid'])
         self.assertRaises(
-            exception.AgentNotFound, self.db_api.get_agent, agent['id']
+            exception.AgentNotFound, self.db_api.get_agent, agent['uuid']
         )
 
     def test_delete_agent_not_found(self):
@@ -38,7 +38,7 @@ class TestCase(base.FunctionalTest):
     def test_list_agents(self):
         agent = []
         for i in xrange(1, 6):
-            q = self._create_test_agent(id=i)
+            q = self._create_test_agent(uuid=i)
             agent.append(q)
         res = self.db_api.list_agents()
         res.sort()

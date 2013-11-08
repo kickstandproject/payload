@@ -56,9 +56,9 @@ class QueuesController(rest.RestController):
     stats = stat.QueueStatsController()
 
     @wsme_pecan.wsexpose(None, wtypes.text, status_code=204)
-    def delete(self, id):
+    def delete(self, uuid):
         """Delete a queue."""
-        pecan.request.db_api.delete_queue(id)
+        pecan.request.db_api.delete_queue(uuid=uuid)
 
     @wsme_pecan.wsexpose([Queue])
     def get_all(self):
@@ -68,10 +68,10 @@ class QueuesController(rest.RestController):
         return res
 
     @wsme_pecan.wsexpose(Queue, unicode)
-    def get_one(self, id):
+    def get_one(self, uuid):
         """Retrieve information about the given queue."""
         try:
-            result = pecan.request.db_api.get_queue(id)
+            result = pecan.request.db_api.get_queue(uuid=uuid)
         except exception.QueueNotFound:
             # TODO(pabelanger): See if there is a better way of handling
             # exceptions.
@@ -96,8 +96,8 @@ class QueuesController(rest.RestController):
 
     @wsme.validate(Queue)
     @wsme_pecan.wsexpose(Queue, wtypes.text, body=Queue)
-    def put(self, id, body):
-        queue = pecan.request.db_api.get_queue(id)
+    def put(self, uuid, body):
+        queue = pecan.request.db_api.get_queue(uuid)
         items = body.as_dict().items()
         for k, v in [(k, v) for (k, v) in items if v]:
             queue[k] = v

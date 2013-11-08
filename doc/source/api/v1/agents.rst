@@ -24,11 +24,10 @@ Response
 
   [
     {
-      "id": 1,
+      "uuid": "5f91c19d-84f0-4122-bc7f-dcdda6704953",
       "created_at": "2011-04-22T13:33:48Z",
       "user_id": "02d99a62af974b26b510c3564ba84644",
       "updated_at": "2011-04-22T13:33:48Z",
-      "uuid": "51419ce0411511e3aa6e0800200c9a66",
     }
   ]
 
@@ -37,7 +36,7 @@ Get a single agent
 
 .. code-block:: html
 
-  GET /v1/agents/:id
+  GET /v1/agents/:uuid
 
 Parameters
 ''''''''''
@@ -48,11 +47,10 @@ Response
 .. code-block:: html
 
   {
-    "id": 1,
+    "uuid": "5f91c19d-84f0-4122-bc7f-dcdda6704953",
     "created_at": "2011-04-22T13:33:48Z",
     "user_id": "02d99a62af974b26b510c3564ba84644",
     "updated_at": "2011-04-22T13:33:48Z",
-    "uuid": "51419ce0411511e3aa6e0800200c9a66",
   }
 
 Create an agent
@@ -73,7 +71,7 @@ Edit an agent
 
 .. code-block:: html
 
-  PUT /v1/agents/:id
+  PUT /v1/agents/:uuid
 
 Parameters
 ''''''''''
@@ -89,7 +87,7 @@ Delete an agent
 
 .. code-block:: html
 
-  DELETE /v1/agents/:id
+  DELETE /v1/agents/:uuid
 
 Parameters
 ''''''''''

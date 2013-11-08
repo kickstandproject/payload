@@ -40,29 +40,29 @@ class JSONEncodedDict(TypeDecorator):
         return value
 
 
-class payloadBase(models.TimestampMixin, models.ModelBase):
+class PayloadBase(models.TimestampMixin, models.ModelBase):
 
     metadata = None
 
 
-Base = declarative_base(cls=payloadBase)
+Base = declarative_base(cls=PayloadBase)
 
 
 class Agent(Base):
     __tablename__ = 'agent'
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     user_id = Column(String(255))
-    uuid = Column(String(255))
+    uuid = Column(String(255), unique=True)
 
 
 class Queue(Base):
     __tablename__ = 'queue'
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     description = Column(JSONEncodedDict)
     disabled = Column(Boolean, default=False)
     name = Column(String(80))
     user_id = Column(String(255))
-    uuid = Column(String(255))
+    uuid = Column(String(255), unique=True)
 
 
 class QueueMember(Base):
