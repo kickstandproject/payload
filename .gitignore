@@ -11,4 +11,5 @@ ChangeLog
 cover/*
 dist/*
 doc/build/*
-stripe/versioninfo
+etc/payload/payload.conf
+payload/payload.sqlite
