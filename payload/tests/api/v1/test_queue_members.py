@@ -75,9 +75,6 @@ class TestCase(base.FunctionalTest):
         }
         self._list_queue_members([res])
 
-    def test_login_queue_member(self):
-        self.post_json('/agents/%s/login' % self.agent_id, status=200)
-
     def _create_test_queue_member(self):
         res = self.put_json(
             '/queues/%s/members/%s' % (
@@ -85,7 +82,6 @@ class TestCase(base.FunctionalTest):
             ), status=204
         )
         self.assertEqual(res.status_int, 204)
-#        self.assertEqual(res.content_type, 'application/json')
 
     def _list_queue_members(self, members):
         res = self.get_json('/queues/%s/members' % self.queue_id)

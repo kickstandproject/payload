@@ -46,10 +46,6 @@ class Agent(base.APIBase):
 class AgentsController(rest.RestController):
     """REST Controller for Agents."""
 
-    _custom_actions = {
-        'login': ['POST'],
-    }
-
     @wsme_pecan.wsexpose(None, wtypes.text, status_code=204)
     def delete(self, uuid):
         """Delete an agent."""
@@ -73,10 +69,6 @@ class AgentsController(rest.RestController):
             raise wsme.exc.ClientSideError('Not found')
 
         return result
-
-    @wsme_pecan.wsexpose(None, unicode)
-    def login(self, uuid):
-        pass
 
     @wsme.validate(Agent)
     @wsme_pecan.wsexpose(Agent, body=Agent)
