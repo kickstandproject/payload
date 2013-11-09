@@ -26,6 +26,7 @@ Response
     {
       "uuid": "5f91c19d-84f0-4122-bc7f-dcdda6704953",
       "created_at": "2011-04-22T13:33:48Z",
+      "project_id": "793491dd5fa8477eb2d6a820193a183b",
       "user_id": "02d99a62af974b26b510c3564ba84644",
       "updated_at": "2011-04-22T13:33:48Z",
     }
@@ -49,6 +50,7 @@ Response
   {
     "uuid": "5f91c19d-84f0-4122-bc7f-dcdda6704953",
     "created_at": "2011-04-22T13:33:48Z",
+    "project_id": "793491dd5fa8477eb2d6a820193a183b",
     "user_id": "02d99a62af974b26b510c3564ba84644",
     "updated_at": "2011-04-22T13:33:48Z",
   }

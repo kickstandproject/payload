@@ -51,6 +51,7 @@ Base = declarative_base(cls=PayloadBase)
 class Agent(Base):
     __tablename__ = 'agent'
     id = Column(Integer, primary_key=True, autoincrement=True)
+    project_id = Column(String(255))
     user_id = Column(String(255))
     uuid = Column(String(255), unique=True)
 
@@ -61,6 +62,7 @@ class Queue(Base):
     description = Column(JSONEncodedDict)
     disabled = Column(Boolean, default=False)
     name = Column(String(80))
+    project_id = Column(String(255))
     user_id = Column(String(255))
     uuid = Column(String(255), unique=True)
 

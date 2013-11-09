@@ -42,6 +42,9 @@ class SchemasController(rest.RestController):
             'created_at': {
                 'type': ['string', 'null'],
             },
+            'project_id': {
+                'type': 'string',
+            },
             'updated_at': {
                 'type': ['string', 'null'],
             },
@@ -72,6 +75,9 @@ class SchemasController(rest.RestController):
                 'type': 'boolean',
             },
             'name': {
+                'type': 'string',
+            },
+            'project_id': {
                 'type': 'string',
             },
             'updated_at': {

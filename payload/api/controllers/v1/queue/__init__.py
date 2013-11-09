@@ -39,6 +39,7 @@ class Queue(base.APIBase):
     description = wtypes.text
     disabled = bool
     name = wtypes.text
+    project_id = wtypes.text
     user_id = wtypes.text
     uuid = wtypes.text
 
@@ -84,9 +85,11 @@ class QueuesController(rest.RestController):
     def post(self, body):
         """Create a new queue."""
         user_id = pecan.request.headers.get('X-User-Id')
+        project_id = pecan.request.headers.get('X-Tenant-Id')
         try:
             d = body.as_dict()
             d['user_id'] = user_id
+            d['project_id'] = project_id
             new_queue = pecan.request.db_api.create_queue(d)
         except Exception:
             # TODO(pabelanger): See if there is a better way of handling

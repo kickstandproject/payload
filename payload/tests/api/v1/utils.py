@@ -17,7 +17,7 @@
 
 def get_api_agent(**kw):
     json = {
-        'id': kw.get('id', 123),
+        'project_id': 'project1',
         'uuid': kw.get('uuid', '02d99a62af974b26b510c3564ba84644'),
     }
     return json
@@ -25,10 +25,10 @@ def get_api_agent(**kw):
 
 def get_api_queue(**kw):
     queue = {
-        'id': kw.get('id', 123),
         'description': 'Example queue',
         'disabled': kw.get('disabled', False),
         'name': 'example',
+        'project_id': 'project1',
         'uuid': kw.get('uuid', '02d99a62af974b26b510c3564ba84644'),
     }
     return queue

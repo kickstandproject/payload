@@ -38,7 +38,9 @@ class FunctionalTest(base.TestCase):
         super(FunctionalTest, self).setUp()
         self.app = self._make_app()
         self.auth_headers = {
-            'X-User-Id': uuidutils.generate_uuid()}
+            'X-User-Id': uuidutils.generate_uuid(),
+            'X-Tenant-Id': uuidutils.generate_uuid(),
+        }
 
     def tearDown(self):
         super(FunctionalTest, self).tearDown()

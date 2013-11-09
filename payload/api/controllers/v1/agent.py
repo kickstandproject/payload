@@ -33,6 +33,7 @@ class Agent(base.APIBase):
     """API representation of an agent."""
 
     id = int
+    project_id = wtypes.text
     user_id = wtypes.text
     uuid = wtypes.text
 
@@ -82,9 +83,11 @@ class AgentsController(rest.RestController):
     def post(self, body):
         """Create a new agent."""
         user_id = pecan.request.headers.get('X-User-Id')
+        project_id = pecan.request.headers.get('X-Tenant-Id')
         try:
             d = body.as_dict()
             d['user_id'] = user_id
+            d['project_id'] = project_id
             new_agent = pecan.request.db_api.create_agent(d)
         except Exception:
             # TODO(pabelanger): See if there is a better way of handling
