@@ -62,8 +62,6 @@ class Connection(object):
 
     def create_agent(self, values):
         """Create a new agent."""
-        if not values.get('uuid'):
-            values['uuid'] = uuidutils.generate_uuid()
         res = self._create_model(model=models.Agent(), values=values)
 
         return res

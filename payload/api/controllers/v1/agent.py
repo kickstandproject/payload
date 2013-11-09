@@ -84,8 +84,13 @@ class AgentsController(rest.RestController):
         """Create a new agent."""
         user_id = pecan.request.headers.get('X-User-Id')
         project_id = pecan.request.headers.get('X-Tenant-Id')
+
         try:
             d = body.as_dict()
+
+            if not d.get('uuid'):
+                raise wsme.exc.ClientSideError('Invalid data')
+
             d['user_id'] = user_id
             d['project_id'] = project_id
             new_agent = pecan.request.db_api.create_agent(d)
