@@ -1,5 +1,5 @@
-Stripe API Reference
-====================
+Payload API Reference
+=====================
 
 API Operations
 --------------
