@@ -69,6 +69,6 @@ class Queue(Base):
 
 class QueueMember(Base):
     __tablename__ = 'queue_member'
-    id = Column(Integer, primary_key=True)
-    agent_id = Column(Integer, ForeignKey('agent.id'), unique=True)
-    queue_id = Column(Integer, ForeignKey('queue.id'))
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    agent_uuid = Column(String(255), ForeignKey('agent.uuid'), unique=True)
+    queue_uuid = Column(String(255), ForeignKey('queue.uuid'))

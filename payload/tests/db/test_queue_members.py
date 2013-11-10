@@ -27,40 +27,32 @@ class TestCase(base.FunctionalTest):
 
     def test_create_queue_member(self):
         res = self._create_test_queue_member(
-            agent_id=self.agent['id'], queue_id=self.queue['id']
-        )
+            agent_uuid=self.agent['uuid'], queue_uuid=self.queue['uuid'])
         self.assertTrue(res)
 
     def test_delete_queue_member(self):
         self._create_test_queue_member(
-            agent_id=self.agent['id'], queue_id=self.queue['id']
-        )
+            agent_uuid=self.agent['uuid'], queue_uuid=self.queue['uuid'])
         self.db_api.delete_queue_member(
-            agent_id=self.agent['id'], queue_id=self.queue['id']
-        )
+            agent_uuid=self.agent['uuid'], queue_uuid=self.queue['uuid'])
         self.assertRaises(
             exception.QueueMemberNotFound, self.db_api.get_queue_member,
-            self.agent['id'], self.queue['id'],
-        )
+            self.agent['uuid'], self.queue['uuid'])
 
     def test_delete_queue_member_not_found(self):
         self.assertRaises(
             exception.QueueMemberNotFound, self.db_api.delete_queue_member,
-            123, 123
-        )
+            123, 123)
 
     def test_get_queue_member(self):
         member = self._create_test_queue_member(
-            agent_id=self.agent['id'], queue_id=self.queue['id']
-        )
+            agent_uuid=self.agent['uuid'], queue_uuid=self.queue['uuid'])
         res = self.db_api.get_queue_member(
-            agent_id=self.agent['id'], queue_id=self.queue['id']
-        )
-        self.assertEqual(member['id'], res['id'])
+            agent_uuid=self.agent['uuid'], queue_uuid=self.queue['uuid'])
+        self.assertEqual(member['agent_uuid'], res['agent_uuid'])
 
     def test_list_queue_members(self):
-        member = self._create_test_queue_member(
-            agent_id=self.agent['id'], queue_id=self.queue['id']
-        )
+        self._create_test_queue_member(
+            agent_uuid=self.agent['uuid'], queue_uuid=self.queue['uuid'])
         res = self.db_api.list_queue_members()
-        self.assertEqual(res[0]['id'], member['id'])
+        self.assertTrue(res)

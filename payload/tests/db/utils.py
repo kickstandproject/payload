@@ -36,7 +36,7 @@ def get_db_queue(**kw):
 
 def get_db_queue_member(**kw):
     queue_member = {
-        'id': kw.get('id', 123),
-        'agent_id': kw.get('agent_id', 123),
+        'queue_uuid': kw.get('queue_uuid', 123),
+        'agent_uuid': kw.get('agent_uuid', 123),
     }
     return queue_member

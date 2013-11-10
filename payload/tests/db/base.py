@@ -36,9 +36,8 @@ class FunctionalTest(base.TestCase):
 
         return res
 
-    def _create_test_queue_member(self, agent_id, queue_id):
+    def _create_test_queue_member(self, agent_uuid, queue_uuid):
         res = self.db_api.create_queue_member(
-            agent_id=agent_id, queue_id=queue_id
-        )
+            agent_uuid=agent_uuid, queue_uuid=queue_uuid)
 
         return res

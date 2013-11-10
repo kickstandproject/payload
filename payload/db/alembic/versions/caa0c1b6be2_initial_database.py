@@ -45,10 +45,10 @@ agent = (
 
 queue_member = (
     'queue_member',
-    Column('id', Integer, primary_key=True, index=True),
+    Column('id', Integer, primary_key=True, index=True, autoincrement=True),
     Column('created_at', DateTime),
-    Column('agent_id', Integer, unique=True),
-    Column('queue_id', Integer),
+    Column('agent_uuid', String(255), unique=True),
+    Column('queue_uuid', String(255)),
     Column('updated_at', DateTime),
 )
 

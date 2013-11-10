@@ -74,11 +74,11 @@ class Connection(object):
 
         return res
 
-    def create_queue_member(self, agent_id, queue_id):
+    def create_queue_member(self, agent_uuid, queue_uuid):
         """Create a new queue member."""
         values = {
-            'agent_id': agent_id,
-            'queue_id': queue_id,
+            'agent_uuid': agent_uuid,
+            'queue_uuid': queue_uuid,
         }
         res = self._create_model(model=models.QueueMember(), values=values)
 
@@ -98,15 +98,15 @@ class Connection(object):
         if res != 1:
             raise exception.QueueNotFound(uuid=uuid)
 
-    def delete_queue_member(self, agent_id, queue_id):
+    def delete_queue_member(self, agent_uuid, queue_uuid):
         """Delete a queue member."""
         res = self._delete_model(
-            model=models.QueueMember, agent_id=agent_id, queue_id=queue_id
-        )
+            model=models.QueueMember, agent_uuid=agent_uuid,
+            queue_uuid=queue_uuid)
 
         if res != 1:
             raise exception.QueueMemberNotFound(
-                agent_id=agent_id
+                uuid=agent_uuid
             )
 
     def get_agent(self, uuid):
@@ -127,16 +127,15 @@ class Connection(object):
 
         return res
 
-    def get_queue_member(self, agent_id, queue_id):
+    def get_queue_member(self, agent_uuid, queue_uuid):
         """Retrieve information about the given queue member."""
         try:
             res = self._get_model(
-                model=models.QueueMember, agent_id=agent_id, queue_id=queue_id
-            )
+                model=models.QueueMember, agent_uuid=agent_uuid,
+                queue_uuid=queue_uuid)
         except exc.NoResultFound:
             raise exception.QueueMemberNotFound(
-                agent_id=agent_id
-            )
+                uuid=agent_uuid)
 
         return res
 

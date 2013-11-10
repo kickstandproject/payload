@@ -44,7 +44,7 @@ Add queue member
 
 .. code-block:: html
 
-  PUT /v1/queues/:queue_id/members/:agent_id
+  POST /v1/queues/:queue_id/members/:agent_id
 
 Input
 '''''

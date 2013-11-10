@@ -102,8 +102,8 @@ class QueueCallerNotFound(NotFound):
 
 
 class QueueMemberNotFound(NotFound):
-    message = 'Queue member %(queue_member_id)s could not be found'
+    message = 'Queue member %(uuid)s could not be found'
 
 
 class QueueMemberDuplicated(payloadException):
-    message = 'Queue member %(agent_id)s already exists.'
+    message = 'Queue member %(uuid)s already exists.'

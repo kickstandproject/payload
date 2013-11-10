@@ -41,9 +41,9 @@ class TestCase(base.FunctionalTest):
     def setUp(self):
         super(TestCase, self).setUp()
         agent = self._create_test_agent()
-        self.agent_id = agent['id']
+        self.agent_uuid = agent['uuid']
         queue = self._create_test_queue()
-        self.queue_id = queue['id']
+        self.queue_uuid = queue['uuid']
 
     def test_create_queue_member(self):
         self._create_test_queue_member()
@@ -52,9 +52,8 @@ class TestCase(base.FunctionalTest):
         self._create_test_queue_member()
         self.delete(
             '/queues/%s/members/%s' % (
-                self.queue_id, self.agent_id
-            ), status=204,
-        )
+                self.queue_uuid, self.agent_uuid
+            ), status=204)
 
         self._list_queue_members([])
 
@@ -62,27 +61,25 @@ class TestCase(base.FunctionalTest):
         self._create_test_queue_member()
         res = self.get_json(
             '/queues/%s/members/%s' % (
-                self.queue_id, self.agent_id
-            ), expect_errors=True
-        )
+                self.queue_uuid, self.agent_uuid
+            ), expect_errors=True)
         self.assertEqual(res.status_int, 204)
 
     def test_list_queue_members(self):
         self._create_test_queue_member()
         res = {
-            'agent_id': self.agent_id,
-            'queue_id': self.queue_id,
+            'agent_uuid': self.agent_uuid,
+            'queue_uuid': self.queue_uuid,
         }
         self._list_queue_members([res])
 
     def _create_test_queue_member(self):
-        res = self.put_json(
+        res = self.post_json(
             '/queues/%s/members/%s' % (
-                self.queue_id, self.agent_id
-            ), status=204
-        )
+                self.queue_uuid, self.agent_uuid
+            ), status=204)
         self.assertEqual(res.status_int, 204)
 
     def _list_queue_members(self, members):
-        res = self.get_json('/queues/%s/members' % self.queue_id)
+        res = self.get_json('/queues/%s/members' % self.queue_uuid)
         self.assertEqual(len(res), len(members))

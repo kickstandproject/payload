@@ -31,8 +31,8 @@ class QueueMember(base.APIBase):
     """API representation of a queue member."""
 
     id = int
-    agent_id = int
-    queue_id = int
+    agent_uuid = wtypes.text
+    queue_uuid = wtypes.text
 
     def __init__(self, **kwargs):
         self.fields = vars(models.QueueMember)
@@ -44,29 +44,26 @@ class QueueMembersController(rest.RestController):
     """REST Controller for queue members."""
 
     @wsme_pecan.wsexpose(None, wtypes.text, wtypes.text, status_code=204)
-    def delete(self, queue_id, agent_id):
+    def delete(self, uuid, agent_uuid):
         """Delete a queue member."""
         pecan.request.db_api.delete_queue_member(
-            agent_id=agent_id, queue_id=queue_id
-        )
+            agent_uuid=agent_uuid, queue_uuid=uuid)
 
     @wsme_pecan.wsexpose([QueueMember], wtypes.text)
-    def get_all(self, queue_id):
+    def get_all(self, uuid):
         """Retrieve a list of queue members."""
         res = pecan.request.db_api.list_queue_members()
 
         return res
 
     @wsme_pecan.wsexpose(None, wtypes.text, wtypes.text, status_code=204)
-    def get_one(self, queue_id, agent_id):
+    def get_one(self, uuid, agent_uuid):
         """Retrieve information about the given queue member."""
         pecan.request.db_api.get_queue_member(
-            agent_id=agent_id, queue_id=queue_id
-        )
+            agent_uuid=agent_uuid, queue_uuid=uuid)
 
     @wsme_pecan.wsexpose(None, wtypes.text, wtypes.text, status_code=204)
-    def put(self, queue_id, agent_id):
+    def post(self, uuid, agent_uuid):
         """Create a new queue member."""
         pecan.request.db_api.create_queue_member(
-            agent_id=agent_id, queue_id=queue_id
-        )
+            agent_uuid=agent_uuid, queue_uuid=uuid)
