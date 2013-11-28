@@ -39,7 +39,7 @@ class FunctionalTest(base.TestCase):
         self.app = self._make_app()
         self.auth_headers = {
             'X-User-Id': uuidutils.generate_uuid(),
-            'X-Tenant-Id': uuidutils.generate_uuid(),
+            'X-Tenant-Id': 'project1',
         }
 
     def tearDown(self):
