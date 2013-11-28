@@ -46,7 +46,8 @@ class TestCase(base.FunctionalTest):
 
     def test_get_queue(self):
         queue = self._create_test_queue()
-        res = self.get_json('/queues/%s' % queue['uuid'])
+        res = self.get_json(
+            '/queues/%s' % queue['uuid'], headers=self.auth_headers)
         self._assertEqualSchemas('queue', res)
 
     def test_list_queues(self):
@@ -64,5 +65,5 @@ class TestCase(base.FunctionalTest):
         self._assertEqualSchemas('queue', res.json)
 
     def _list_queues(self, queues):
-        res = self.get_json('/queues')
+        res = self.get_json('/queues', headers=self.auth_headers)
         self.assertEqual(res, queues)

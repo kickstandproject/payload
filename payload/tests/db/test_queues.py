@@ -27,13 +27,11 @@ class TestCase(base.FunctionalTest):
         queue = self._create_test_queue()
         self.db_api.delete_queue(uuid=queue['uuid'])
         self.assertRaises(
-            exception.QueueNotFound, self.db_api.get_queue, queue['uuid']
-        )
+            exception.QueueNotFound, self.db_api.get_queue, queue['uuid'])
 
     def test_delete_queue_not_found(self):
         self.assertRaises(
-            exception.QueueNotFound, self.db_api.delete_queue, 123
-        )
+            exception.QueueNotFound, self.db_api.delete_queue, 123)
 
     def test_get_queue_by_id(self):
         queue = self._create_test_queue()
@@ -41,11 +39,7 @@ class TestCase(base.FunctionalTest):
         self.assertEqual(queue['uuid'], res['uuid'])
 
     def test_list_queues(self):
-        queue = []
-        for i in xrange(1, 6):
-            q = self._create_test_queue(uuid=i)
-            queue.append(q)
-        res = self.db_api.list_queues()
-        res.sort()
-        queue.sort()
-        self.assertEqual(len(res), len(queue))
+        queue = self._create_test_queue(uuid='queue1', project_id='project1')
+        self._create_test_queue(uuid='queue2', project_id='project2')
+        res = self.db_api.list_queues(project_id='project1')
+        self.assertEqual(len(res), len([queue]))

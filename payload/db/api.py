@@ -145,9 +145,9 @@ class Connection(object):
 
         return res
 
-    def list_queues(self):
+    def list_queues(self, project_id):
         """Retrieve a list of queues."""
-        res = self._list_model(model=models.Queue)
+        res = self._list_model(model=models.Queue, project_id=project_id)
 
         return res
 
@@ -182,8 +182,8 @@ class Connection(object):
 
         return res
 
-    def _list_model(self, model):
+    def _list_model(self, model, **kwargs):
         """Retrieve a list of the given model."""
-        query = model_query(model)
+        query = model_query(model).filter_by(**kwargs)
 
         return [m for m in query.all()]
