@@ -52,7 +52,7 @@ class QueueMembersController(rest.RestController):
     @wsme_pecan.wsexpose([QueueMember], wtypes.text)
     def get_all(self, uuid):
         """Retrieve a list of queue members."""
-        res = pecan.request.db_api.list_queue_members()
+        res = pecan.request.db_api.list_queue_members(uuid=uuid)
 
         return res
 

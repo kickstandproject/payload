@@ -151,9 +151,9 @@ class Connection(object):
 
         return res
 
-    def list_queue_members(self):
+    def list_queue_members(self, uuid):
         """Retrieve a list of queue members."""
-        res = self._list_model(model=models.QueueMember)
+        res = self._list_model(model=models.QueueMember, queue_uuid=uuid)
 
         return res
 
@@ -182,8 +182,8 @@ class Connection(object):
 
         return res
 
-    def _list_model(self, model):
+    def _list_model(self, model, **kwargs):
         """Retrieve a list of the given model."""
-        query = model_query(model)
+        query = model_query(model).filter_by(**kwargs)
 
-        return [m for m in query.all()]
+        return query.all()

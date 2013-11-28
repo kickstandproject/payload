@@ -54,5 +54,5 @@ class TestCase(base.FunctionalTest):
     def test_list_queue_members(self):
         self._create_test_queue_member(
             agent_uuid=self.agent['uuid'], queue_uuid=self.queue['uuid'])
-        res = self.db_api.list_queue_members()
+        res = self.db_api.list_queue_members(self.queue['uuid'])
         self.assertTrue(res)
