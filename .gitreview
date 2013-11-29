@@ -1,4 +1,4 @@
 [gerrit]
 host=review.kickstand-project.org
 port=29418
-project=kickstandproject/stripe.git
+project=kickstandproject/payload.git
