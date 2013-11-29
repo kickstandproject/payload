@@ -29,6 +29,7 @@ from sqlalchemy import DateTime
 from sqlalchemy import Integer
 from sqlalchemy import String
 from sqlalchemy import Text
+from sqlalchemy import UniqueConstraint
 
 revision = 'caa0c1b6be2'
 down_revision = None
@@ -47,9 +48,11 @@ queue_member = (
     'queue_member',
     Column('id', Integer, primary_key=True, index=True, autoincrement=True),
     Column('created_at', DateTime),
-    Column('agent_uuid', String(255), unique=True),
+    Column('agent_uuid', String(255)),
     Column('queue_uuid', String(255)),
     Column('updated_at', DateTime),
+
+    UniqueConstraint('agent_uuid', 'queue_uuid'),
 )
 
 queue = (

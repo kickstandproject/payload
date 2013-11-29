@@ -17,7 +17,7 @@
 import json
 
 from sqlalchemy import Column
-from sqlalchemy import Boolean, ForeignKey, Integer, String
+from sqlalchemy import Boolean, ForeignKey, Integer, String, UniqueConstraint
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.types import TypeDecorator, VARCHAR
 
@@ -70,5 +70,7 @@ class Queue(Base):
 class QueueMember(Base):
     __tablename__ = 'queue_member'
     id = Column(Integer, primary_key=True, autoincrement=True)
-    agent_uuid = Column(String(255), ForeignKey('agent.uuid'), unique=True)
+    agent_uuid = Column(String(255), ForeignKey('agent.uuid'))
     queue_uuid = Column(String(255), ForeignKey('queue.uuid'))
+
+    UniqueConstraint('agent_uuid', 'queue_uuid')
