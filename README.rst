@@ -3,7 +3,7 @@ Payload
 
 Automatic call distributor (ACD) using Python and Redis.
 
-* `Official Payload documentation <http://payload.readthedocs.org>`
+* `Official Payload documentation <https://payload.readthedocs.org>`
 
 License
 =======
