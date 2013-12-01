@@ -26,6 +26,7 @@ from alembic import op
 from sqlalchemy import Boolean
 from sqlalchemy import Column
 from sqlalchemy import DateTime
+from sqlalchemy import ForeignKeyConstraint
 from sqlalchemy import Integer
 from sqlalchemy import String
 from sqlalchemy import Text
@@ -52,6 +53,8 @@ queue_member = (
     Column('queue_uuid', String(255)),
     Column('updated_at', DateTime),
 
+    ForeignKeyConstraint(['agent_uuid'], ['agent.uuid'], ),
+    ForeignKeyConstraint(['queue_uuid'], ['queue.uuid'], ),
     UniqueConstraint('agent_uuid', 'queue_uuid'),
 )
 
