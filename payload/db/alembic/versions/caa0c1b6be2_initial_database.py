@@ -37,7 +37,7 @@ down_revision = None
 
 agent = (
     'agent',
-    Column('id', Integer, primary_key=True, index=True, autoincrement=True),
+    Column('id', Integer, primary_key=True, autoincrement=True),
     Column('created_at', DateTime),
     Column('project_id', String(length=255)),
     Column('updated_at', DateTime),
@@ -47,7 +47,7 @@ agent = (
 
 queue_member = (
     'queue_member',
-    Column('id', Integer, primary_key=True, index=True, autoincrement=True),
+    Column('id', Integer, primary_key=True, autoincrement=True),
     Column('created_at', DateTime),
     Column('agent_uuid', String(255)),
     Column('queue_uuid', String(255)),
@@ -60,7 +60,7 @@ queue_member = (
 
 queue = (
     'queue',
-    Column('id', Integer, primary_key=True, index=True, autoincrement=True),
+    Column('id', Integer, primary_key=True, autoincrement=True),
     Column('created_at', DateTime),
     Column('description', Text),
     Column('disabled', Boolean),
