@@ -8,6 +8,6 @@ fixtures>=0.3.12
 nose
 nosehtmloutput
 pylint
-sphinx
+sphinx>=1.1.2,<1.2
 testtools>=0.9.27
 warlock
