@@ -36,9 +36,6 @@ class SchemasController(rest.RestController):
     def agent(self):
         """Retrieve schema for an agent."""
         json = {
-            'id': {
-                'type': 'integer',
-            },
             'created_at': {
                 'type': ['string', 'null'],
             },

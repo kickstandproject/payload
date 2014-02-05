@@ -39,7 +39,7 @@ class TestCase(base.FunctionalTest):
     def setUp(self):
         super(TestCase, self).setUp()
         res = self._create_test_queue()
-        self.queue_id = res['id']
+        self.queue_id = res['uuid']
 
     def test_create_queue_caller(self):
         self._create_test_queue_caller(queue_id=self.queue_id)

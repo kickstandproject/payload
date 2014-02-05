@@ -20,27 +20,24 @@ from payload.tests.db import base
 
 class TestCase(base.FunctionalTest):
 
-    def test_create_agent(self):
-        self._create_test_agent()
-
-    def test_delete_agent(self):
-        agent = self._create_test_agent()
-        self.db_api.delete_agent(uuid=agent['uuid'])
+    def test_failure(self):
         self.assertRaises(
-            exception.AgentNotFound, self.db_api.get_agent, agent['uuid']
-        )
+            exception.QueueNotFound,
+            self.db_api.delete_queue,
+            uuid='0eda016a-b078-4bef-94ba-1ab10fe15a7d')
 
-    def test_delete_agent_not_found(self):
+    def test_success(self):
+        row = {
+            'name': 'support',
+            'project_id': '793491dd5fa8477eb2d6a820193a183b',
+            'user_id': '02d99a62af974b26b510c3564ba84644'
+        }
+        res = self.db_api.create_queue(
+            name=row['name'], user_id=row['user_id'],
+            project_id=row['project_id'])
+
+        self.assertTrue(res)
+        self.db_api.delete_queue(uuid=res['uuid'])
         self.assertRaises(
-            exception.AgentNotFound, self.db_api.delete_agent, 123
-        )
-
-    def test_list_agents(self):
-        agent = []
-        for i in xrange(1, 6):
-            q = self._create_test_agent(uuid=i)
-            agent.append(q)
-        res = self.db_api.list_agents()
-        res.sort()
-        agent.sort()
-        self.assertEqual(len(res), len(agent))
+            exception.QueueNotFound,
+            self.db_api.get_queue, res['uuid'])

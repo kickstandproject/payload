@@ -17,7 +17,7 @@
 # limitations under the License.
 
 """
-payload base exception handling.
+Payload base exception handling.
 """
 
 from oslo.config import cfg
@@ -36,8 +36,8 @@ CONF = cfg.CONF
 CONF.register_opts(exc_log_opts)
 
 
-class payloadException(Exception):
-    """Base payload Exception
+class PayloadException(Exception):
+    """Base Payload Exception
 
     To correctly use this class, inherit from it and define
     a 'message' property. That message will get printf'd
@@ -75,7 +75,7 @@ class payloadException(Exception):
                     # at least get the core message out if something happened
                     message = self.message
 
-        super(payloadException, self).__init__(message)
+        super(PayloadException, self).__init__(message)
 
     def format_message(self):
         if self.__class__.__name__.endswith('_Remote'):
@@ -84,9 +84,9 @@ class payloadException(Exception):
             return unicode(self)
 
 
-class NotFound(payloadException):
-    message = 'Resource could not be found'
+class NotFound(PayloadException):
     code = 404
+    message = 'Resource could not be found'
 
 
 class AgentNotFound(NotFound):
@@ -105,5 +105,5 @@ class QueueMemberNotFound(NotFound):
     message = 'Queue member %(uuid)s could not be found'
 
 
-class QueueMemberDuplicated(payloadException):
+class QueueMemberDuplicated(PayloadException):
     message = 'Queue member %(uuid)s already exists.'
