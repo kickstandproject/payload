@@ -35,7 +35,6 @@ LOG = logging.getLogger(__name__)
 class Queue(base.APIBase):
     """API representation of a queue."""
 
-    id = int
     description = wtypes.text
     disabled = bool
     name = wtypes.text
@@ -59,24 +58,26 @@ class QueuesController(rest.RestController):
     @wsme_pecan.wsexpose(None, wtypes.text, status_code=204)
     def delete(self, uuid):
         """Delete a queue."""
-        pecan.request.db_api.delete_queue(uuid=uuid)
+        try:
+            pecan.request.db_api.delete_queue(uuid=uuid)
+        except exception.QueueNotFound as e:
+            raise wsme.exc.ClientSideError(e.message, status_code=e.code)
 
     @wsme_pecan.wsexpose([Queue])
     def get_all(self):
         """Retrieve a list of queues."""
-        project_id = pecan.request.headers.get('X-Tenant-Id')
 
-        return pecan.request.db_api.list_queues(project_id=project_id)
+        return pecan.request.db_api.list_queues()
 
     @wsme_pecan.wsexpose(Queue, unicode)
     def get_one(self, uuid):
         """Retrieve information about the given queue."""
         try:
             result = pecan.request.db_api.get_queue(uuid=uuid)
-        except exception.QueueNotFound:
+        except exception.QueueNotFound as e:
             # TODO(pabelanger): See if there is a better way of handling
             # exceptions.
-            raise wsme.exc.ClientSideError('Not found')
+            raise wsme.exc.ClientSideError(e.message, status_code=e.code)
 
         return result
 
@@ -86,16 +87,11 @@ class QueuesController(rest.RestController):
         """Create a new queue."""
         user_id = pecan.request.headers.get('X-User-Id')
         project_id = pecan.request.headers.get('X-Tenant-Id')
-        try:
-            d = body.as_dict()
-            d['user_id'] = user_id
-            d['project_id'] = project_id
-            new_queue = pecan.request.db_api.create_queue(d)
-        except Exception:
-            # TODO(pabelanger): See if there is a better way of handling
-            # exceptions.
-            raise wsme.exc.ClientSideError('Invalid data')
-        return new_queue
+        d = body.as_dict()
+        res = pecan.request.db_api.create_queue(
+            name=d['name'], user_id=user_id, project_id=project_id,
+            description=d['description'], disabled=d['disabled'])
+        return res
 
     @wsme.validate(Queue)
     @wsme_pecan.wsexpose(Queue, wtypes.text, body=Queue)

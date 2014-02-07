@@ -13,12 +13,3 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-from payload.db import api as db_api
-from payload.tests import base
-
-
-class FunctionalTest(base.TestCase):
-    def setUp(self):
-        super(FunctionalTest, self).setUp()
-        self.db_api = db_api.get_instance()

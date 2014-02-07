@@ -15,12 +15,13 @@
 # limitations under the License.
 
 import pecan
-
 from pecan import rest
+import wsme
 from wsme import types as wtypes
 from wsmeext import pecan as wsme_pecan
 
 from payload.api.controllers.v1 import base
+from payload.common import exception
 from payload.db import models
 from payload.openstack.common import log as logging
 
@@ -30,7 +31,6 @@ LOG = logging.getLogger(__name__)
 class QueueMember(base.APIBase):
     """API representation of a queue member."""
 
-    id = int
     agent_uuid = wtypes.text
     queue_uuid = wtypes.text
 
@@ -46,8 +46,11 @@ class QueueMembersController(rest.RestController):
     @wsme_pecan.wsexpose(None, wtypes.text, wtypes.text, status_code=204)
     def delete(self, uuid, agent_uuid):
         """Delete a queue member."""
-        pecan.request.db_api.delete_queue_member(
-            agent_uuid=agent_uuid, queue_uuid=uuid)
+        try:
+            pecan.request.db_api.delete_queue_member(
+                agent_uuid=agent_uuid, queue_uuid=uuid)
+        except exception.QueueMemberNotFound as e:
+            raise wsme.exc.ClientSideError(e.message, status_code=e.code)
 
     @wsme_pecan.wsexpose([QueueMember], wtypes.text)
     def get_all(self, uuid):
@@ -56,14 +59,23 @@ class QueueMembersController(rest.RestController):
 
         return res
 
-    @wsme_pecan.wsexpose(None, wtypes.text, wtypes.text, status_code=204)
+    @wsme_pecan.wsexpose(QueueMember, wtypes.text, wtypes.text)
     def get_one(self, uuid, agent_uuid):
         """Retrieve information about the given queue member."""
-        pecan.request.db_api.get_queue_member(
-            agent_uuid=agent_uuid, queue_uuid=uuid)
+        try:
+            res = pecan.request.db_api.get_queue_member(
+                agent_uuid=agent_uuid, queue_uuid=uuid)
+        except exception.QueueMemberNotFound as e:
+            raise wsme.exc.ClientSideError(e.message, status_code=e.code)
+        return res
 
-    @wsme_pecan.wsexpose(None, wtypes.text, wtypes.text, status_code=204)
-    def post(self, uuid, agent_uuid):
+    @wsme.validate(QueueMember)
+    @wsme_pecan.wsexpose(
+        QueueMember, wtypes.text, body=QueueMember, status_code=200)
+    def post(self, uuid, body):
         """Create a new queue member."""
-        pecan.request.db_api.create_queue_member(
-            agent_uuid=agent_uuid, queue_uuid=uuid)
+        d = body.as_dict()
+        res = pecan.request.db_api.create_queue_member(
+            agent_uuid=d['agent_uuid'], queue_uuid=uuid)
+
+        return res

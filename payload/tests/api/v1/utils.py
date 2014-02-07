@@ -17,7 +17,8 @@
 
 def get_api_agent(**kw):
     json = {
-        'uuid': kw.get('uuid', '02d99a62af974b26b510c3564ba84644'),
+        'project_id': kw.get('project_id', 'project1'),
+        'user_id': kw.get('user_id', 'user1'),
     }
     return json
 

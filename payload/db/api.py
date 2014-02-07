@@ -60,16 +60,30 @@ class Connection(object):
     def __init__(self):
         pass
 
-    def create_agent(self, values):
+    def create_agent(self, user_id, project_id):
         """Create a new agent."""
+        values = {
+            'project_id': project_id,
+            'user_id': user_id,
+        }
+
+        values['uuid'] = uuidutils.generate_uuid()
         res = self._create_model(model=models.Agent(), values=values)
 
         return res
 
-    def create_queue(self, values):
+    def create_queue(
+            self, name, user_id, project_id, description='', disabled=False):
         """Create a new queue."""
-        if not values.get('uuid'):
-            values['uuid'] = uuidutils.generate_uuid()
+        values = {
+            'description': description,
+            'disabled': disabled,
+            'name': name,
+            'project_id': project_id,
+            'user_id': user_id,
+        }
+
+        values['uuid'] = uuidutils.generate_uuid()
         res = self._create_model(model=models.Queue(), values=values)
 
         return res
@@ -145,9 +159,9 @@ class Connection(object):
 
         return res
 
-    def list_queues(self, project_id):
+    def list_queues(self):
         """Retrieve a list of queues."""
-        res = self._list_model(model=models.Queue, project_id=project_id)
+        res = self._list_model(model=models.Queue)
 
         return res
 

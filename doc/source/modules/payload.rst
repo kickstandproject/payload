@@ -35,5 +35,3 @@ Subpackages
     payload.common
     payload.db
     payload.middleware
-    payload.tests
-

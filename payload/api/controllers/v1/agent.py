@@ -32,7 +32,6 @@ LOG = logging.getLogger(__name__)
 class Agent(base.APIBase):
     """API representation of an agent."""
 
-    id = int
     project_id = wtypes.text
     user_id = wtypes.text
     uuid = wtypes.text
@@ -62,11 +61,9 @@ class AgentsController(rest.RestController):
     def get_one(self, uuid):
         """Retrieve information about the given agent."""
         try:
-            result = pecan.request.db_api.get_agent(uuid)
-        except exception.AgentNotFound:
-            # TODO(pabelanger): See if there is a better way of handling
-            # exceptions.
-            raise wsme.exc.ClientSideError('Not found')
+            result = pecan.request.db_api.get_agent(uuid=uuid)
+        except exception.AgentNotFound as e:
+            raise wsme.exc.ClientSideError(e.message, status_code=e.code)
 
         return result
 
@@ -74,23 +71,11 @@ class AgentsController(rest.RestController):
     @wsme_pecan.wsexpose(Agent, body=Agent)
     def post(self, body):
         """Create a new agent."""
-        user_id = pecan.request.headers.get('X-User-Id')
-        project_id = pecan.request.headers.get('X-Tenant-Id')
+        d = body.as_dict()
 
-        try:
-            d = body.as_dict()
-
-            if not d.get('uuid'):
-                raise wsme.exc.ClientSideError('Invalid data')
-
-            d['user_id'] = user_id
-            d['project_id'] = project_id
-            new_agent = pecan.request.db_api.create_agent(d)
-        except Exception:
-            # TODO(pabelanger): See if there is a better way of handling
-            # exceptions.
-            raise wsme.exc.ClientSideError('Invalid data')
-        return new_agent
+        res = pecan.request.db_api.create_agent(
+            user_id=d['user_id'], project_id=d['project_id'])
+        return res
 
     @wsme.validate(Agent)
     @wsme_pecan.wsexpose(Agent, wtypes.text, body=Agent)

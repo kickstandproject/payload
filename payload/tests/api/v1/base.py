@@ -110,6 +110,8 @@ class FunctionalTest(base.TestCase):
             extra_environ=extra_environ,
             expect_errors=expect_errors
         )
+        if not expect_errors:
+            response = response.json
         LOG.debug('GOT: %s' % response)
         return response
 
@@ -137,7 +139,8 @@ class FunctionalTest(base.TestCase):
     def _create_test_queue(self, **kwargs):
         json = utils.get_api_queue(**kwargs)
         res = self.post_json(
-            '/queues', params=json, status=200, headers=self.auth_headers)
+            '/queues', params=json, status=200, headers=self.auth_headers,
+            expect_errors=True)
         self._assertEqualSchemas('queue', res.json)
 
         return res.json
@@ -146,7 +149,7 @@ class FunctionalTest(base.TestCase):
         json = utils.get_api_queue_caller(**kwargs)
         res = self.post_json(
             '/queues/%s/callers' % queue_id, params=json, status=200,
-            headers=self.auth_headers)
+            headers=self.auth_headers, expect_errors=True)
         self.assertEqual(res.status_int, 200)
         self.assertEqual(res.content_type, 'application/json')
 
