@@ -16,10 +16,15 @@
 
 import json
 
+from sqlalchemy import Boolean
 from sqlalchemy import Column
-from sqlalchemy import Boolean, ForeignKey, Integer, String, UniqueConstraint
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.types import TypeDecorator, VARCHAR
+from sqlalchemy import ForeignKey
+from sqlalchemy import Integer
+from sqlalchemy import schema
+from sqlalchemy import String
+from sqlalchemy.types import TypeDecorator
+from sqlalchemy.types import VARCHAR
 
 from payload.openstack.common.db.sqlalchemy import models
 
@@ -49,7 +54,8 @@ Base = declarative_base(cls=PayloadBase)
 
 
 class Agent(Base):
-    __tablename__ = 'agent'
+    __tablename__ = 'agents'
+
     id = Column(Integer, primary_key=True, autoincrement=True)
     project_id = Column(String(255))
     user_id = Column(String(255))
@@ -57,7 +63,8 @@ class Agent(Base):
 
 
 class Queue(Base):
-    __tablename__ = 'queue'
+    __tablename__ = 'queues'
+
     id = Column(Integer, primary_key=True, autoincrement=True)
     description = Column(JSONEncodedDict)
     disabled = Column(Boolean, default=False)
@@ -68,9 +75,12 @@ class Queue(Base):
 
 
 class QueueMember(Base):
-    __tablename__ = 'queue_member'
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    agent_uuid = Column(String(255), ForeignKey('agent.uuid'))
-    queue_uuid = Column(String(255), ForeignKey('queue.uuid'))
+    __tablename__ = 'queue_members'
+    __table_args__ = (
+        schema.UniqueConstraint(
+            'agent_uuid', 'queue_uuid',
+            name='uniq_queue_members0agent_uuid0queue_uuid'),)
 
-    UniqueConstraint('agent_uuid', 'queue_uuid')
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    agent_uuid = Column(String(255), ForeignKey('agents.uuid'))
+    queue_uuid = Column(String(255), ForeignKey('queues.uuid'))

@@ -23,7 +23,7 @@ from payload.middleware import api as middleware_api
 class DBHook(hooks.PecanHook):
 
     def before(self, state):
-        state.request.db_api = db_api.get_instance()
+        state.request.db_api = db_api
 
 
 class MiddlewareHook(hooks.PecanHook):

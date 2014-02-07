@@ -13,21 +13,3 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-from payload.common import utils
-
-IMPL = utils.LazyPluggable(
-    'backend', config_group='database',
-    sqlalchemy='payload.db.sqlalchemy.migration')
-
-
-def db_sync(version=None):
-    return IMPL.db_sync(version=version)
-
-
-def db_version():
-    return IMPL.db_version()
-
-
-def db_initial_version():
-    return IMPL.INIT_VERSION

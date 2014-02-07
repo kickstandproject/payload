@@ -13,24 +13,3 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-"""${message}
-
-Revision ID: ${up_revision}
-Revises: ${down_revision}
-Create Date: ${create_date}
-
-"""
-
-from alembic import op
-
-revision = ${repr(up_revision)}
-down_revision = ${repr(down_revision)}
-
-
-def upgrade():
-    ${upgrades if upgrades else "pass"}
-
-
-def downgrade():
-    ${downgrades if downgrades else "pass"}

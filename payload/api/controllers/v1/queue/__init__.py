@@ -26,7 +26,8 @@ from payload.api.controllers.v1.queue import caller
 from payload.api.controllers.v1.queue import member
 from payload.api.controllers.v1.queue import stat
 from payload.common import exception
-from payload.db import models
+# TODO(pabelanger): We should not be access db.sqlalchemy directly.
+from payload.db.sqlalchemy import models
 from payload.openstack.common import log as logging
 
 LOG = logging.getLogger(__name__)

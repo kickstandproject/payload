@@ -22,7 +22,8 @@ from wsmeext import pecan as wsme_pecan
 
 from payload.api.controllers.v1 import base
 from payload.common import exception
-from payload.db import models
+# TODO(pabelanger): We should not be access db.sqlalchemy directly.
+from payload.db.sqlalchemy import models
 from payload.openstack.common import log as logging
 
 LOG = logging.getLogger(__name__)

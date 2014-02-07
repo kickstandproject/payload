@@ -24,12 +24,3 @@ db Package
     :members:
     :undoc-members:
     :show-inheritance:
-
-:mod:`models` Module
---------------------
-
-.. automodule:: payload.db.models
-    :members:
-    :undoc-members:
-    :show-inheritance:
-

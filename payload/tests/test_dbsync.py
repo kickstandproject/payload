@@ -25,4 +25,4 @@ class TestCase(test.TestCase):
     def test_sync_and_version(self):
         migration.db_sync()
         v = migration.db_version()
-        self.assertTrue(v > migration.INIT_VERSION)
+        self.assertTrue(v > migration.db_initial_version())

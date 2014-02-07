@@ -55,7 +55,8 @@ import sys
 from oslo.config import cfg
 
 from payload.common import config
-from payload.db import migration
+# TODO(pabelanger): Why can't we call payload.db directly?
+from payload.db.sqlalchemy import migration
 from payload.openstack.common import log
 from payload import version
 

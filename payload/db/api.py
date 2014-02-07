@@ -1,6 +1,5 @@
 # vim: tabstop=4 shiftwidth=4 softtabstop=4
 
-# Copyright 2013 Hewlett-Packard Development Company, L.P.
 # Copyright (C) 2013 PolyBeacon, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,189 +14,90 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""SQLAlchemy storage backend."""
+from oslo.config import cfg
 
-from sqlalchemy.orm import exc
-
-from payload.common import exception
-from payload.db import models
-from payload.openstack.common.db import api
-from payload.openstack.common.db.sqlalchemy import session as db_session
+from payload.openstack.common.db import api as db_api
 from payload.openstack.common import log as logging
-from payload.openstack.common import uuidutils
 
+CONF = cfg.CONF
+
+_BACKEND_MAPPING = {'sqlalchemy': 'payload.db.sqlalchemy.api'}
+
+IMPL = db_api.DBAPI(backend_mapping=_BACKEND_MAPPING)
 LOG = logging.getLogger(__name__)
 
-get_session = db_session.get_session
+
+def create_agent(user_id, project_id):
+    """Create a new agent."""
+
+    return IMPL.create_agent(user_id=user_id, project_id=project_id)
 
 
-def get_instance():
-    """Return a DB API instance."""
-    backend_mapping = {'sqlalchemy': 'payload.db.api'}
+def create_queue(name, user_id, project_id, description='', disabled=False):
+    """Create a new queue."""
 
-    return api.DBAPI(backend_mapping=backend_mapping)
-
-
-def get_backend():
-    """The backend is this module itself."""
-    return Connection()
+    return IMPL.create_queue(
+        name=name, user_id=user_id, project_id=project_id,
+        description=description, disabled=disabled)
 
 
-def model_query(model, *args, **kwargs):
-    """Query helper for simpler session usage.
+def create_queue_member(agent_uuid, queue_uuid):
+    """Create a new queue member."""
 
-    :param session: if present, the session to use
-    """
-
-    session = kwargs.get('session') or get_session()
-    query = session.query(model, *args)
-    return query
+    return IMPL.create_queue_member(
+        agent_uuid=agent_uuid, queue_uuid=queue_uuid)
 
 
-class Connection(object):
-    """SqlAlchemy connection."""
+def delete_agent(uuid):
+    """Delete an agent."""
 
-    def __init__(self):
-        pass
+    IMPL.delete_agent(uuid=uuid)
 
-    def create_agent(self, user_id, project_id):
-        """Create a new agent."""
-        values = {
-            'project_id': project_id,
-            'user_id': user_id,
-        }
 
-        values['uuid'] = uuidutils.generate_uuid()
-        res = self._create_model(model=models.Agent(), values=values)
+def delete_queue(uuid):
+    """Delete a queue."""
 
-        return res
+    IMPL.delete_queue(uuid=uuid)
 
-    def create_queue(
-            self, name, user_id, project_id, description='', disabled=False):
-        """Create a new queue."""
-        values = {
-            'description': description,
-            'disabled': disabled,
-            'name': name,
-            'project_id': project_id,
-            'user_id': user_id,
-        }
 
-        values['uuid'] = uuidutils.generate_uuid()
-        res = self._create_model(model=models.Queue(), values=values)
+def delete_queue_member(agent_uuid, queue_uuid):
+    """Delete a queue member."""
 
-        return res
+    IMPL.delete_queue_member(agent_uuid=agent_uuid, queue_uuid=queue_uuid)
 
-    def create_queue_member(self, agent_uuid, queue_uuid):
-        """Create a new queue member."""
-        values = {
-            'agent_uuid': agent_uuid,
-            'queue_uuid': queue_uuid,
-        }
-        res = self._create_model(model=models.QueueMember(), values=values)
 
-        return res
+def get_agent(uuid):
+    """Retrieve information about the given agent."""
 
-    def delete_agent(self, uuid):
-        """Delete an agent."""
-        res = self._delete_model(model=models.Agent, uuid=uuid)
+    return IMPL.get_agent(uuid=uuid)
 
-        if res != 1:
-            raise exception.AgentNotFound(uuid=uuid)
 
-    def delete_queue(self, uuid):
-        """Delete a queue."""
-        res = self._delete_model(model=models.Queue, uuid=uuid)
+def get_queue(uuid):
+    """Retrieve information about the given queue."""
 
-        if res != 1:
-            raise exception.QueueNotFound(uuid=uuid)
+    return IMPL.get_queue(uuid=uuid)
 
-    def delete_queue_member(self, agent_uuid, queue_uuid):
-        """Delete a queue member."""
-        res = self._delete_model(
-            model=models.QueueMember, agent_uuid=agent_uuid,
-            queue_uuid=queue_uuid)
 
-        if res != 1:
-            raise exception.QueueMemberNotFound(
-                uuid=agent_uuid
-            )
+def get_queue_member(agent_uuid, queue_uuid):
+    """Retrieve information about the given queue member."""
 
-    def get_agent(self, uuid):
-        """Retrieve information about the given agent."""
-        try:
-            res = self._get_model(model=models.Agent, uuid=uuid)
-        except exc.NoResultFound:
-            raise exception.AgentNotFound(uuid=uuid)
+    return IMPL.get_queue_member(
+        agent_uuid=agent_uuid, queue_uuid=queue_uuid)
 
-        return res
 
-    def get_queue(self, uuid):
-        """Retrieve information about the given queue."""
-        try:
-            res = self._get_model(model=models.Queue, uuid=uuid)
-        except exc.NoResultFound:
-            raise exception.QueueNotFound(uuid=uuid)
+def list_agents():
+    """Retrieve a list of agents."""
 
-        return res
+    return IMPL.list_agents()
 
-    def get_queue_member(self, agent_uuid, queue_uuid):
-        """Retrieve information about the given queue member."""
-        try:
-            res = self._get_model(
-                model=models.QueueMember, agent_uuid=agent_uuid,
-                queue_uuid=queue_uuid)
-        except exc.NoResultFound:
-            raise exception.QueueMemberNotFound(
-                uuid=agent_uuid)
 
-        return res
+def list_queues():
+    """Retrieve a list of queues."""
 
-    def list_agents(self):
-        """Retrieve a list of agents."""
-        res = self._list_model(model=models.Agent)
+    return IMPL.list_queues()
 
-        return res
 
-    def list_queues(self):
-        """Retrieve a list of queues."""
-        res = self._list_model(model=models.Queue)
+def list_queue_members(uuid):
+    """Retrieve a list of queue members."""
 
-        return res
-
-    def list_queue_members(self, uuid):
-        """Retrieve a list of queue members."""
-        res = self._list_model(model=models.QueueMember, queue_uuid=uuid)
-
-        return res
-
-    def _create_model(self, model, values):
-        """Create a new model."""
-        model.update(values)
-        model.save()
-
-        return model
-
-    def _delete_model(self, model, **kwargs):
-        session = get_session()
-        with session.begin():
-            query = model_query(
-                model, session=session
-            ).filter_by(**kwargs)
-
-            count = query.delete()
-
-            return count
-
-    def _get_model(self, model, **kwargs):
-        """Retrieve information about the given model."""
-        query = model_query(model).filter_by(**kwargs)
-        res = query.one()
-
-        return res
-
-    def _list_model(self, model, **kwargs):
-        """Retrieve a list of the given model."""
-        query = model_query(model).filter_by(**kwargs)
-
-        return query.all()
+    return IMPL.list_queue_members(uuid=uuid)
