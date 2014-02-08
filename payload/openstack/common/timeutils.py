@@ -1,3 +1,5 @@
+# vim: tabstop=4 shiftwidth=4 softtabstop=4
+
 # Copyright 2011 OpenStack Foundation.
 # All Rights Reserved.
 #
@@ -48,9 +50,9 @@ def parse_isotime(timestr):
     try:
         return iso8601.parse_date(timestr)
     except iso8601.ParseError as e:
-        raise ValueError(six.text_type(e))
+        raise ValueError(unicode(e))
     except TypeError as e:
-        raise ValueError(six.text_type(e))
+        raise ValueError(unicode(e))
 
 
 def strtime(at=None, fmt=PERFECT_TIME_FORMAT):
@@ -77,9 +79,6 @@ def is_older_than(before, seconds):
     """Return True if before is older than seconds."""
     if isinstance(before, six.string_types):
         before = parse_strtime(before).replace(tzinfo=None)
-    else:
-        before = before.replace(tzinfo=None)
-
     return utcnow() - before > datetime.timedelta(seconds=seconds)
 
 
@@ -87,9 +86,6 @@ def is_newer_than(after, seconds):
     """Return True if after is newer than seconds."""
     if isinstance(after, six.string_types):
         after = parse_strtime(after).replace(tzinfo=None)
-    else:
-        after = after.replace(tzinfo=None)
-
     return after - utcnow() > datetime.timedelta(seconds=seconds)
 
 
@@ -114,7 +110,7 @@ def utcnow():
 
 
 def iso8601_from_timestamp(timestamp):
-    """Returns a iso8601 formatted date from timestamp."""
+    """Returns a iso8601 formated date from timestamp."""
     return isotime(datetime.datetime.utcfromtimestamp(timestamp))
 
 
@@ -182,15 +178,6 @@ def delta_seconds(before, after):
     datetime objects (as a float, to microsecond resolution).
     """
     delta = after - before
-    return total_seconds(delta)
-
-
-def total_seconds(delta):
-    """Return the total seconds of datetime.timedelta object.
-
-    Compute total seconds of datetime.timedelta, datetime.timedelta
-    doesn't have method total_seconds in Python2.6, calculate it manually.
-    """
     try:
         return delta.total_seconds()
     except AttributeError:
@@ -201,8 +188,8 @@ def total_seconds(delta):
 def is_soon(dt, window):
     """Determines if time is going to happen in the next window seconds.
 
-    :param dt: the time
-    :param window: minimum seconds to remain to consider the time not soon
+    :params dt: the time
+    :params window: minimum seconds to remain to consider the time not soon
 
     :return: True if expiration is within the given duration
     """
