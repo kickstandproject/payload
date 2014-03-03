@@ -14,20 +14,28 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
+
 from payload.common import utils
 
 IMPL = utils.LazyPluggable(
     'backend', config_group='database',
-    sqlalchemy='payload.db.sqlalchemy.migration')
+    sqlalchemy='payload.openstack.common.db.sqlalchemy.migration')
+
+INIT_VERSION = 0
+
+MIGRATE_REPO_PATH = os.path.join(
+    os.path.abspath(os.path.dirname(__file__)),
+    'sqlalchemy',
+    'migrate_repo')
 
 
 def db_sync(version=None):
-    return IMPL.db_sync(version=version)
+    """Migrate the database to `version` or the most recent version."""
+    return IMPL.db_sync(abs_path=MIGRATE_REPO_PATH, version=version)
 
 
 def db_version():
-    return IMPL.db_version()
-
-
-def db_initial_version():
-    return IMPL.INIT_VERSION
+    """Display the current database version."""
+    return IMPL.db_version(
+        abs_path=MIGRATE_REPO_PATH, init_version=INIT_VERSION)
