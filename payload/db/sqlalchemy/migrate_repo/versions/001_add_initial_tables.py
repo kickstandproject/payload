@@ -77,7 +77,7 @@ def upgrade(migrate_engine):
         mysql_charset='utf8',
     )
 
-    tables = [agents, queue_members, queues]
+    tables = [agents, queues, queue_members]
 
     for table in tables:
         try:
@@ -89,5 +89,14 @@ def upgrade(migrate_engine):
 
 
 def downgrade(migrate_engine):
-    # Operations to reverse the above upgrade go here.
-    pass
+    meta = MetaData()
+    meta.bind = migrate_engine
+
+    agents = Table('agents', meta, autoload=True)
+    queue_members = Table('queue_members', meta, autoload=True)
+    queues = Table('queues', meta, autoload=True)
+
+    tables = [queue_members, queues, agents]
+
+    for table in tables:
+        table.drop()
