@@ -14,27 +14,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from oslo.config import cfg
-
-from payload.openstack.common import log as logging
-
-LOG = logging.getLogger(__name__)
-
-
-API_SERVICE_OPTS = [
-    cfg.StrOpt(
-        'bind_host', default='0.0.0.0', help='The host IP to bind to'
-    ),
-    cfg.IntOpt('bind_port', default=9859, help='The port to bind to'),
-]
-
-CONF = cfg.CONF
-CONF.register_opts(API_SERVICE_OPTS)
-
 # Server Specific Configurations
 server = {
-    'port': CONF.bind_port,
-    'host': CONF.bind_host,
+    'port': '9859',
+    'host': '0.0.0.0',
 }
 
 # Pecan Application Configurations
@@ -43,5 +26,4 @@ app = {
     'modules': ['payload.api'],
     'static_root': '%(confdir)s/public',
     'template_path': '%(confdir)s/payload/api/templates',
-    'enable_acl': True,
 }

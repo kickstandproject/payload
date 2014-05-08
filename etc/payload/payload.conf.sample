@@ -12,20 +12,9 @@
 # Options defined in payload.api.app
 #
 
-# The strategy to use for auth: noauth or keystone. (string
+# Configuration file for WSGI definition of API. (string
 # value)
-#auth_strategy=keystone
-
-
-#
-# Options defined in payload.api.config
-#
-
-# The host IP to bind to (string value)
-#bind_host=0.0.0.0
-
-# The port to bind to (integer value)
-#bind_port=9859
+#api_paste_config=api_paste.ini
 
 
 #
@@ -302,6 +291,24 @@
 # binding method that must be present in tokens. (string
 # value)
 #enforce_token_bind=permissive
+
+
+[api]
+
+#
+# Options defined in payload.api
+#
+
+# The port for the payload API server. (integer value)
+#port=9859
+
+# The listen IP for the payload API server. (string value)
+#host=0.0.0.0
+
+# Set it to False if your environment does not need or have
+# dns server, otherwise it will delay the response from api.
+# (boolean value)
+#enable_reverse_dns_lookup=false
 
 
 [middleware]

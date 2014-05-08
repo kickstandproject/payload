@@ -9,14 +9,6 @@ api Package
     :undoc-members:
     :show-inheritance:
 
-:mod:`acl` Module
------------------
-
-.. automodule:: payload.api.acl
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 :mod:`app` Module
 -----------------
 
