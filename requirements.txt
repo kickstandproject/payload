@@ -1,7 +1,6 @@
 pbr>=0.5.21,<0.7.0
 Babel>=0.9.6
 
-alembic>=0.4.1
 oslo.config>=1.2.0
 PasteDeploy>=1.5.0
 pecan
