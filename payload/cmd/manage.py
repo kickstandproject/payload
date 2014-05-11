@@ -22,7 +22,7 @@ import logging
 
 from oslo.config import cfg
 
-from payload.common import config
+from payload.common import service
 from payload.db import migration as db_migration
 from payload.openstack.common import log
 
@@ -64,8 +64,7 @@ command_opt = cfg.SubCommandOpt('command',
 
 def main():
     CONF.register_cli_opt(command_opt)
-    config.parse_args()
-    log.setup('payload')
+    service.prepare_service()
     CONF.log_opt_values(LOG, logging.INFO)
 
     try:

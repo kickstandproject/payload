@@ -12,4 +12,4 @@ cover/*
 dist/*
 doc/build/*
 etc/payload/payload.conf
-payload/payload.sqlite
+payload/openstack/common/db/payload.sqlite

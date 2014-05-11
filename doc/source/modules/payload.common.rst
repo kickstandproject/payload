@@ -9,14 +9,6 @@ common Package
     :undoc-members:
     :show-inheritance:
 
-:mod:`config` Module
---------------------
-
-.. automodule:: payload.common.config
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 :mod:`exception` Module
 -----------------------
 
