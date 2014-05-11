@@ -20,6 +20,7 @@ import sys
 
 from oslo.config import cfg
 
+from payload import messaging
 from payload.openstack.common import log
 
 LOG = log.getLogger(__name__)
@@ -30,3 +31,4 @@ def prepare_service(argv=None):
         argv = sys.argv
     cfg.CONF(argv[1:], project='payload')
     log.setup('payload')
+    messaging.setup()

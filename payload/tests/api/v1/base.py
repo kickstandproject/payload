@@ -21,6 +21,7 @@ import pecan
 import pecan.testing
 import warlock
 
+from payload import messaging
 from payload.openstack.common import log as logging
 from payload.openstack.common import uuidutils
 from payload.tests.api.v1 import utils
@@ -36,6 +37,8 @@ class FunctionalTest(base.TestCase):
 
     def setUp(self):
         super(FunctionalTest, self).setUp()
+        messaging.setup('fake://')
+        self.addCleanup(messaging.cleanup)
         self.app = self._make_app()
         self.auth_headers = {
             'X-User-Id': uuidutils.generate_uuid(),
