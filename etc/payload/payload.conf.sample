@@ -146,10 +146,12 @@
 
 # (Optional) Name of log file to output to. If no default is
 # set, logging will go to stdout. (string value)
+# Deprecated group/name - [DEFAULT]/logfile
 #log_file=<None>
 
 # (Optional) The base directory used for relative --log-file
 # paths (string value)
+# Deprecated group/name - [DEFAULT]/logdir
 #log_dir=<None>
 
 # Use syslog for logging. (boolean value)
@@ -157,6 +159,108 @@
 
 # syslog facility to receive log lines (string value)
 #syslog_log_facility=LOG_USER
+
+
+[api]
+
+#
+# Options defined in payload.api
+#
+
+# The port for the payload API server. (integer value)
+# Deprecated group/name - [DEFAULT]/bind_port
+#port=9859
+
+# The listen IP for the payload API server. (string value)
+# Deprecated group/name - [DEFAULT]/bind_host
+#host=0.0.0.0
+
+# Set it to False if your environment does not need or have
+# dns server, otherwise it will delay the response from api.
+# (boolean value)
+#enable_reverse_dns_lookup=false
+
+
+[database]
+
+#
+# Options defined in payload.openstack.common.db.api
+#
+
+# The backend to use for db (string value)
+# Deprecated group/name - [DEFAULT]/db_backend
+#backend=sqlalchemy
+
+# Enable the experimental use of thread pooling for all DB API
+# calls (boolean value)
+# Deprecated group/name - [DEFAULT]/dbapi_use_tpool
+#use_tpool=false
+
+
+#
+# Options defined in payload.openstack.common.db.sqlalchemy.session
+#
+
+# The SQLAlchemy connection string used to connect to the
+# database (string value)
+# Deprecated group/name - [DEFAULT]/sql_connection
+# Deprecated group/name - [DATABASE]/sql_connection
+#connection=sqlite:////payload/openstack/common/db/$sqlite_db
+
+# The SQLAlchemy connection string used to connect to the
+# slave database (string value)
+#slave_connection=
+
+# timeout before idle sql connections are reaped (integer
+# value)
+# Deprecated group/name - [DEFAULT]/sql_idle_timeout
+# Deprecated group/name - [DATABASE]/sql_idle_timeout
+#idle_timeout=3600
+
+# Minimum number of SQL connections to keep open in a pool
+# (integer value)
+# Deprecated group/name - [DEFAULT]/sql_min_pool_size
+# Deprecated group/name - [DATABASE]/sql_min_pool_size
+#min_pool_size=1
+
+# Maximum number of SQL connections to keep open in a pool
+# (integer value)
+# Deprecated group/name - [DEFAULT]/sql_max_pool_size
+# Deprecated group/name - [DATABASE]/sql_max_pool_size
+#max_pool_size=<None>
+
+# maximum db connection retries during startup. (setting -1
+# implies an infinite retry count) (integer value)
+# Deprecated group/name - [DEFAULT]/sql_max_retries
+# Deprecated group/name - [DATABASE]/sql_max_retries
+#max_retries=10
+
+# interval between retries of opening a sql connection
+# (integer value)
+# Deprecated group/name - [DEFAULT]/sql_retry_interval
+# Deprecated group/name - [DATABASE]/reconnect_interval
+#retry_interval=10
+
+# If set, use this value for max_overflow with sqlalchemy
+# (integer value)
+# Deprecated group/name - [DEFAULT]/sql_max_overflow
+# Deprecated group/name - [DATABASE]/sqlalchemy_max_overflow
+#max_overflow=<None>
+
+# Verbosity of SQL debugging information. 0=None,
+# 100=Everything (integer value)
+# Deprecated group/name - [DEFAULT]/sql_connection_debug
+#connection_debug=0
+
+# Add python stack traces to SQL as comment strings (boolean
+# value)
+# Deprecated group/name - [DEFAULT]/sql_connection_trace
+#connection_trace=false
+
+# If set, use this value for pool_timeout with sqlalchemy
+# (integer value)
+# Deprecated group/name - [DATABASE]/sqlalchemy_pool_timeout
+#pool_timeout=<None>
 
 
 [keystone_authtoken]
@@ -246,6 +350,7 @@
 # Optionally specify a list of memcached server(s) to use for
 # caching. If left undefined, tokens will instead be cached
 # in-process. (list value)
+# Deprecated group/name - [DEFAULT]/memcache_servers
 #memcached_servers=<None>
 
 # In order to prevent excessive effort spent validating
@@ -293,24 +398,6 @@
 #enforce_token_bind=permissive
 
 
-[api]
-
-#
-# Options defined in payload.api
-#
-
-# The port for the payload API server. (integer value)
-#port=9859
-
-# The listen IP for the payload API server. (string value)
-#host=0.0.0.0
-
-# Set it to False if your environment does not need or have
-# dns server, otherwise it will delay the response from api.
-# (boolean value)
-#enable_reverse_dns_lookup=false
-
-
 [middleware]
 
 #
@@ -328,68 +415,5 @@
 
 # Password to use with AUTH command (string value)
 #password=<None>
-
-
-[database]
-
-#
-# Options defined in payload.openstack.common.db.api
-#
-
-# The backend to use for db (string value)
-#backend=sqlalchemy
-
-# Enable the experimental use of thread pooling for all DB API
-# calls (boolean value)
-#use_tpool=false
-
-
-#
-# Options defined in payload.openstack.common.db.sqlalchemy.session
-#
-
-# The SQLAlchemy connection string used to connect to the
-# database (string value)
-#connection=sqlite:////payload/openstack/common/db/$sqlite_db
-
-# The SQLAlchemy connection string used to connect to the
-# slave database (string value)
-#slave_connection=
-
-# timeout before idle sql connections are reaped (integer
-# value)
-#idle_timeout=3600
-
-# Minimum number of SQL connections to keep open in a pool
-# (integer value)
-#min_pool_size=1
-
-# Maximum number of SQL connections to keep open in a pool
-# (integer value)
-#max_pool_size=<None>
-
-# maximum db connection retries during startup. (setting -1
-# implies an infinite retry count) (integer value)
-#max_retries=10
-
-# interval between retries of opening a sql connection
-# (integer value)
-#retry_interval=10
-
-# If set, use this value for max_overflow with sqlalchemy
-# (integer value)
-#max_overflow=<None>
-
-# Verbosity of SQL debugging information. 0=None,
-# 100=Everything (integer value)
-#connection_debug=0
-
-# Add python stack traces to SQL as comment strings (boolean
-# value)
-#connection_trace=false
-
-# If set, use this value for pool_timeout with sqlalchemy
-# (integer value)
-#pool_timeout=<None>
 
 

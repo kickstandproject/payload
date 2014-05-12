@@ -9,6 +9,7 @@ redis
 six>=1.4.1
 SQLAlchemy>=0.7.8,<0.7.99
 sqlalchemy-migrate>=0.8.2
+stevedore>=0.14
 wsme>=0.5b2
 
 eventlet>=0.12.0
