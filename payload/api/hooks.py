@@ -17,16 +17,9 @@
 from pecan import hooks
 
 from payload.db import api as db_api
-from payload.middleware import api as middleware_api
 
 
 class DBHook(hooks.PecanHook):
 
     def before(self, state):
         state.request.db_api = db_api
-
-
-class MiddlewareHook(hooks.PecanHook):
-
-    def before(self, state):
-        state.request.middleware_api = middleware_api.get_instance()

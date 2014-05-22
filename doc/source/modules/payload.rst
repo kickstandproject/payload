@@ -34,4 +34,3 @@ Subpackages
     payload.cmd
     payload.common
     payload.db
-    payload.middleware

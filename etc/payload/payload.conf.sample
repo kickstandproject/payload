@@ -603,22 +603,3 @@
 #ringfile=/etc/oslo/matchmaker_ring.json
 
 
-[middleware]
-
-#
-# Options defined in payload.middleware.api
-#
-
-# Hostname (string value)
-#host=127.0.0.1
-
-# The specific TCP port Redis listens on (integer value)
-#port=6379
-
-# Which Redis database to use (integer value)
-#database=0
-
-# Password to use with AUTH command (string value)
-#password=<None>
-
-

@@ -9,14 +9,6 @@ queue Package
     :undoc-members:
     :show-inheritance:
 
-:mod:`caller` Module
---------------------
-
-.. automodule:: payload.api.controllers.v1.queue.caller
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 :mod:`member` Module
 --------------------
 
@@ -24,12 +16,3 @@ queue Package
     :members:
     :undoc-members:
     :show-inheritance:
-
-:mod:`stat` Module
-------------------
-
-.. automodule:: payload.api.controllers.v1.queue.stat
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
