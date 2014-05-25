@@ -20,8 +20,8 @@ Payload Service API
 """
 
 from payload.api import app
-from payload.common import service
 from payload.openstack.common import log
+from payload import service
 
 LOG = log.getLogger(__name__)
 

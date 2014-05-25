@@ -22,9 +22,9 @@ import logging
 
 from oslo.config import cfg
 
-from payload.common import service
 from payload.db import migration as db_migration
 from payload.openstack.common import log
+from payload import service
 
 CONF = cfg.CONF
 LOG = log.getLogger(__name__)
