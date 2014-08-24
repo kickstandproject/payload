@@ -22,6 +22,7 @@ from wsme import types as wtypes
 from wsmeext import pecan as wsme_pecan
 
 from payload.api.controllers.v1 import base
+from payload.api.controllers.v1.queue import caller
 from payload.api.controllers.v1.queue import member
 from payload.common import exception
 # TODO(pabelanger): We should not be access db.sqlalchemy directly.
@@ -50,6 +51,7 @@ class Queue(base.APIBase):
 class QueuesController(rest.RestController):
     """REST Controller for queues."""
 
+    callers = caller.QueueCallersController()
     members = member.QueueMembersController()
 
     @wsme_pecan.wsexpose(None, wtypes.text, status_code=204)

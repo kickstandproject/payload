@@ -123,6 +123,7 @@ def load_app():
 def setup_app(pecan_config=None):
     app_hooks = [
         hooks.DBHook(),
+        hooks.RedisHook(),
     ]
 
     if not pecan_config:
