@@ -82,11 +82,39 @@ class Connection(object):
 
         return res
 
+    def create_queue_member(self, queue_id, number, uuid=None):
+        timestamp = timeutils.utcnow_ts()
+        values = {
+            'created_at': timeutils.iso8601_from_timestamp(timestamp),
+            'number': number,
+        }
+        if uuid:
+            values['uuid'] = uuid
+        else:
+            values['uuid'] = uuidutils.generate_uuid()
+
+        key = self._get_members_namespace(queue_id=queue_id)
+        self._session.zadd(key, timestamp, values['uuid'])
+
+        member = '%s:%s' % (key, values['uuid'])
+        self._session.hmset(member, values)
+
+        res = self.get_queue_member(
+            queue_id=queue_id, uuid=values['uuid'])
+
+        return res
+
     def delete_queue_caller(self, queue_id, uuid):
         key = self._get_callers_namespace(queue_id=queue_id)
         self._session.zrem(key, uuid)
         caller = '%s:%s' % (key, uuid)
         self._session.delete(caller)
+
+    def delete_queue_member(self, queue_id, uuid):
+        key = self._get_members_namespace(queue_id=queue_id)
+        self._session.zrem(key, uuid)
+        member = '%s:%s' % (key, uuid)
+        self._session.delete(member)
 
     def get_queue_caller(self, queue_id, uuid):
         """Retrieve information about the given queue caller."""
@@ -102,6 +130,19 @@ class Connection(object):
 
         return caller
 
+    def get_queue_member(self, queue_id, uuid):
+        """Retrieve information about the given queue member."""
+        key = '%s:%s' % (self._get_members_namespace(queue_id=queue_id), uuid)
+        res = self._session.hgetall(key)
+
+        key = self._get_members_namespace(queue_id=queue_id)
+
+        caller = models.QueueMember(
+            uuid=res['uuid'], created_at=res['created_at'],
+            number=res['number'])
+
+        return caller
+
     def list_queue_callers(self, queue_id):
         """Retrieve a list of queue callers."""
         data = self._list_queue_callers(queue_id=queue_id)
@@ -113,8 +154,24 @@ class Connection(object):
 
         return res
 
+    def list_queue_members(self, queue_id):
+        """Retrieve a list of queue members."""
+        data = self._list_queue_members(queue_id=queue_id)
+
+        res = []
+        for uuid in data:
+            res.append(self.get_queue_member(
+                queue_id=queue_id, uuid=uuid))
+
+        return res
+
     def _list_queue_callers(self, queue_id):
         key = self._get_callers_namespace(queue_id=queue_id)
+
+        return self._session.zrange(key, 0, -1)
+
+    def _list_queue_members(self, queue_id):
+        key = self._get_members_namespace(queue_id=queue_id)
 
         return self._session.zrange(key, 0, -1)
 
@@ -125,6 +182,12 @@ class Connection(object):
 
     def _get_callers_namespace(self, queue_id):
         name = self._get_queue_namespace(queue_id=queue_id)
-        callers = '%s:%s' % (name, 'callers')
+        key = '%s:%s' % (name, 'callers')
 
-        return callers
+        return key
+
+    def _get_members_namespace(self, queue_id):
+        name = self._get_queue_namespace(queue_id=queue_id)
+        key = '%s:%s' % (name, 'members')
+
+        return key

@@ -20,20 +20,20 @@ import wsme
 from wsme import types as wtypes
 from wsmeext import pecan as wsme_pecan
 
-from payload.api.controllers.v1 import base
 from payload.common import exception
-# TODO(pabelanger): We should not be access db.sqlalchemy directly.
-from payload.db.sqlalchemy import models
 from payload.openstack.common import log as logging
+from payload.redis import models
 
 LOG = logging.getLogger(__name__)
 
 
-class QueueMember(base.APIBase):
+class QueueMember(object):
     """API representation of a queue member."""
 
-    agent_uuid = wtypes.text
-    queue_uuid = wtypes.text
+    created_at = wtypes.text
+    number = wtypes.text
+    paused_at = wtypes.text
+    uuid = wtypes.text
 
     def __init__(self, **kwargs):
         self.fields = vars(models.QueueMember)
@@ -44,39 +44,19 @@ class QueueMember(base.APIBase):
 class QueueMembersController(rest.RestController):
     """REST Controller for queue members."""
 
-    @wsme_pecan.wsexpose(None, wtypes.text, wtypes.text, status_code=204)
-    def delete(self, uuid, agent_uuid):
-        """Delete a queue member."""
-        try:
-            pecan.request.db_api.delete_queue_member(
-                agent_uuid=agent_uuid, queue_uuid=uuid)
-        except exception.QueueMemberNotFound as e:
-            raise wsme.exc.ClientSideError(e.message, status_code=e.code)
-
     @wsme_pecan.wsexpose([QueueMember], wtypes.text)
-    def get_all(self, uuid):
+    def get_all(self, queue_id):
         """Retrieve a list of queue members."""
-        res = pecan.request.db_api.list_queue_members(uuid=uuid)
+        res = pecan.request.redis_api.list_queue_members(queue_id=queue_id)
 
         return res
 
     @wsme_pecan.wsexpose(QueueMember, wtypes.text, wtypes.text)
-    def get_one(self, uuid, agent_uuid):
+    def get_one(self, queue_id, uuid):
         """Retrieve information about the given queue member."""
         try:
-            res = pecan.request.db_api.get_queue_member(
-                agent_uuid=agent_uuid, queue_uuid=uuid)
+            res = pecan.request.redis_api.get_queue_member(
+                queue_id=queue_id, uuid=uuid)
         except exception.QueueMemberNotFound as e:
             raise wsme.exc.ClientSideError(e.message, status_code=e.code)
-        return res
-
-    @wsme.validate(QueueMember)
-    @wsme_pecan.wsexpose(
-        QueueMember, wtypes.text, body=QueueMember, status_code=200)
-    def post(self, uuid, body):
-        """Create a new queue member."""
-        d = body.as_dict()
-        res = pecan.request.db_api.create_queue_member(
-            agent_uuid=d['agent_uuid'], queue_uuid=uuid)
-
         return res

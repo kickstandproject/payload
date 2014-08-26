@@ -21,8 +21,9 @@ Response
   [
     {
       "created_at": "2011-04-22T13:33:48Z",
-      "agent_id": 1,
-      "updated_at": "2011-04-22T13:33:48Z"
+      "number": "1001@example.org",
+      "paused_at": None,
+      "uuid": "b1775ea3f7fb451a97ef669d1ccf8e64",
     }
   ]
 
@@ -39,28 +40,11 @@ Parameters
 Response
 ''''''''
 
-Add queue member
-----------------
-
 .. code-block:: html
 
-  POST /v1/queues/:queue_id/members/:agent_id
-
-Input
-'''''
-
-Response
-''''''''
-
-Remove queue member
--------------------
-
-.. code-block:: html
-
-  DELETE /v1/queues/:queue_id/members/:agent_id
-
-Parameters
-''''''''''
-
-Response
-''''''''
+  {
+    "created_at": "2011-04-22T13:33:48Z",
+    "number": "1001@example.org",
+    "paused_at": None,
+    "uuid": "b1775ea3f7fb451a97ef669d1ccf8e64",
+  }
