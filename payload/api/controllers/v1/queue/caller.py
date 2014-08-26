@@ -23,14 +23,30 @@ from wsmeext import pecan as wsme_pecan
 
 from payload.common import exception
 from payload.openstack.common import log as logging
+from payload.redis import models
 
 LOG = logging.getLogger(__name__)
+
+
+class QueueCaller(object):
+    """API representation of a queue caller."""
+
+    created_at = wtypes.text
+    name = wtypes.text
+    number = wtypes.text
+    position = int
+    uuid = wtypes.text
+
+    def __init__(self, **kwargs):
+        self.fields = vars(models.QueueCaller)
+        for k in self.fields:
+            setattr(self, k, kwargs.get(k))
 
 
 class QueueCallersController(rest.RestController):
     """REST Controller for queue callers."""
 
-    @wsme_pecan.wsexpose(unicode, wtypes.text)
+    @wsme_pecan.wsexpose([QueueCaller], wtypes.text)
     def get_all(self, queue_id):
         """Retrieve a list of queue callers."""
         res = pecan.request.redis_api.list_queue_callers(
@@ -38,7 +54,7 @@ class QueueCallersController(rest.RestController):
 
         return res
 
-    @wsme_pecan.wsexpose(unicode, wtypes.text, wtypes.text)
+    @wsme_pecan.wsexpose(QueueCaller, wtypes.text, wtypes.text)
     def get_one(self, queue_id, uuid):
         """Retrieve information about the given queue."""
         try:

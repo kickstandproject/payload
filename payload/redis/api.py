@@ -21,6 +21,7 @@ from oslo.config import cfg
 from payload.openstack.common import log as logging
 from payload.openstack.common import timeutils
 from payload.openstack.common import uuidutils
+from payload.redis import models
 
 LOG = logging.getLogger(__name__)
 
@@ -58,10 +59,17 @@ class Connection(object):
             host=CONF.redis.host, port=CONF.redis.port,
             db=CONF.redis.database, password=CONF.redis.password)
 
-    def create_queue_caller(self, queue_id, values):
+    def create_queue_caller(self, queue_id, uuid=None, name=None, number=None):
         timestamp = timeutils.utcnow_ts()
-        values['created_at'] = timeutils.iso8601_from_timestamp(timestamp)
-        values['uuid'] = uuidutils.generate_uuid()
+        values = {
+            'created_at': timeutils.iso8601_from_timestamp(timestamp),
+            'name': name,
+            'number': number,
+        }
+        if uuid:
+            values['uuid'] = uuid
+        else:
+            values['uuid'] = uuidutils.generate_uuid()
 
         key = self._get_callers_namespace(queue_id=queue_id)
         self._session.zadd(key, timestamp, values['uuid'])
@@ -85,11 +93,14 @@ class Connection(object):
         key = '%s:%s' % (self._get_callers_namespace(queue_id=queue_id), uuid)
         res = self._session.hgetall(key)
 
-        if res:
-            key = self._get_callers_namespace(queue_id=queue_id)
-            res['position'] = self._session.zrank(key, uuid)
+        key = self._get_callers_namespace(queue_id=queue_id)
+        res['position'] = self._session.zrank(key, uuid)
 
-        return res
+        caller = models.QueueCaller(
+            uuid=res['uuid'], created_at=res['created_at'], name=res['name'],
+            number=res['number'], position=res['position'])
+
+        return caller
 
     def list_queue_callers(self, queue_id):
         """Retrieve a list of queue callers."""
