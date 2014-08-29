@@ -24,6 +24,7 @@ Response
       "name": "Bob Smith",
       "number": "6135551234",
       "position": 0,
+      "queue_id": "cc096e0b-0c96-4b8b-b812-ef456f361ee3",
       "uuid": "360a5b5ac90149dba0f3f9d4e5abffbc",
     }
   ]
@@ -48,5 +49,6 @@ Response
     "name": "Bob Smith",
     "number": "6135551234",
     "position": 0,
+    "queue_id": "cc096e0b-0c96-4b8b-b812-ef456f361ee3",
     "uuid": "360a5b5ac90149dba0f3f9d4e5abffbc",
   }

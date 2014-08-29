@@ -18,6 +18,8 @@ import redis
 
 from oslo.config import cfg
 
+from payload import messaging
+from payload.openstack.common import context
 from payload.openstack.common import log as logging
 from payload.openstack.common import timeutils
 from payload.openstack.common import uuidutils
@@ -49,6 +51,13 @@ def get_instance():
     return Connection()
 
 
+def _send_notification(event, payload):
+    notification = event.replace(" ", "_")
+    notification = "queue.%s" % notification
+    notifier = messaging.get_notifier(publisher_id='payload')
+    notifier.info(context.RequestContext(), notification, payload)
+
+
 class Connection(object):
 
     _session = None
@@ -65,6 +74,7 @@ class Connection(object):
             'created_at': timeutils.iso8601_from_timestamp(timestamp),
             'name': name,
             'number': number,
+            'queue_id': queue_id,
         }
         if uuid:
             values['uuid'] = uuid
@@ -80,6 +90,8 @@ class Connection(object):
         res = self.get_queue_caller(
             queue_id=queue_id, uuid=values['uuid'])
 
+        _send_notification('caller.create', res.__dict__)
+
         return res
 
     def create_queue_member(self, queue_id, number, uuid=None):
@@ -87,6 +99,7 @@ class Connection(object):
         values = {
             'created_at': timeutils.iso8601_from_timestamp(timestamp),
             'number': number,
+            'queue_id': queue_id,
         }
         if uuid:
             values['uuid'] = uuid
@@ -102,15 +115,25 @@ class Connection(object):
         res = self.get_queue_member(
             queue_id=queue_id, uuid=values['uuid'])
 
+        _send_notification('member.create', res.__dict__)
+
         return res
 
     def delete_queue_caller(self, queue_id, uuid):
+        res = self.get_queue_caller(
+            queue_id=queue_id, uuid=uuid)
+        _send_notification('caller.delete', res.__dict__)
+
         key = self._get_callers_namespace(queue_id=queue_id)
         self._session.zrem(key, uuid)
         caller = '%s:%s' % (key, uuid)
         self._session.delete(caller)
 
     def delete_queue_member(self, queue_id, uuid):
+        res = self.get_queue_member(
+            queue_id=queue_id, uuid=uuid)
+        _send_notification('member.delete', res.__dict__)
+
         key = self._get_members_namespace(queue_id=queue_id)
         self._session.zrem(key, uuid)
         member = '%s:%s' % (key, uuid)
