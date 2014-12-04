@@ -15,11 +15,12 @@
 
 class QueueCaller(object):
 
-    def __init__(self, uuid, created_at, name, number, position):
+    def __init__(self, uuid, created_at, name, number, position, queue_id):
         self.created_at = created_at
         self.name = name
         self.number = number
         self.position = position
+        self.queue_id = queue_id
         self.uuid = uuid
 
 

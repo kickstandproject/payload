@@ -149,7 +149,8 @@ class Connection(object):
 
         caller = models.QueueCaller(
             uuid=res['uuid'], created_at=res['created_at'], name=res['name'],
-            number=res['number'], position=res['position'])
+            number=res['number'], position=res['position'],
+            queue_id=res['queue_id'])
 
         return caller
 
