@@ -94,12 +94,17 @@ class Connection(object):
 
         return res
 
-    def create_queue_member(self, queue_id, number, uuid=None):
+    def create_queue_member(
+            self, queue_id, number, uuid=None, paused=False, status=0):
         timestamp = timeutils.utcnow_ts()
         values = {
             'created_at': timeutils.iso8601_from_timestamp(timestamp),
             'number': number,
+            'paused': paused,
+            'paused_at': timeutils.iso8601_from_timestamp(timestamp),
             'queue_id': queue_id,
+            'status': status,
+            'status_at': timeutils.iso8601_from_timestamp(timestamp),
         }
         if uuid:
             values['uuid'] = uuid
@@ -163,7 +168,9 @@ class Connection(object):
 
         caller = models.QueueMember(
             uuid=res['uuid'], created_at=res['created_at'],
-            number=res['number'])
+            number=res['number'], paused=res['paused'],
+            paused_at=res['paused_at'], status=res['status'],
+            status_at=res['status_at'])
 
         return caller
 

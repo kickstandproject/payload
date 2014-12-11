@@ -32,7 +32,10 @@ class QueueMember(object):
 
     created_at = wtypes.text
     number = wtypes.text
+    paused = wtypes.text
     paused_at = wtypes.text
+    status = wtypes.text
+    status_at = wtypes.text
     uuid = wtypes.text
 
     def __init__(self, **kwargs):

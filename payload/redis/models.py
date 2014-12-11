@@ -26,8 +26,13 @@ class QueueCaller(object):
 
 class QueueMember(object):
 
-    def __init__(self, uuid, created_at, number):
+    def __init__(
+            self, uuid, created_at, number, paused, paused_at, status,
+            status_at):
         self.created_at = created_at
         self.number = number
-        self.paused_at = None
+        self.paused = paused
+        self.paused_at = paused_at
+        self.status = status
+        self.status_at = status_at
         self.uuid = uuid
