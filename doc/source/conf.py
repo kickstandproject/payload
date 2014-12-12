@@ -20,7 +20,7 @@ import sys
 
 sys.path.insert(0, os.path.abspath('../..'))
 
-extensions = ['sphinx.ext.autodoc']
+extensions = ['sphinx.ext.autodoc', 'sphinxcontrib.httpdomain']
 templates_path = ['_templates']
 source_suffix = '.rst'
 master_doc = 'index'

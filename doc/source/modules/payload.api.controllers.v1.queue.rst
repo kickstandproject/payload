@@ -16,3 +16,11 @@ queue Package
     :members:
     :undoc-members:
     :show-inheritance:
+
+:mod:`caller` Module
+--------------------
+
+.. automodule:: payload.api.controllers.v1.queue.caller
+    :members:
+    :undoc-members:
+    :show-inheritance:

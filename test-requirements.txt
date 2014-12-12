@@ -6,6 +6,7 @@ httplib2>=0.7.5
 MySQL-python
 psycopg2
 sphinx>=1.1.2,<1.2
+sphinxcontrib-httpdomain
 testrepository>=0.0.17
 testscenarios>=0.4,<0.5
 testtools>=0.9.32,<0.9.35

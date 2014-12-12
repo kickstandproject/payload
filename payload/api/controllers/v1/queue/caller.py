@@ -48,7 +48,37 @@ class QueueCallersController(rest.RestController):
 
     @wsme_pecan.wsexpose([QueueCaller], wtypes.text)
     def get_all(self, queue_id):
-        """Retrieve a list of queue callers."""
+        """List callers from the specified queue.
+
+        .. http:get:: /queues/:queue_uuid/callers
+
+           **Example request**:
+
+           .. sourcecode:: http
+
+              GET /queues/cc096e0b-0c96-4b8b-b812-ef456f361ee3/callers
+
+           **Example response**:
+
+           .. sourcecode:: http
+
+              [
+                {
+                  "created_at": "2014-12-12T02:05:14Z",
+                  "name": "Paul Belanger",
+                  "number": "6135551234",
+                  "position": 0,
+                  "uuid": "e5814fee-6e8a-4771-8edd-ea413eff57f1",
+                },
+                {
+                  "created_at": "2014-12-12T02:07:05Z",
+                  "name": "Leif Madsen",
+                  "number": "9055555678",
+                  "position": 1,
+                  "uuid": "4b4fa110-be14-45b7-a998-2219ab8bee6f",
+                }
+              ]
+        """
         res = pecan.request.redis_api.list_queue_callers(
             queue_id=queue_id)
 
@@ -56,7 +86,29 @@ class QueueCallersController(rest.RestController):
 
     @wsme_pecan.wsexpose(QueueCaller, wtypes.text, wtypes.text)
     def get_one(self, queue_id, uuid):
-        """Retrieve information about the given queue."""
+        """Get a single caller from the specified queue.
+
+        .. http:get:: /queues/:queue_uuid/callers/:caller_uuid
+
+           **Example request**:
+
+           .. sourcecode:: http
+
+              GET /queues/cc096e0b-0c96-4b8b-b812-ef456f361ee3/callers/\
+e5814fee-6e8a-4771-8edd-ea413eff57f1
+
+           **Example response**:
+
+           .. sourcecode:: http
+
+              {
+                "created_at": "2014-12-12T02:05:14Z",
+                "name": "Paul Belanger",
+                "number": "6135551234",
+                "position": 0,
+                "uuid": "e5814fee-6e8a-4771-8edd-ea413eff57f1",
+              }
+        """
         try:
             result = pecan.request.redis_api.get_queue_caller(
                 queue_id=queue_id, uuid=uuid)
