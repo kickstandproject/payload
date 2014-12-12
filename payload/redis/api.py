@@ -196,6 +196,29 @@ class Connection(object):
 
         return res
 
+    def update_queue_member(
+            self, queue_id, uuid, number=None, paused=None, status=None):
+        timestamp = timeutils.utcnow_ts()
+        key = self._get_members_namespace(queue_id=queue_id)
+        member = '%s:%s' % (key, uuid)
+        data = dict()
+
+        if number is not None:
+            data['number'] = number
+        if paused is not None:
+            data['paused'] = paused
+            data['paused_at'] = timeutils.iso8601_from_timestamp(timestamp)
+        if status is not None:
+            data['status'] = status
+            data['status_at'] = timeutils.iso8601_from_timestamp(timestamp)
+
+        self._session.hmset(member, data)
+
+        res = self.get_queue_member(
+            queue_id=queue_id, uuid=uuid)
+
+        _send_notification('member.update', res.__dict__)
+
     def _list_queue_callers(self, queue_id):
         key = self._get_callers_namespace(queue_id=queue_id)
 
