@@ -18,16 +18,17 @@ import redis
 
 from oslo.config import cfg
 
+from payload.cache import models
+from payload.common import exception
 from payload import messaging
 from payload.openstack.common import context
 from payload.openstack.common import log as logging
 from payload.openstack.common import timeutils
 from payload.openstack.common import uuidutils
-from payload.redis import models
 
 LOG = logging.getLogger(__name__)
 
-redis_opts = [
+cache_opts = [
     cfg.StrOpt(
         'host', default='127.0.0.1', help='Hostname',
     ),
@@ -43,7 +44,7 @@ redis_opts = [
 ]
 
 CONF = cfg.CONF
-CONF.register_opts(redis_opts, 'redis')
+CONF.register_opts(cache_opts, 'redis')
 
 
 def get_instance():
@@ -148,6 +149,9 @@ class Connection(object):
         """Retrieve information about the given queue caller."""
         key = '%s:%s' % (self._get_callers_namespace(queue_id=queue_id), uuid)
         res = self._session.hgetall(key)
+
+        if not any(res):
+            raise exception.QueueMemberNotFound()
 
         key = self._get_callers_namespace(queue_id=queue_id)
         res['position'] = self._session.zrank(key, uuid)

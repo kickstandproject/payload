@@ -21,9 +21,9 @@ from pecan import rest
 from wsme import types as wtypes
 from wsmeext import pecan as wsme_pecan
 
+from payload.cache import models
 from payload.common import exception
 from payload.openstack.common import log as logging
-from payload.redis import models
 
 LOG = logging.getLogger(__name__)
 
@@ -35,6 +35,7 @@ class QueueCaller(object):
     name = wtypes.text
     number = wtypes.text
     position = int
+    queue_id = wtypes.text
     uuid = wtypes.text
 
     def __init__(self, **kwargs):
@@ -68,6 +69,7 @@ class QueueCallersController(rest.RestController):
                   "name": "Paul Belanger",
                   "number": "6135551234",
                   "position": 0,
+                  "queue_id": "cc096e0b-0c96-4b8b-b812-ef456f361ee3",
                   "uuid": "e5814fee-6e8a-4771-8edd-ea413eff57f1",
                 },
                 {
@@ -75,11 +77,12 @@ class QueueCallersController(rest.RestController):
                   "name": "Leif Madsen",
                   "number": "9055555678",
                   "position": 1,
+                  "queue_id": "cc096e0b-0c96-4b8b-b812-ef456f361ee3",
                   "uuid": "4b4fa110-be14-45b7-a998-2219ab8bee6f",
                 }
               ]
         """
-        res = pecan.request.redis_api.list_queue_callers(
+        res = pecan.request.cache_api.list_queue_callers(
             queue_id=queue_id)
 
         return res
@@ -106,11 +109,12 @@ e5814fee-6e8a-4771-8edd-ea413eff57f1
                 "name": "Paul Belanger",
                 "number": "6135551234",
                 "position": 0,
+                "queue_id": "cc096e0b-0c96-4b8b-b812-ef456f361ee3",
                 "uuid": "e5814fee-6e8a-4771-8edd-ea413eff57f1",
               }
         """
         try:
-            result = pecan.request.redis_api.get_queue_caller(
+            result = pecan.request.cache_api.get_queue_caller(
                 queue_id=queue_id, uuid=uuid)
         except exception.QueueCallerNotFound:
             # TODO(pabelanger): See if there is a better way of handling

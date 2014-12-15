@@ -22,8 +22,10 @@ import fixtures
 import os
 import shutil
 import testtools
+import time
 
 from oslo.config import cfg
+import redis
 
 from payload.common import paths
 from payload.db import migration
@@ -91,6 +93,28 @@ class Database(fixtures.Fixture):
                             paths.state_path_rel(self.sqlite_db))
 
 
+class Redis(fixtures.Fixture):
+
+    def setUp(self):
+        super(Redis, self).setUp()
+
+        _session = redis.StrictRedis(
+            host=CONF.redis.host, port=CONF.redis.port,
+            db=CONF.redis.database, password=CONF.redis.password)
+        _session.flushdb()
+        keys = _session.keys()
+        count = 0
+        # TODO(pabelanger): This whole section needs to be changed.  The way to
+        # properly do it is have redis setup a new namespace per unit test,
+        # checking if it first exists, and if then removing it.
+        while keys != []:
+            time.sleep(1)
+            if count > 5:
+                raise Exception('Redis took too long')
+            count += 1
+            keys = _session.keys()
+
+
 class TestCase(testtools.TestCase):
     """Test case base class for all unit tests."""
 
@@ -108,6 +132,8 @@ class TestCase(testtools.TestCase):
                 sqlite_db=CONF.sqlite_db, sqlite_clean_db=CONF.sqlite_clean_db
             )
         self.useFixture(_DB_CACHE)
+        _redis = Redis()
+        self.useFixture(_redis)
 
     def path_get(self, project_file=None):
         """Get the absolute path to a file. Used for testing the API.

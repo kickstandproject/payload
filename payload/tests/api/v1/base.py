@@ -27,7 +27,6 @@ from payload.openstack.common import uuidutils
 from payload.tests.api.v1 import utils
 from payload.tests import base
 
-
 LOG = logging.getLogger(__name__)
 
 
@@ -145,15 +144,5 @@ class FunctionalTest(base.TestCase):
             '/queues', params=json, status=200, headers=self.auth_headers,
             expect_errors=True)
         self._assertEqualSchemas('queue', res.json)
-
-        return res.json
-
-    def _create_test_queue_caller(self, queue_id, **kwargs):
-        json = utils.get_api_queue_caller(**kwargs)
-        res = self.post_json(
-            '/queues/%s/callers' % queue_id, params=json, status=200,
-            headers=self.auth_headers, expect_errors=True)
-        self.assertEqual(res.status_int, 200)
-        self.assertEqual(res.content_type, 'application/json')
 
         return res.json

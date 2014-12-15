@@ -20,9 +20,9 @@ import wsme
 from wsme import types as wtypes
 from wsmeext import pecan as wsme_pecan
 
+from payload.cache import models
 from payload.common import exception
 from payload.openstack.common import log as logging
-from payload.redis import models
 
 LOG = logging.getLogger(__name__)
 
@@ -50,7 +50,7 @@ class QueueMembersController(rest.RestController):
     @wsme_pecan.wsexpose([QueueMember], wtypes.text)
     def get_all(self, queue_id):
         """Retrieve a list of queue members."""
-        res = pecan.request.redis_api.list_queue_members(queue_id=queue_id)
+        res = pecan.request.cache_api.list_queue_members(queue_id=queue_id)
 
         return res
 
@@ -58,7 +58,7 @@ class QueueMembersController(rest.RestController):
     def get_one(self, queue_id, uuid):
         """Retrieve information about the given queue member."""
         try:
-            res = pecan.request.redis_api.get_queue_member(
+            res = pecan.request.cache_api.get_queue_member(
                 queue_id=queue_id, uuid=uuid)
         except exception.QueueMemberNotFound as e:
             raise wsme.exc.ClientSideError(e.message, status_code=e.code)

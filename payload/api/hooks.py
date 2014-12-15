@@ -16,8 +16,8 @@
 
 from pecan import hooks
 
+from payload.cache import api as cache_api
 from payload.db import api as db_api
-from payload.redis import api as redis_api
 
 
 class DBHook(hooks.PecanHook):
@@ -26,7 +26,7 @@ class DBHook(hooks.PecanHook):
         state.request.db_api = db_api
 
 
-class RedisHook(hooks.PecanHook):
+class CacheHook(hooks.PecanHook):
 
     def before(self, state):
-        state.request.redis_api = redis_api.get_instance()
+        state.request.cache_api = cache_api.get_instance()

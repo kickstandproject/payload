@@ -682,7 +682,7 @@
 [redis]
 
 #
-# Options defined in payload.redis.api
+# Options defined in payload.cache.api
 #
 
 # Hostname (string value)
