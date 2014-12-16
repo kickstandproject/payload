@@ -151,7 +151,7 @@ class Connection(object):
         res = self._session.hgetall(key)
 
         if not any(res):
-            raise exception.QueueMemberNotFound()
+            raise exception.QueueCallerNotFound(uuid=uuid)
 
         key = self._get_callers_namespace(queue_id=queue_id)
         res['position'] = self._session.zrank(key, uuid)

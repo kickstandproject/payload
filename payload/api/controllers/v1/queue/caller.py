@@ -15,14 +15,12 @@
 # limitations under the License.
 
 import pecan
-import wsme
 
 from pecan import rest
 from wsme import types as wtypes
 from wsmeext import pecan as wsme_pecan
 
 from payload.cache import models
-from payload.common import exception
 from payload.openstack.common import log as logging
 
 LOG = logging.getLogger(__name__)
@@ -113,12 +111,7 @@ e5814fee-6e8a-4771-8edd-ea413eff57f1
                 "uuid": "e5814fee-6e8a-4771-8edd-ea413eff57f1",
               }
         """
-        try:
-            result = pecan.request.cache_api.get_queue_caller(
-                queue_id=queue_id, uuid=uuid)
-        except exception.QueueCallerNotFound:
-            # TODO(pabelanger): See if there is a better way of handling
-            # exceptions.
-            raise wsme.exc.ClientSideError('Not found')
+        result = pecan.request.cache_api.get_queue_caller(
+            queue_id=queue_id, uuid=uuid)
 
         return result

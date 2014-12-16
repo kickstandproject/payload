@@ -98,7 +98,7 @@ class QueueNotFound(NotFound):
 
 
 class QueueCallerNotFound(NotFound):
-    message = 'Queue caller %(caller_id)s could not be found'
+    message = 'Queue caller %(uuid)s could not be found'
 
 
 class QueueMemberNotFound(NotFound):
