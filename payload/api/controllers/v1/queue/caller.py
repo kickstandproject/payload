@@ -34,6 +34,8 @@ class QueueCaller(object):
     number = wtypes.text
     position = int
     queue_id = wtypes.text
+    status = wtypes.text
+    status_at = wtypes.text
     uuid = wtypes.text
 
     def __init__(self, **kwargs):

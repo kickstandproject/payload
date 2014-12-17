@@ -69,13 +69,16 @@ class Connection(object):
             host=CONF.redis.host, port=CONF.redis.port,
             db=CONF.redis.database, password=CONF.redis.password)
 
-    def create_queue_caller(self, queue_id, uuid=None, name=None, number=None):
+    def create_queue_caller(
+            self, queue_id, uuid=None, name=None, number=None, status=0):
         timestamp = timeutils.utcnow_ts()
         values = {
             'created_at': timeutils.iso8601_from_timestamp(timestamp),
             'name': name,
             'number': number,
             'queue_id': queue_id,
+            'status': status,
+            'status_at': timeutils.iso8601_from_timestamp(timestamp),
         }
         if uuid:
             values['uuid'] = uuid
@@ -159,7 +162,8 @@ class Connection(object):
         caller = models.QueueCaller(
             uuid=res['uuid'], created_at=res['created_at'], name=res['name'],
             number=res['number'], position=res['position'],
-            queue_id=res['queue_id'])
+            queue_id=res['queue_id'], status=res['status'],
+            status_at=res['status_at'])
 
         return caller
 
