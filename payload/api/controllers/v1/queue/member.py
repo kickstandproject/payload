@@ -16,12 +16,10 @@
 
 import pecan
 from pecan import rest
-import wsme
 from wsme import types as wtypes
 from wsmeext import pecan as wsme_pecan
 
 from payload.cache import models
-from payload.common import exception
 from payload.openstack.common import log as logging
 
 LOG = logging.getLogger(__name__)
@@ -34,6 +32,7 @@ class QueueMember(object):
     number = wtypes.text
     paused = wtypes.text
     paused_at = wtypes.text
+    queue_id = wtypes.text
     status = wtypes.text
     status_at = wtypes.text
     uuid = wtypes.text
@@ -57,9 +56,7 @@ class QueueMembersController(rest.RestController):
     @wsme_pecan.wsexpose(QueueMember, wtypes.text, wtypes.text)
     def get_one(self, queue_id, uuid):
         """Retrieve information about the given queue member."""
-        try:
-            res = pecan.request.cache_api.get_queue_member(
-                queue_id=queue_id, uuid=uuid)
-        except exception.QueueMemberNotFound as e:
-            raise wsme.exc.ClientSideError(e.message, status_code=e.code)
+        res = pecan.request.cache_api.get_queue_member(
+            queue_id=queue_id, uuid=uuid)
+
         return res

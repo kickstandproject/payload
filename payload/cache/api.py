@@ -168,13 +168,14 @@ class Connection(object):
         key = '%s:%s' % (self._get_members_namespace(queue_id=queue_id), uuid)
         res = self._session.hgetall(key)
 
-        key = self._get_members_namespace(queue_id=queue_id)
+        if not any(res):
+            raise exception.QueueMemberNotFound(uuid=uuid)
 
         caller = models.QueueMember(
             uuid=res['uuid'], created_at=res['created_at'],
             number=res['number'], paused=res['paused'],
-            paused_at=res['paused_at'], status=res['status'],
-            status_at=res['status_at'])
+            paused_at=res['paused_at'], queue_id=res['queue_id'],
+            status=res['status'], status_at=res['status_at'])
 
         return caller
 
