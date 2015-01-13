@@ -29,15 +29,72 @@ class TestCase(base.TestCase):
         self.cache_api = api.get_instance()
 
     def test_create_queue_caller(self):
+        self._create_queue_caller()
+
+    def test_create_queue_member(self):
+        self._create_queue_member()
+
+    def test_delete_queue_caller(self):
+        caller = self._create_queue_caller()
+
+        self.cache_api.delete_queue_caller(
+            queue_id=caller['queue_id'], uuid=caller['uuid'])
+
+        self.assertRaises(
+            exception.QueueCallerNotFound,
+            self.cache_api.get_queue_caller,
+            queue_id=caller['queue_id'], uuid=caller['uuid'])
+
+    def test_delete_queue_member(self):
+        member = self._create_queue_member()
+
+        self.cache_api.delete_queue_member(
+            queue_id=member['queue_id'], uuid=member['uuid'])
+
+        self.assertRaises(
+            exception.QueueMemberNotFound,
+            self.cache_api.get_queue_member,
+            queue_id=member['queue_id'], uuid=member['uuid'])
+
+    def test_update_queue_caller(self):
+        caller = self._create_queue_caller()
+
+        self.cache_api.update_queue_caller(
+            queue_id=caller['queue_id'], uuid=caller['uuid'],
+            name='Jim', number='1234', status=3)
+
+        res = self.cache_api.get_queue_caller(
+            queue_id=caller['queue_id'], uuid=caller['uuid']).__dict__
+
+        self.assertEqual(res['name'], 'Jim')
+        self.assertEqual(res['number'], '1234')
+        self.assertEqual(res['status'], '3')
+
+    def test_update_queue_member(self):
+        member = self._create_queue_member()
+
+        self.cache_api.update_queue_member(
+            queue_id=member['queue_id'], uuid=member['uuid'],
+            number='1234', paused=True, status=3)
+
+        res = self.cache_api.get_queue_member(
+            queue_id=member['queue_id'], uuid=member['uuid']).__dict__
+
+        self.assertEqual(res['number'], '1234')
+        self.assertEqual(res['paused'], 'True')
+        self.assertEqual(res['status'], '3')
+
+    def _create_queue_caller(self):
         json = {
-            'name': 'None',
-            'number': 'None',
+            'name': 'Bob Smith',
+            'number': '6135559876',
             'position': 0,
             'queue_id': '555',
             'status': '0',
         }
-        res = self._create_queue_caller(
-            queue_id=json['queue_id'])
+        res = self.cache_api.create_queue_caller(
+            queue_id=json['queue_id'], name=json['name'],
+            number=json['number']).__dict__
 
         self.assertEqual(len(res), 8)
 
@@ -48,15 +105,18 @@ class TestCase(base.TestCase):
         self.assertTrue(res['status_at'])
         self.assertTrue(res['uuid'])
 
-    def test_create_queue_member(self):
+        return res
+
+    def _create_queue_member(self):
         json = {
             'number': '6135551234',
             'paused': 'False',
             'queue_id': '555',
             'status': '0',
         }
-        res = self._create_queue_member(
+        data = self.cache_api.create_queue_member(
             queue_id=json['queue_id'], number=json['number'])
+        res = data.__dict__
 
         self.assertEqual(len(res), 8)
 
@@ -68,40 +128,4 @@ class TestCase(base.TestCase):
         self.assertTrue(res['status_at'])
         self.assertTrue(res['uuid'])
 
-    def test_delete_queue_caller(self):
-        caller = self._create_queue_caller(queue_id='12345')
-        self.assertTrue(caller['queue_id'])
-        self.assertTrue(caller['uuid'])
-
-        self.cache_api.delete_queue_caller(
-            queue_id=caller['queue_id'], uuid=caller['uuid'])
-
-        self.assertRaises(
-            exception.QueueCallerNotFound,
-            self.cache_api.get_queue_caller,
-            queue_id=caller['queue_id'], uuid=caller['uuid'])
-
-    def test_delete_queue_member(self):
-        member = self._create_queue_member(queue_id='12345', number='test')
-        self.assertTrue(member['queue_id'])
-        self.assertTrue(member['uuid'])
-
-        self.cache_api.delete_queue_member(
-            queue_id=member['queue_id'], uuid=member['uuid'])
-
-        self.assertRaises(
-            exception.QueueMemberNotFound,
-            self.cache_api.get_queue_member,
-            queue_id=member['queue_id'], uuid=member['uuid'])
-
-    def _create_queue_caller(self, queue_id, **kwargs):
-        res = self.cache_api.create_queue_caller(
-            queue_id=queue_id, **kwargs)
-
-        return res.__dict__
-
-    def _create_queue_member(self, queue_id, number, **kwargs):
-        res = self.cache_api.create_queue_member(
-            queue_id=queue_id, number=number, **kwargs)
-
-        return res.__dict__
+        return res

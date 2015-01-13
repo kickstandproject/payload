@@ -205,6 +205,28 @@ class Connection(object):
 
         return res
 
+    def update_queue_caller(
+            self, queue_id, uuid, name=None, number=None, status=None):
+        timestamp = timeutils.utcnow_ts()
+        key = self._get_callers_namespace(queue_id=queue_id)
+        caller = '%s:%s' % (key, uuid)
+        data = dict()
+
+        if name is not None:
+            data['name'] = name
+        if number is not None:
+            data['number'] = number
+        if status is not None:
+            data['status'] = status
+            data['status_at'] = timeutils.iso8601_from_timestamp(timestamp)
+
+        self._session.hmset(caller, data)
+
+        res = self.get_queue_caller(
+            queue_id=queue_id, uuid=uuid)
+
+        _send_notification('caller.update', res.__dict__)
+
     def update_queue_member(
             self, queue_id, uuid, number=None, paused=None, status=None):
         timestamp = timeutils.utcnow_ts()
