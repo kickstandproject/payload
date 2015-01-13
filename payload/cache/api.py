@@ -55,7 +55,7 @@ def get_instance():
 def _send_notification(event, payload):
     notification = event.replace(" ", "_")
     notification = "queue.%s" % notification
-    notifier = messaging.get_notifier(publisher_id='payload')
+    notifier = messaging.get_notifier('payload')
     notifier.info(context.RequestContext(), notification, payload)
 
 

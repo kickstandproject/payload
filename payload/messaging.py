@@ -14,10 +14,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import socket
+
 from oslo.config import cfg
 from oslo import messaging
 
 from payload.openstack.common import context
+
+OPTS = [
+    cfg.StrOpt(
+        'host', default=socket.gethostname(),
+        help='Name of this node.  This can be an opaque identifier. It is '
+        'not necessarily a host name, FQDN, or IP address.'),
+]
+CONF = cfg.CONF
+CONF.register_opts(OPTS)
 
 TRANSPORT = None
 NOTIFIER = None
@@ -32,9 +43,11 @@ def cleanup():
     TRANSPORT = NOTIFIER = None
 
 
-def get_notifier(publisher_id):
+def get_notifier(service=None, host=None, publisher_id=None):
     """Return a configured oslo.messaging notifier."""
     global NOTIFIER
+    if not publisher_id:
+        publisher_id = "%s.%s" % (service, host or CONF.host)
     return NOTIFIER.prepare(publisher_id=publisher_id)
 
 
