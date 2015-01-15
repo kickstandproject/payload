@@ -30,17 +30,13 @@ LOG = logging.getLogger(__name__)
 
 cache_opts = [
     cfg.StrOpt(
-        'host', default='127.0.0.1', help='Hostname',
-    ),
+        'host', default='127.0.0.1', help='Hostname'),
     cfg.IntOpt(
-        'port', default=6379, help='The specific TCP port Redis listens on',
-    ),
+        'port', default=6379, help='The specific TCP port Redis listens on'),
     cfg.IntOpt(
-        'database', default=0, help='Which Redis database to use',
-    ),
+        'database', default=0, help='Which Redis database to use'),
     cfg.StrOpt(
-        'password', default=None, help='Password to use with AUTH command',
-    ),
+        'password', default=None, help='Password to use with AUTH command'),
 ]
 
 CONF = cfg.CONF
