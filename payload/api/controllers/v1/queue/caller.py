@@ -30,6 +30,7 @@ class QueueCaller(object):
     """API representation of a queue caller."""
 
     created_at = wtypes.text
+    member_uuid = wtypes.text
     name = wtypes.text
     number = wtypes.text
     position = int

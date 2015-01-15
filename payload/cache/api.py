@@ -66,10 +66,12 @@ class Connection(object):
             db=CONF.redis.database, password=CONF.redis.password)
 
     def create_queue_caller(
-            self, queue_id, uuid=None, name=None, number=None, status=0):
+            self, queue_id, uuid=None, member_uuid=None, name=None,
+            number=None, status=0):
         timestamp = timeutils.utcnow_ts()
         values = {
             'created_at': timeutils.iso8601_from_timestamp(timestamp),
+            'member_uuid': member_uuid,
             'name': name,
             'number': number,
             'queue_id': queue_id,
@@ -156,7 +158,8 @@ class Connection(object):
         res['position'] = self._session.zrank(key, uuid)
 
         caller = models.QueueCaller(
-            uuid=res['uuid'], created_at=res['created_at'], name=res['name'],
+            uuid=res['uuid'], created_at=res['created_at'],
+            member_uuid=res['member_uuid'], name=res['name'],
             number=res['number'], position=res['position'],
             queue_id=res['queue_id'], status=res['status'],
             status_at=res['status_at'])
@@ -202,12 +205,15 @@ class Connection(object):
         return res
 
     def update_queue_caller(
-            self, queue_id, uuid, name=None, number=None, status=None):
+            self, queue_id, uuid, member_uuid=None, name=None, number=None,
+            status=None):
         timestamp = timeutils.utcnow_ts()
         key = self._get_callers_namespace(queue_id=queue_id)
         caller = '%s:%s' % (key, uuid)
         data = dict()
 
+        if member_uuid is not None:
+            data['member_uuid'] = member_uuid
         if name is not None:
             data['name'] = name
         if number is not None:

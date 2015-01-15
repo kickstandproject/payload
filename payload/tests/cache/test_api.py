@@ -64,7 +64,7 @@ class TestCase(base.TestCase):
 
         self.cache_api.update_queue_caller(
             queue_id=caller['queue_id'], uuid=caller['uuid'],
-            name='Jim', number='1234', status=3)
+            member_uuid='9876', name='Jim', number='1234', status=3)
 
         res = self.cache_api.get_queue_caller(
             queue_id=caller['queue_id'], uuid=caller['uuid']).__dict__
@@ -72,6 +72,7 @@ class TestCase(base.TestCase):
         self.assertEqual(res['name'], 'Jim')
         self.assertEqual(res['number'], '1234')
         self.assertEqual(res['status'], '3')
+        self.assertEqual(res['member_uuid'], '9876')
         self.assertNotEqual(caller['status_at'], res['status_at'])
 
     def test_update_queue_member(self):
@@ -92,6 +93,7 @@ class TestCase(base.TestCase):
 
     def _create_queue_caller(self):
         json = {
+            'member_uuid': 'None',
             'name': 'Bob Smith',
             'number': '6135559876',
             'position': 0,
@@ -102,7 +104,7 @@ class TestCase(base.TestCase):
             queue_id=json['queue_id'], name=json['name'],
             number=json['number']).__dict__
 
-        self.assertEqual(len(res), 8)
+        self.assertEqual(len(res), 9)
 
         for k, v in json.iteritems():
             self.assertEqual(res[k], v)
@@ -120,9 +122,8 @@ class TestCase(base.TestCase):
             'queue_id': '555',
             'status': '0',
         }
-        data = self.cache_api.create_queue_member(
-            queue_id=json['queue_id'], number=json['number'])
-        res = data.__dict__
+        res = self.cache_api.create_queue_member(
+            queue_id=json['queue_id'], number=json['number']).__dict__
 
         self.assertEqual(len(res), 8)
 
