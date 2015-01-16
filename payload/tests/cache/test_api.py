@@ -14,8 +14,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import time
-
 from payload.cache import api
 from payload.common import exception
 from payload import messaging
@@ -60,7 +58,6 @@ class TestCase(base.TestCase):
 
     def test_update_queue_caller(self):
         caller = self._create_queue_caller()
-        time.sleep(1)
 
         self.cache_api.update_queue_caller(
             queue_id=caller['queue_id'], uuid=caller['uuid'],
@@ -73,11 +70,10 @@ class TestCase(base.TestCase):
         self.assertEqual(res['number'], '1234')
         self.assertEqual(res['status'], '3')
         self.assertEqual(res['member_uuid'], '9876')
-        self.assertNotEqual(caller['status_at'], res['status_at'])
+        self.assertGreater(res['status_at'], caller['status_at'])
 
     def test_update_queue_member(self):
         member = self._create_queue_member()
-        time.sleep(1)
 
         self.cache_api.update_queue_member(
             queue_id=member['queue_id'], uuid=member['uuid'],
@@ -89,7 +85,7 @@ class TestCase(base.TestCase):
         self.assertEqual(res['number'], '1234')
         self.assertEqual(res['paused'], 'True')
         self.assertEqual(res['status'], '3')
-        self.assertNotEqual(member['status_at'], res['status_at'])
+        self.assertGreater(res['status_at'], member['status_at'])
 
     def _create_queue_caller(self):
         json = {

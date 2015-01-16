@@ -68,15 +68,17 @@ class Connection(object):
     def create_queue_caller(
             self, queue_id, uuid=None, member_uuid=None, name=None,
             number=None, status=0):
-        timestamp = timeutils.utcnow_ts()
+        timestamp = timeutils.utcnow_ts(microsecond=True)
         values = {
-            'created_at': timeutils.iso8601_from_timestamp(timestamp),
+            'created_at': timeutils.iso8601_from_timestamp(
+                timestamp, microsecond=True),
             'member_uuid': member_uuid,
             'name': name,
             'number': number,
             'queue_id': queue_id,
             'status': status,
-            'status_at': timeutils.iso8601_from_timestamp(timestamp),
+            'status_at': timeutils.iso8601_from_timestamp(
+                timestamp, microsecond=True),
         }
         if uuid:
             values['uuid'] = uuid
@@ -98,15 +100,18 @@ class Connection(object):
 
     def create_queue_member(
             self, queue_id, number, uuid=None, paused=False, status=0):
-        timestamp = timeutils.utcnow_ts()
+        timestamp = timeutils.utcnow_ts(microsecond=True)
         values = {
-            'created_at': timeutils.iso8601_from_timestamp(timestamp),
+            'created_at': timeutils.iso8601_from_timestamp(
+                timestamp, microsecond=True),
             'number': number,
             'paused': paused,
-            'paused_at': timeutils.iso8601_from_timestamp(timestamp),
+            'paused_at': timeutils.iso8601_from_timestamp(
+                timestamp, microsecond=True),
             'queue_id': queue_id,
             'status': status,
-            'status_at': timeutils.iso8601_from_timestamp(timestamp),
+            'status_at': timeutils.iso8601_from_timestamp(
+                timestamp, microsecond=True),
         }
         if uuid:
             values['uuid'] = uuid
@@ -207,7 +212,7 @@ class Connection(object):
     def update_queue_caller(
             self, queue_id, uuid, member_uuid=None, name=None, number=None,
             status=None):
-        timestamp = timeutils.utcnow_ts()
+        timestamp = timeutils.utcnow_ts(microsecond=True)
         key = self._get_callers_namespace(queue_id=queue_id)
         caller = '%s:%s' % (key, uuid)
         data = dict()
@@ -220,7 +225,8 @@ class Connection(object):
             data['number'] = number
         if status is not None:
             data['status'] = status
-            data['status_at'] = timeutils.iso8601_from_timestamp(timestamp)
+            data['status_at'] = timeutils.iso8601_from_timestamp(
+                timestamp, microsecond=True)
 
         self._session.hmset(caller, data)
 
@@ -231,7 +237,7 @@ class Connection(object):
 
     def update_queue_member(
             self, queue_id, uuid, number=None, paused=None, status=None):
-        timestamp = timeutils.utcnow_ts()
+        timestamp = timeutils.utcnow_ts(microsecond=True)
         key = self._get_members_namespace(queue_id=queue_id)
         member = '%s:%s' % (key, uuid)
         data = dict()
@@ -240,10 +246,12 @@ class Connection(object):
             data['number'] = number
         if paused is not None:
             data['paused'] = paused
-            data['paused_at'] = timeutils.iso8601_from_timestamp(timestamp)
+            data['paused_at'] = timeutils.iso8601_from_timestamp(
+                timestamp, microsecond=True)
         if status is not None:
             data['status'] = status
-            data['status_at'] = timeutils.iso8601_from_timestamp(timestamp)
+            data['status_at'] = timeutils.iso8601_from_timestamp(
+                timestamp, microsecond=True)
 
         self._session.hmset(member, data)
 

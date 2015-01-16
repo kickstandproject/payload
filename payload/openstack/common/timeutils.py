@@ -89,14 +89,23 @@ def is_newer_than(after, seconds):
     return after - utcnow() > datetime.timedelta(seconds=seconds)
 
 
-def utcnow_ts():
+def utcnow_ts(microsecond=False):
     """Timestamp version of our utcnow function."""
     if utcnow.override_time is None:
         # NOTE(kgriffs): This is several times faster
         # than going through calendar.timegm(...)
-        return int(time.time())
+        timestamp = time.time()
+        if not microsecond:
+            timestamp = int(timestamp)
+        return timestamp
 
-    return calendar.timegm(utcnow().timetuple())
+    now = utcnow()
+    timestamp = calendar.timegm(now.timetuple())
+
+    if microsecond:
+        timestamp += float(now.microsecond) / 1000000
+
+    return timestamp
 
 
 def utcnow():
@@ -109,9 +118,9 @@ def utcnow():
     return datetime.datetime.utcnow()
 
 
-def iso8601_from_timestamp(timestamp):
+def iso8601_from_timestamp(timestamp, microsecond=False):
     """Returns a iso8601 formated date from timestamp."""
-    return isotime(datetime.datetime.utcfromtimestamp(timestamp))
+    return isotime(datetime.datetime.utcfromtimestamp(timestamp), microsecond)
 
 
 utcnow.override_time = None
