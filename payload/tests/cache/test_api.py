@@ -72,6 +72,12 @@ class TestCase(base.TestCase):
         self.assertEqual(res['member_uuid'], '9876')
         self.assertGreater(res['status_at'], caller['status_at'])
 
+        self.assertRaises(
+            exception.QueueCallerNotFound,
+            self.cache_api.update_queue_caller,
+            queue_id='foo', uuid='bar', member_uuid='9876', name='Jim',
+            number='1234', status=3)
+
     def test_update_queue_member(self):
         member = self._create_queue_member()
 
@@ -86,6 +92,11 @@ class TestCase(base.TestCase):
         self.assertEqual(res['paused'], 'True')
         self.assertEqual(res['status'], '3')
         self.assertGreater(res['status_at'], member['status_at'])
+
+        self.assertRaises(
+            exception.QueueMemberNotFound,
+            self.cache_api.update_queue_member,
+            queue_id='foo', uuid='bar', number='1234', paused=True, status=3)
 
     def _create_queue_caller(self):
         json = {

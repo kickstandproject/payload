@@ -156,7 +156,7 @@ class Connection(object):
         key = '%s:%s' % (self._get_callers_namespace(queue_id=queue_id), uuid)
         res = self._session.hgetall(key)
 
-        if not any(res):
+        if 'uuid' not in res:
             raise exception.QueueCallerNotFound(uuid=uuid)
 
         key = self._get_callers_namespace(queue_id=queue_id)
@@ -176,7 +176,7 @@ class Connection(object):
         key = '%s:%s' % (self._get_members_namespace(queue_id=queue_id), uuid)
         res = self._session.hgetall(key)
 
-        if not any(res):
+        if 'uuid' not in res:
             raise exception.QueueMemberNotFound(uuid=uuid)
 
         caller = models.QueueMember(
