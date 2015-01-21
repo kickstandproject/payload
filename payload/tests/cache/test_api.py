@@ -98,6 +98,16 @@ class TestCase(base.TestCase):
             self.cache_api.update_queue_member,
             queue_id='foo', uuid='bar', number='1234', paused=True, status=3)
 
+    def test__get_members_status_namespace(self):
+        res = self.cache_api._get_members_status_namespace(
+            queue_id='foobar', status=1)
+        self.assertEqual(res, 'queue:foobar:members:status:1')
+
+    def test__get_callers_status_namespace(self):
+        res = self.cache_api._get_callers_status_namespace(
+            queue_id='foobar', status=1)
+        self.assertEqual(res, 'queue:foobar:callers:status:1')
+
     def _create_queue_caller(self):
         json = {
             'member_uuid': 'None',

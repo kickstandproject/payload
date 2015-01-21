@@ -76,9 +76,6 @@ class Connection(object):
             'name': name,
             'number': number,
             'queue_id': queue_id,
-            'status': status,
-            'status_at': timeutils.iso8601_from_timestamp(
-                timestamp, microsecond=True),
         }
         if uuid:
             values['uuid'] = uuid
@@ -90,6 +87,10 @@ class Connection(object):
 
         caller = '%s:%s' % (key, values['uuid'])
         self._session.hmset(caller, values)
+
+        self._create_queue_caller_status(
+            queue_id=queue_id, timestamp=timestamp, status=status,
+            uuid=values['uuid'])
 
         res = self.get_queue_caller(
             queue_id=queue_id, uuid=values['uuid'])
@@ -109,9 +110,6 @@ class Connection(object):
             'paused_at': timeutils.iso8601_from_timestamp(
                 timestamp, microsecond=True),
             'queue_id': queue_id,
-            'status': status,
-            'status_at': timeutils.iso8601_from_timestamp(
-                timestamp, microsecond=True),
         }
         if uuid:
             values['uuid'] = uuid
@@ -124,6 +122,10 @@ class Connection(object):
         member = '%s:%s' % (key, values['uuid'])
         self._session.hmset(member, values)
 
+        self._create_queue_member_status(
+            queue_id=queue_id, timestamp=timestamp, status=status,
+            uuid=values['uuid'])
+
         res = self.get_queue_member(
             queue_id=queue_id, uuid=values['uuid'])
 
@@ -133,23 +135,29 @@ class Connection(object):
 
     def delete_queue_caller(self, queue_id, uuid):
         res = self.get_queue_caller(
-            queue_id=queue_id, uuid=uuid)
-        _send_notification('caller.delete', res.__dict__)
+            queue_id=queue_id, uuid=uuid).__dict__
+        _send_notification('caller.delete', res)
 
         key = self._get_callers_namespace(queue_id=queue_id)
         self._session.zrem(key, uuid)
         caller = '%s:%s' % (key, uuid)
         self._session.delete(caller)
 
+        self._delete_queue_caller_status(
+            queue_id=queue_id, status=res['status'], uuid=uuid)
+
     def delete_queue_member(self, queue_id, uuid):
         res = self.get_queue_member(
-            queue_id=queue_id, uuid=uuid)
-        _send_notification('member.delete', res.__dict__)
+            queue_id=queue_id, uuid=uuid).__dict__
+        _send_notification('member.delete', res)
 
         key = self._get_members_namespace(queue_id=queue_id)
         self._session.zrem(key, uuid)
         member = '%s:%s' % (key, uuid)
         self._session.delete(member)
+
+        self._delete_queue_member_status(
+            queue_id=queue_id, status=res['status'], uuid=uuid)
 
     def get_queue_caller(self, queue_id, uuid):
         """Retrieve information about the given queue caller."""
@@ -224,9 +232,9 @@ class Connection(object):
         if number is not None:
             data['number'] = number
         if status is not None:
-            data['status'] = status
-            data['status_at'] = timeutils.iso8601_from_timestamp(
-                timestamp, microsecond=True)
+            self._update_queue_caller_status(
+                queue_id=queue_id, status=status, timestamp=timestamp,
+                uuid=uuid)
 
         self._session.hmset(caller, data)
 
@@ -249,9 +257,9 @@ class Connection(object):
             data['paused_at'] = timeutils.iso8601_from_timestamp(
                 timestamp, microsecond=True)
         if status is not None:
-            data['status'] = status
-            data['status_at'] = timeutils.iso8601_from_timestamp(
-                timestamp, microsecond=True)
+            self._update_queue_member_status(
+                queue_id=queue_id, status=status, timestamp=timestamp,
+                uuid=uuid)
 
         self._session.hmset(member, data)
 
@@ -259,6 +267,46 @@ class Connection(object):
             queue_id=queue_id, uuid=uuid)
 
         _send_notification('member.update', res.__dict__)
+
+    def _create_queue_caller_status(self, queue_id, timestamp, status, uuid):
+        values = {
+            'status': status,
+            'status_at': timeutils.iso8601_from_timestamp(
+                timestamp, microsecond=True),
+        }
+        key = self._get_callers_status_namespace(
+            queue_id=queue_id, status=status)
+
+        self._session.zadd(key, timestamp, uuid)
+
+        key = self._get_callers_namespace(queue_id=queue_id)
+        caller = '%s:%s' % (key, uuid)
+        self._session.hmset(caller, values)
+
+    def _create_queue_member_status(self, queue_id, timestamp, status, uuid):
+        values = {
+            'status': status,
+            'status_at': timeutils.iso8601_from_timestamp(
+                timestamp, microsecond=True),
+        }
+        key = self._get_members_status_namespace(
+            queue_id=queue_id, status=status)
+
+        self._session.zadd(key, timestamp, uuid)
+
+        key = self._get_members_namespace(queue_id=queue_id)
+        member = '%s:%s' % (key, uuid)
+        self._session.hmset(member, values)
+
+    def _delete_queue_caller_status(self, queue_id, status, uuid):
+        key = self._get_callers_status_namespace(
+            queue_id=queue_id, status=status)
+        self._session.zrem(key, uuid)
+
+    def _delete_queue_member_status(self, queue_id, status, uuid):
+        key = self._get_members_status_namespace(
+            queue_id=queue_id, status=status)
+        self._session.zrem(key, uuid)
 
     def _list_queue_callers(self, queue_id):
         key = self._get_callers_namespace(queue_id=queue_id)
@@ -281,8 +329,34 @@ class Connection(object):
 
         return key
 
+    def _get_callers_status_namespace(self, queue_id, status):
+        name = self._get_callers_namespace(queue_id=queue_id)
+        key = '%s:status:%s' % (name, status)
+
+        return key
+
     def _get_members_namespace(self, queue_id):
         name = self._get_queue_namespace(queue_id=queue_id)
         key = '%s:%s' % (name, 'members')
 
         return key
+
+    def _get_members_status_namespace(self, queue_id, status):
+        name = self._get_members_namespace(queue_id=queue_id)
+        key = '%s:status:%s' % (name, status)
+
+        return key
+
+    def _update_queue_caller_status(self, queue_id, status, timestamp, uuid):
+        res = self.get_queue_caller(queue_id=queue_id, uuid=uuid).__dict__
+        self._delete_queue_caller_status(
+            queue_id=queue_id, status=res['status'], uuid=uuid)
+        self._create_queue_caller_status(
+            queue_id=queue_id, status=status, timestamp=timestamp, uuid=uuid)
+
+    def _update_queue_member_status(self, queue_id, status, timestamp, uuid):
+        res = self.get_queue_member(queue_id=queue_id, uuid=uuid).__dict__
+        self._delete_queue_member_status(
+            queue_id=queue_id, status=res['status'], uuid=uuid)
+        self._create_queue_member_status(
+            queue_id=queue_id, status=status, timestamp=timestamp, uuid=uuid)
