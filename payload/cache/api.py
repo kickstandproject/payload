@@ -100,7 +100,7 @@ class Connection(object):
         return res
 
     def create_queue_member(
-            self, queue_id, number, uuid=None, paused=False, status=0):
+            self, queue_id, number, uuid=None, paused=0, status=0):
         timestamp = timeutils.utcnow_ts(microsecond=True)
         values = {
             'created_at': timeutils.iso8601_from_timestamp(

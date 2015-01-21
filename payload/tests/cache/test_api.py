@@ -95,20 +95,43 @@ class TestCase(base.TestCase):
 
         self.cache_api.update_queue_member(
             queue_id=member['queue_id'], uuid=member['uuid'],
-            number='1234', paused=True, status=3)
+            number='1234', paused=1, status=3)
 
         res = self.cache_api.get_queue_member(
             queue_id=member['queue_id'], uuid=member['uuid']).__dict__
 
         self.assertEqual(res['number'], '1234')
-        self.assertEqual(res['paused'], 'True')
+        self.assertEqual(res['paused'], '1')
         self.assertEqual(res['status'], '3')
         self.assertGreater(res['status_at'], member['status_at'])
 
         self.assertRaises(
             exception.QueueMemberNotFound,
             self.cache_api.update_queue_member,
-            queue_id='foo', uuid='bar', number='1234', paused=True, status=3)
+            queue_id='foo', uuid='bar', number='1234', paused=1, status=3)
+
+    def test_update_queue_member_paused(self):
+        member = self._create_queue_member()
+
+        self.cache_api.update_queue_member(
+            queue_id=member['queue_id'], uuid=member['uuid'],
+            paused=1)
+
+        res = self.cache_api.get_queue_member(
+            queue_id=member['queue_id'], uuid=member['uuid']).__dict__
+
+        self.assertEqual(res['paused'], '1')
+        self.assertGreater(res['paused_at'], member['status_at'])
+
+        self.cache_api.update_queue_member(
+            queue_id=member['queue_id'], uuid=member['uuid'],
+            paused=0)
+
+        res = self.cache_api.get_queue_member(
+            queue_id=member['queue_id'], uuid=member['uuid']).__dict__
+
+        self.assertEqual(res['paused'], '0')
+        self.assertGreater(res['paused_at'], member['status_at'])
 
     def test_update_queue_member_only_status(self):
         member = self._create_queue_member()
@@ -158,7 +181,7 @@ class TestCase(base.TestCase):
     def _create_queue_member(self):
         json = {
             'number': '6135551234',
-            'paused': 'False',
+            'paused': '0',
             'queue_id': '555',
             'status': '0',
         }
