@@ -231,12 +231,13 @@ class Connection(object):
             data['name'] = name
         if number is not None:
             data['number'] = number
+        if data:
+            self._session.hmset(caller, data)
+
         if status is not None:
             self._update_queue_caller_status(
                 queue_id=queue_id, status=status, timestamp=timestamp,
                 uuid=uuid)
-
-        self._session.hmset(caller, data)
 
         res = self.get_queue_caller(
             queue_id=queue_id, uuid=uuid)
@@ -256,12 +257,13 @@ class Connection(object):
             data['paused'] = paused
             data['paused_at'] = timeutils.iso8601_from_timestamp(
                 timestamp, microsecond=True)
+        if data:
+            self._session.hmset(member, data)
+
         if status is not None:
             self._update_queue_member_status(
                 queue_id=queue_id, status=status, timestamp=timestamp,
                 uuid=uuid)
-
-        self._session.hmset(member, data)
 
         res = self.get_queue_member(
             queue_id=queue_id, uuid=uuid)

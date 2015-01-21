@@ -78,6 +78,18 @@ class TestCase(base.TestCase):
             queue_id='foo', uuid='bar', member_uuid='9876', name='Jim',
             number='1234', status=3)
 
+    def test_update_queue_caller_only_status(self):
+        caller = self._create_queue_caller()
+
+        self.cache_api.update_queue_caller(
+            queue_id=caller['queue_id'], uuid=caller['uuid'], status=3)
+
+        res = self.cache_api.get_queue_caller(
+            queue_id=caller['queue_id'], uuid=caller['uuid']).__dict__
+
+        self.assertEqual(res['status'], '3')
+        self.assertGreater(res['status_at'], caller['status_at'])
+
     def test_update_queue_member(self):
         member = self._create_queue_member()
 
@@ -97,6 +109,17 @@ class TestCase(base.TestCase):
             exception.QueueMemberNotFound,
             self.cache_api.update_queue_member,
             queue_id='foo', uuid='bar', number='1234', paused=True, status=3)
+
+    def test_update_queue_member_only_status(self):
+        member = self._create_queue_member()
+
+        self.cache_api.update_queue_member(
+            queue_id=member['queue_id'], uuid=member['uuid'], status=3)
+        res = self.cache_api.get_queue_member(
+            queue_id=member['queue_id'], uuid=member['uuid']).__dict__
+
+        self.assertEqual(res['status'], '3')
+        self.assertGreater(res['status_at'], member['status_at'])
 
     def test__get_members_status_namespace(self):
         res = self.cache_api._get_members_status_namespace(
