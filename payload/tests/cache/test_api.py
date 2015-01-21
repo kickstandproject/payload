@@ -56,6 +56,64 @@ class TestCase(base.TestCase):
             self.cache_api.get_queue_member,
             queue_id=member['queue_id'], uuid=member['uuid'])
 
+    def test_list_queue_callers(self):
+        callers = dict()
+        for x in range(0, 2):
+            callers[x] = self._create_queue_caller()
+
+        res = self.cache_api.list_queue_callers(
+            queue_id=callers[0]['queue_id'])
+
+        self.assertEqual(len(res), 2)
+
+        res = self.cache_api.list_queue_callers(
+            queue_id=callers[0]['queue_id'],
+            status=api.QueueCallerStatus.WAITING)
+        self.assertEqual(len(res), 2)
+
+        self.cache_api.update_queue_caller(
+            queue_id=callers[0]['queue_id'], uuid=callers[0]['uuid'],
+            status=api.QueueCallerStatus.RINGING)
+
+        res = self.cache_api.list_queue_callers(
+            queue_id=callers[0]['queue_id'],
+            status=api.QueueCallerStatus.WAITING)
+        self.assertEqual(len(res), 1)
+
+        res = self.cache_api.list_queue_callers(
+            queue_id=callers[0]['queue_id'],
+            status=api.QueueCallerStatus.RINGING)
+        self.assertEqual(len(res), 1)
+
+    def test_list_queue_member(self):
+        members = dict()
+        for x in range(0, 2):
+            members[x] = self._create_queue_member()
+
+        res = self.cache_api.list_queue_members(
+            queue_id=members[0]['queue_id'])
+
+        self.assertEqual(len(res), 2)
+
+        res = self.cache_api.list_queue_members(
+            queue_id=members[0]['queue_id'],
+            status=api.QueueMemberStatus.WAITING)
+        self.assertEqual(len(res), 2)
+
+        self.cache_api.update_queue_member(
+            queue_id=members[0]['queue_id'], uuid=members[0]['uuid'],
+            status=api.QueueMemberStatus.RINGING)
+
+        res = self.cache_api.list_queue_members(
+            queue_id=members[0]['queue_id'],
+            status=api.QueueMemberStatus.WAITING)
+        self.assertEqual(len(res), 1)
+
+        res = self.cache_api.list_queue_members(
+            queue_id=members[0]['queue_id'],
+            status=api.QueueMemberStatus.RINGING)
+        self.assertEqual(len(res), 1)
+
     def test_update_queue_caller(self):
         caller = self._create_queue_caller()
 
@@ -144,10 +202,20 @@ class TestCase(base.TestCase):
         self.assertEqual(res['status'], '3')
         self.assertGreater(res['status_at'], member['status_at'])
 
+    def test__get_members_namespace(self):
+        res = self.cache_api._get_members_namespace(
+            queue_id='foobar')
+        self.assertEqual(res, 'queue:foobar:members')
+
     def test__get_members_status_namespace(self):
         res = self.cache_api._get_members_status_namespace(
             queue_id='foobar', status=1)
         self.assertEqual(res, 'queue:foobar:members:status:1')
+
+    def test__get_callers_namespace(self):
+        res = self.cache_api._get_callers_namespace(
+            queue_id='foobar')
+        self.assertEqual(res, 'queue:foobar:callers')
 
     def test__get_callers_status_namespace(self):
         res = self.cache_api._get_callers_status_namespace(
@@ -159,9 +227,8 @@ class TestCase(base.TestCase):
             'member_uuid': 'None',
             'name': 'Bob Smith',
             'number': '6135559876',
-            'position': 0,
             'queue_id': '555',
-            'status': '0',
+            'status': '1',
         }
         res = self.cache_api.create_queue_caller(
             queue_id=json['queue_id'], name=json['name'],
@@ -172,6 +239,7 @@ class TestCase(base.TestCase):
         for k, v in json.iteritems():
             self.assertEqual(res[k], v)
 
+        # NOTE(pabelanger): We currently check position, we need to test it.
         self.assertTrue(res['created_at'])
         self.assertTrue(res['status_at'])
         self.assertTrue(res['uuid'])
@@ -183,7 +251,7 @@ class TestCase(base.TestCase):
             'number': '6135551234',
             'paused': '0',
             'queue_id': '555',
-            'status': '0',
+            'status': '1',
         }
         res = self.cache_api.create_queue_member(
             queue_id=json['queue_id'], number=json['number']).__dict__

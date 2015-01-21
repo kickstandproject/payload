@@ -55,6 +55,20 @@ def _send_notification(event, payload):
     notifier.info(context.RequestContext(), notification, payload)
 
 
+class QueueCallerStatus(object):
+
+    WAITING = '1'
+    RINGING = '2'
+    CONNECTED = '3'
+
+
+class QueueMemberStatus(object):
+
+    WAITING = '1'
+    CONNECTED = '2'
+    RINGING = '6'
+
+
 class Connection(object):
 
     _session = None
@@ -67,7 +81,7 @@ class Connection(object):
 
     def create_queue_caller(
             self, queue_id, uuid=None, member_uuid=None, name=None,
-            number=None, status=0):
+            number=None, status=1):
         timestamp = timeutils.utcnow_ts(microsecond=True)
         values = {
             'created_at': timeutils.iso8601_from_timestamp(
@@ -100,7 +114,7 @@ class Connection(object):
         return res
 
     def create_queue_member(
-            self, queue_id, number, uuid=None, paused=0, status=0):
+            self, queue_id, number, uuid=None, paused=0, status=1):
         timestamp = timeutils.utcnow_ts(microsecond=True)
         values = {
             'created_at': timeutils.iso8601_from_timestamp(
@@ -195,9 +209,13 @@ class Connection(object):
 
         return caller
 
-    def list_queue_callers(self, queue_id):
+    def list_queue_callers(self, queue_id, status=None):
         """Retrieve a list of queue callers."""
-        data = self._list_queue_callers(queue_id=queue_id)
+        if status:
+            data = self._list_queue_callers_status(
+                queue_id=queue_id, status=status)
+        else:
+            data = self._list_queue_callers(queue_id=queue_id)
 
         res = []
         for uuid in data:
@@ -206,9 +224,13 @@ class Connection(object):
 
         return res
 
-    def list_queue_members(self, queue_id):
+    def list_queue_members(self, queue_id, status=None):
         """Retrieve a list of queue members."""
-        data = self._list_queue_members(queue_id=queue_id)
+        if status:
+            data = self._list_queue_members_status(
+                queue_id=queue_id, status=status)
+        else:
+            data = self._list_queue_members(queue_id=queue_id)
 
         res = []
         for uuid in data:
@@ -315,10 +337,22 @@ class Connection(object):
 
         return self._session.zrange(key, 0, -1)
 
+    def _list_queue_callers_status(self, queue_id, status):
+        key = self._get_callers_status_namespace(
+            queue_id=queue_id, status=status)
+
+        return self._session.zrange(key, 0, 1)
+
     def _list_queue_members(self, queue_id):
         key = self._get_members_namespace(queue_id=queue_id)
 
         return self._session.zrange(key, 0, -1)
+
+    def _list_queue_members_status(self, queue_id, status):
+        key = self._get_members_status_namespace(
+            queue_id=queue_id, status=status)
+
+        return self._session.zrange(key, 0, 1)
 
     def _get_queue_namespace(self, queue_id):
         name = '%s:%s' % (self._queue_namespace, queue_id)
