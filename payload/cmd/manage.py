@@ -15,16 +15,18 @@
 # limitations under the License.
 
 """
-  CLI interface for payload management.
+CLI interface for payload management.
 """
 
 import logging
+import sys
 
 from oslo.config import cfg
 
+from payload import config
 from payload.db import migration as db_migration
 from payload.openstack.common import log
-from payload import service
+
 
 CONF = cfg.CONF
 LOG = log.getLogger(__name__)
@@ -64,7 +66,7 @@ command_opt = cfg.SubCommandOpt('command',
 
 def main():
     CONF.register_cli_opt(command_opt)
-    service.prepare_service()
+    config.prepare_args(sys.argv)
     CONF.log_opt_values(LOG, logging.INFO)
 
     try:

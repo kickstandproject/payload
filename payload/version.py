@@ -18,3 +18,4 @@ import pbr.version
 
 
 VERSION_INFO = pbr.version.VersionInfo('payload')
+VERSION_STRING = VERSION_INFO.version_string

@@ -16,19 +16,13 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import sys
-
 from oslo.config import cfg
 
 from payload import messaging
-from payload.openstack.common import log
-
-LOG = log.getLogger(__name__)
+from payload import version
 
 
-def prepare_service(argv=None):
-    if argv is None:
-        argv = sys.argv
-    cfg.CONF(argv[1:], project='payload')
-    log.setup('payload')
+def prepare_args(argv):
+    cfg.CONF(
+        argv[1:], project='payload', version=version.VERSION_STRING())
     messaging.setup()

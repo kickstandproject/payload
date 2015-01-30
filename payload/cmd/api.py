@@ -19,14 +19,15 @@
 Payload Service API
 """
 
-from payload.api import app
-from payload.openstack.common import log
-from payload import service
+import sys
 
-LOG = log.getLogger(__name__)
+from payload.api import app
+from payload import config
+from payload.openstack.common import log as logging
 
 
 def main():
-    service.prepare_service()
+    config.prepare_args(sys.argv)
+    logging.setup('payload')
     srv = app.build_server()
     srv.serve_forever()
