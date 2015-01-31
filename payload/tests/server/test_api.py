@@ -13,7 +13,6 @@
 from payload.cache import api as cache_api
 from payload.cache.api import QueueCallerStatus
 from payload.cache.api import QueueMemberStatus
-from payload import messaging
 from payload.server import api as server_api
 from payload.tests import base
 
@@ -22,8 +21,6 @@ class TestCase(base.TestCase):
 
     def setUp(self):
         super(TestCase, self).setUp()
-        messaging.setup('fake://')
-        self.addCleanup(messaging.cleanup)
         self.cache_api = cache_api.get_instance()
         self.server_api = server_api.API()
 

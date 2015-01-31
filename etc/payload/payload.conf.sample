@@ -187,7 +187,7 @@
 
 
 #
-# Options defined in payload.messaging
+# Options defined in payload.rpc
 #
 
 # Name of this node.  This can be an opaque identifier. It is

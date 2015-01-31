@@ -18,11 +18,11 @@
 
 from oslo.config import cfg
 
-from payload import messaging
+from payload import rpc
 from payload import version
 
 
 def prepare_args(argv):
     cfg.CONF(
         argv[1:], project='payload', version=version.VERSION_STRING())
-    messaging.setup()
+    rpc.init(cfg.CONF)

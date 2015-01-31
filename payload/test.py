@@ -25,12 +25,14 @@ import testtools
 import time
 
 from oslo.config import cfg
+from oslo.messaging import conffixture as messaging_conffixture
 import redis
 
 from payload.common import paths
 from payload.db import migration
 from payload.openstack.common.db.sqlalchemy import session
 from payload.openstack.common import log as logging
+from payload import rpc
 from payload.tests import conf_fixture
 
 
@@ -124,6 +126,12 @@ class TestCase(testtools.TestCase):
 
         self.log_fixture = self.useFixture(fixtures.FakeLogger())
         self.useFixture(conf_fixture.ConfFixture(CONF))
+        self.messaging_conf = messaging_conffixture.ConfFixture(CONF)
+        self.messaging_conf.transport_driver = 'fake'
+        self.messaging_conf.response_timeout = 15
+        self.useFixture(self.messaging_conf)
+
+        rpc.init(CONF)
 
         global _DB_CACHE
         if not _DB_CACHE:

@@ -1,7 +1,3 @@
-# vim: tabstop=4 shiftwidth=4 softtabstop=4
-
-# Copyright (C) 2013-2014 PolyBeacon, Inc.
-#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -45,22 +41,19 @@ def cleanup():
 
 def get_notifier(service=None, host=None, publisher_id=None):
     """Return a configured oslo.messaging notifier."""
-    global NOTIFIER
+    assert NOTIFIER is not None
     if not publisher_id:
         publisher_id = "%s.%s" % (service, host or CONF.host)
     return NOTIFIER.prepare(publisher_id=publisher_id)
 
 
-def setup(url=None):
+def init(conf):
     """Initialise the oslo.messaging layer."""
     global TRANSPORT, NOTIFIER
-    if not TRANSPORT:
-        messaging.set_transport_defaults('payload')
-        TRANSPORT = messaging.get_transport(
-            cfg.CONF, url)
-    if not NOTIFIER:
-        serializer = RequestContextSerializer(None)
-        NOTIFIER = messaging.Notifier(TRANSPORT, serializer=serializer)
+    messaging.set_transport_defaults('payload')
+    TRANSPORT = messaging.get_transport(conf)
+    serializer = RequestContextSerializer(None)
+    NOTIFIER = messaging.Notifier(TRANSPORT, serializer=serializer)
 
 
 class RequestContextSerializer(messaging.Serializer):

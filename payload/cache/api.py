@@ -20,11 +20,11 @@ from oslo.config import cfg
 
 from payload.cache import models
 from payload.common import exception
-from payload import messaging
 from payload.openstack.common import context
 from payload.openstack.common import log as logging
 from payload.openstack.common import timeutils
 from payload.openstack.common import uuidutils
+from payload import rpc
 
 LOG = logging.getLogger(__name__)
 
@@ -51,7 +51,7 @@ def get_instance():
 def _send_notification(event, payload):
     notification = event.replace(" ", "_")
     notification = "queue.%s" % notification
-    notifier = messaging.get_notifier('payload')
+    notifier = rpc.get_notifier('payload')
     notifier.info(context.RequestContext(), notification, payload)
 
 

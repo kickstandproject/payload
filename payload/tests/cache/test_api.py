@@ -16,7 +16,6 @@
 
 from payload.cache import api
 from payload.common import exception
-from payload import messaging
 from payload.tests import base
 
 
@@ -24,8 +23,6 @@ class TestCase(base.TestCase):
 
     def setUp(self):
         super(TestCase, self).setUp()
-        messaging.setup('fake://')
-        self.addCleanup(messaging.cleanup)
         self.cache_api = api.get_instance()
 
     def test_create_queue_caller(self):
